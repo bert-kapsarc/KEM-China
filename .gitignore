@@ -1,0 +1,7 @@
+**/*.~gm
+/*.gdx
+**/*.lst
+**/*.lxi
+**/*.accdb
+db/*.xlsx
+/ValidationData
