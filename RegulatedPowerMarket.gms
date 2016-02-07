@@ -31,18 +31,16 @@ parameter contract;
          option MCP=path;
 
 
-
 *!!!     Turn on railway construction tax
          COrailCFS=1;
 
-*$ontext
+*!!!     Enforce maximum on-grid tariffs
          ELptariff(ELpnuc,v) = yes;
          ELptariff(ELpcoal,v) = yes;
          ELptariff(ELpCC,v) = yes;
          ELptariff(ELpog,v) = yes;
 *         ELptariff(ELphyd,v) = yes;
 *         ELptariff(ELpw,vn) = yes;
-*$offtext
 
 $INCLUDE short_run.gms
 

@@ -494,12 +494,12 @@ parameter
 
 *        coal efficiency rate, from WEIO
          Elpeff('subcr',v)         = 0.37;
-         Elpeff('Superc',v)        = 0.40;
-         Elpeff('Ultrsc',v)        = 0.43;
+         Elpeff('Superc',v)        = 0.41;
+         Elpeff('Ultrsc',v)        = 0.46;
 
 * !!!    Efficiency penalty for older coal plants
 
-         ELpeff(ELpcoal,vo)         = ELpeff(ELpcoal,'new')*0.95;
+         ELpeff('Subcr',vo)         = ELpeff('Subcr','new')*0.95;
 
 *        using 3.412 mmbtu/MWh and WEIO efficiencies for China
 *         ELfuelburn('ST',v,'methane','CVf',r)          = 8.949;
@@ -856,7 +856,6 @@ ELopmaintbal(t)..
 
   +sum((ELpd,v,r)$ELpbld(ELpd,v),
          ELfixedOMcst(ELpd)*ELbld(ELpd,v,t-ELleadtime(ELpd),r))
-
 
   +sum((ELpd,v,r)$(vn(v) and ELpbld(Elpd,v)),
          ELfixedOMcst(ELpd)*ELrsrvbld(ELpd,v,t-ELleadtime(ELpd),r))
