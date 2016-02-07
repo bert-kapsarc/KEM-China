@@ -50,16 +50,17 @@ parameter contract;
 *$ontext
 * !!!    Solve MCP
 
-         ELbld.up('GTtoCC',vo,trun,r)=inf;
-         ELbld.up('CC',vn,trun,r)=inf;
-         ELbld.up('Ultrsc',vn,trun,r)=inf;
-         ELbld.up('Superc',vn,trun,r)=inf;
-         ELbld.up('Subcr',vn,trun,r)=inf;
-         ELbld.up(ELpnuc,vn,trun,r)=inf;
-         ELbld.up('GT',vn,trun,r)=inf;
-
-         COtransbld.up(tr,trun,rco,rrco)$arc(tr,rco,rrco)=inf;
-         ELtransbld.up(Elt,trun,r,rr) = inf;
+$ontext
+         ELbld.up('GTtoCC',vo,trun,r)=0;
+         ELbld.up('CC',vn,trun,r)=0;
+         ELbld.up('Ultrsc',vn,trun,r)=0;
+         ELbld.up('Superc',vn,trun,r)=0;
+         ELbld.up('Subcr',vn,trun,r)=0;
+         ELbld.up(ELpnuc,vn,trun,r)=0;
+         ELbld.up('GT',vn,trun,r)=0;
+$offtext
+         ELhydbld.up(Elphyd,vn,trun,r)=0;
+         ELbld.up(ELpnuc,vn,trun,r)=0;
 
 $ontext
 *        Remove existing capacity stock
@@ -69,7 +70,7 @@ $ontext
 ;
 $offtext
 
-         execute_loadpoint "PowerLongRun.gdx"
+         execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms

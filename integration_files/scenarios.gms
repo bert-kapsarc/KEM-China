@@ -38,44 +38,23 @@
          COintlprice(coal,ssi,cv_ord,sulf,time,rimp)*1;
 
 
-*
-
-         COtransbld.up(tr,trun,'IMKP',rrco)$arc('rail','IMKP',rrco) = 0;
-         COtransbld.up(tr,trun,'IMMN',rrco)$arc('rail','IMMN',rrco) = 0;
-
-         COtransbld.up('rail',trun,rco,rrco)$arc('rail',rco,rrco) = 0;
-         COtransbld.up('truck',trun,rco,rrco)$arc('truck',rco,rrco) = 0;
-         COtransbld.up(port,trun,rco,rrco)$arc(port,rco,rrco) = 0;
-
-*         ELAPf('methane',fss,time,r)=ELAPf('methane',fss,time,r)*0.01;
-
-
-*        initialize power plants with ongrid electricity tarrifs
-
+*        no grid electricity tarrifs
          ELptariff(ELpd,v) = no;
 
-
-$ontext
-         ELptariff(ELpnuc,v) = yes;
-         ELptariff(ELpcoal,v) = yes;
-         ELptariff(ELpCC,v) = yes;
-         ELptariff(ELpog,v) = yes;
-*         ELptariff('ST',v) = no;
-$offtext
 
 if( s('calib'),
 
          coal_cap=1;
          rail_cap=1;
-         import_cap=0;
-         COfimpmax('coal',trun)=200;
-         COfimpmax('met',trun)=52;
+         import_cap=1;
+
+
+         COfimpmax('met',t,'IMMN') = 25;
+         COfimpmax('coal',t,'IMKP') = 25;
 
          COrailCFS=0;
 
          t_start=1;
-
-* !!!    Fix new builds
 
 * !!!    Switch off renewables
 *         ELhydop.fx(ELphyd,v,ELl,trun,r)=0;
@@ -91,12 +70,6 @@ $ontext
          and (ELwindexist(r)/ELdemgro('LS1',t,r)-ord(wstep))>-1 );
 $offtext
 
-         ELhydbld.up(Elphyd,'new',trun,r)=0;
-*         ELwindbld.up(Elpw,'new',trun,r)=0;
-
-
-* !!!    No transmission investments
-         ELtransbld.up(Elt,trun,r,rr)= 0;
 
 
 *        allow coal mine expansion in 2011 conterfactual case
@@ -108,8 +81,6 @@ $offtext
 
 *temp2(COf,mm,ss,rco) = (CoprodIHS(COf,mm,ss,'t15',rco)-CoprodIHS(COf,mm,ss,'t11',rco));
 *CoprodIHS(COf,mm,ss,'t11',rco)=CoprodIHS(COf,mm,ss,'t11',rco)+temp2(COf,mm,ss,rco)$(temp2(COf,mm,ss,rco)>0);
-
-*$(Cobld.up(COf,mm,ss,'t11',rco)<0)=0;
 
 
 elseif s('EIA'),

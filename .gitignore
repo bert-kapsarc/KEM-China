@@ -5,3 +5,5 @@
 **/*.accdb
 db/*.xlsx
 /ValidationData
+**/*.log
+**/225*/

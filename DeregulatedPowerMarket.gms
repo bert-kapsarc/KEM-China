@@ -34,6 +34,7 @@ $INCLUDE powersubmodel.gms
 $INCLUDE imports.gms
 
 $INCLUDE discounting.gms
+
          ELdiscfact(time)  = 1;
 
 
@@ -46,18 +47,6 @@ parameter contract;
 
          PowerMCP.Optfile=1;
          PowerLP.Optfile=1;
-
-*$ontext
-* !!!    Solve MCP
-
-         ELbld.up('GTtoCC',vo,trun,r)=0;
-         ELbld.up('CC',vn,trun,r)=0;
-         ELbld.up('Ultrsc',vn,trun,r)=0;
-         ELbld.up('Superc',vn,trun,r)=0;
-         ELbld.up('Subcr',vn,trun,r)=0;
-         ELbld.up(ELpnuc,vn,trun,r)=0;
-         ELbld.up('GT',vn,trun,r)=0;
-
 $ontext
 *        Remove existing capacity stock
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=    0;
@@ -65,6 +54,10 @@ $ontext
          ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0
 ;
 $offtext
+
+$INCLUDE short_run.gms
+
+* !!!    Solve MCP
 
          execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;

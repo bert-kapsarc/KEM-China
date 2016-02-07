@@ -154,6 +154,10 @@ Accounting('Cost','Total')=
   +sum(t,(COtranspurchase.l(t)+COtransConstruct.l(t)
          +COtransOpandmaint.l(t)+COimports.l(t))*COdiscfact(t))
 
+  +sum((tr,rco,rrco,t)$rail(tr),RailSurcharge/2*
+         COtransbld.l(tr,t,rco,rrco)*COtransD(tr,rco,rrco)*COdiscfact(t)
+  )$(COrailCFS=1)
+
   +sum(t,(ELImports.l(t)+ELConstruct.l(t)+ELOpandmaint.l(t))*ELdiscfact(t))
 
   +sum((ELpd,v,ELf,fss,cv,sulf,sox,nox,t,r)$(not ELfcoal(ELf) and not ELpcoal(Elpd)

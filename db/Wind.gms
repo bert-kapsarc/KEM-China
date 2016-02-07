@@ -185,7 +185,7 @@ if( ord(wstep) < card(wstep),
 * close regional loop;
 
 
-execute_unload "db\wind.gdx", ELdiffGW, WRCFon, WRCFoff;
+execute_unload "db\wind.gdx", ELdiffGW, WRCFon, WRCFoff ELwindcap;
 
 
 *$offtext

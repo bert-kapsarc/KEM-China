@@ -11,23 +11,7 @@ $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
 
-*        Turn on demand in sel ected regions
-*         rdem_on(South) = yes;
-         rdem_on(North) = yes;
-*         rdem_on(Shandong) = yes;
-*         rdem_on(East) = yes;
-*         rdem_on(Northeast) = yes;
-*         rdem_on(Henan) = yes;
-*         rdem_on(Central) = yes;
-*         rdem_on(West) = yes;
-
-*         rdem_on('South') = yes;
-*         rdem_on('North') = yes;
-*         rdem_on('Central') = yes;
-*         rdem_on('Sichuan') = yes;
-*         rdem_on('West') = yes;
-*         rdem_on('Xinjiang') = yes;
-
+*!!!     Turn on demand in all regions
          rdem_on(r) = yes;
 
 $INCLUDE powersubmodel.gms
@@ -46,6 +30,11 @@ parameter contract;
          option savepoint=1;
          option MCP=path;
 
+
+
+*!!!     Turn on railway construction tax
+         COrailCFS=1;
+
 *$ontext
          ELptariff(ELpnuc,v) = yes;
          ELptariff(ELpcoal,v) = yes;
@@ -55,45 +44,14 @@ parameter contract;
 *         ELptariff(ELpw,vn) = yes;
 *$offtext
 
-*$ontext
-         ELbld.up('GTtoCC',vo,trun,r)=0;
-         ELbld.up('CC',vn,trun,r)=0;
-         ELbld.up('Ultrsc',vn,trun,r)=0;
-         ELbld.up('Superc',vn,trun,r)=0;
-         ELbld.up('Subcr',vn,trun,r)=0;
-         ELbld.up(ELpnuc,vn,trun,r)=0;
-         ELbld.up('GT',vn,trun,r)=0;
-*$offtext
+$INCLUDE short_run.gms
 
          PowerMCP.scaleopt=1;
-
-$ontext
-         ELdem.scale(ELl,trun,r)=1e-1;
-         DELdem.scale(ELl,trun,r)=1e1;
-
-         EMsulflim.scale(t,r)=1e-1;
-         DEMsulflim.scale(t,r)=1e1;
-
-         ELfcons.scale(ELf,trun,r)=1e1;
-         DELfcons.scale(ELf,trun,r)=1e-1;
-
-         ELsup.scale(ELpt,ELl,trun,r)=1e1;
-         DELsup.scale(ELpt,ELl,trun,r)=1e-1;
-
-         DELtrans.scale(ELt,ELpt,ELl,trun,r,rr)=1e-1;
-         ELtrans.scale(ELt,ELpt,ELl,trun,r,rr)=1e1;
-
-         DELhydop.scale(ELphyd,v,ELl,trun,r)=1e-1;
-         ELhydop.scale(ELphyd,v,ELl,trun,r)=1e1;
-$offtext
 
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-
-
-
-         execute_loadpoint "PowerMCP_p1.gdx"
+         execute_loadpoint "PowerMCP_p.gdx"
          Solve PowerMCP using MCP;
 
 

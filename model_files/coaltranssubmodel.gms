@@ -83,7 +83,7 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
           coalintlprice(COf,time,rco,rrco) inlt price of specific CV
           coalintlcv(COf,time,rco,rrco) colorific value of imported coal
 
-          COfimpmax(COf,time) maximum coal supply for each type of coal
+          COfimpmax(COf,time,rco) maximum coal supply for each type of coal
 
           COfimpss(COf,ssi,cv,sulf,time) available coal in import supply step ssi
 
@@ -264,8 +264,9 @@ scalar RailSurcharge;
 RailSurcharge = RailRates('ELS','rate2')+RailRates('CFS','rate2');
 
 * tariff structure for rail freight lines
-COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco)=
-RailRates('TC4','rate2')+RailSurcharge$(COrailCFS=1);
+COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco)=RailRates('TC4','rate2')
+*+RailSurcharge$(COrailCFS=1)
+;
 
 COtransomcst1(COf,'rail') =RailRates('TC4','rate1');
 
@@ -354,7 +355,7 @@ Equations
 
          COimportbal(trun) acumulates all import purchases
          COimportsuplim(COf,ssi,cv,sulf,trun)  capacity limit on coal import supply steps
-         COimportlim(Cof,trun) limitation on coal imports
+         COimportlim(Cof,trun,rco) limitation on coal imports
 
 
          COsup(COf,cv,sulf,ELs,trun,rco) measures fuel use
@@ -418,10 +419,15 @@ COtranspurchbal(t).. sum((tr,rco,rrco)$arc(tr,rco,rrco),
                          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr)) )
            -COtranspurchase(t)=e=0;
 
-COtranscnstrctbal(t).. sum((tr,rco,rrco)$arc(tr,rco,rrco),
-         COtransconstcst(tr,t,rco,rrco)*COtransbld(tr,t,rco,rrco)*
-                         (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr)) )
-          -COtransconstruct(t)=e=0;
+COtranscnstrctbal(t)..
+  +sum((tr,rco,rrco)$arc(tr,rco,rrco),
+         (       COtransconstcst(tr,t,rco,rrco)
+                 -(RailSurcharge/2)$(COrailCFS=1 and rail(tr))
+         )*COtransbld(tr,t,rco,rrco)*
+         (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
+   )
+
+  -COtransconstruct(t)=e=0;
 
 
 COtransbldeq(tr,t,rco,rrco)$land(tr)..
@@ -456,12 +462,12 @@ COimportsuplim(COf,ssi,cv,sulf,t)$(COfcv(COf,cv) and COfimpss(COf,ssi,cv,sulf,t)
          =g=-COfimpss(COf,ssi,cv,sulf,t);
 
 
-COimportlim(COf,t)$(import_cap=1)..
-  -sum((ssi,cv,sulf,rco)$(COintlprice(COf,ssi,cv,sulf,t,rco)>0
+COimportlim(COf,t,rimp)$(import_cap=1 and COfimpmax(COf,t,rimp)>0)..
+  -sum((ssi,cv,sulf)$(COintlprice(COf,ssi,cv,sulf,t,rimp)>0
          and COfCV(COf,cv) and COfimpss(COf,ssi,cv,sulf,t)>0
          and (cv_met(cv) or COcvSCE(cv)*7000<10000) ),
-         coalimports(COf,ssi,cv,sulf,t,rco))
-         =g=-COfimpmax(COf,t);
+         coalimports(COf,ssi,cv,sulf,t,rimp))
+         =g=-COfimpmax(COf,t,rimp);
 
 
 *COtransbudgetlim(tr,t)$(trans_budg=1 and rail(tr))..
@@ -581,8 +587,8 @@ Dcoalimports(COf,ssi,cv,sulf,t,rco)$(COfcv(COf,cv)
          and COfimpss(COf,ssi,cv,sulf,t)>0).. 0 =g=
    DCOimportbal(t)*COintlprice(COf,ssi,cv,sulf,t,rco)
   -DCOimportsuplim(COf,ssi,cv,sulf,t)
-  -DCOimportlim(COf,t)$(import_cap=1
-         and (cv_met(cv) or COcvSCE(cv)*7000<10000))
+  -DCOimportlim(COf,t,rco)$(import_cap=1 and rimp(rco) and
+         (cv_met(cv) or COcvSCE(cv)*7000<10000) and COfimpmax(COf,t,rco)>0)
   +sum(ELs,DCOsup(COf,cv,sulf,ELs,t,rco))
   -sum((tr,ELs)$port(tr),
          DCOtransportcaplim(tr,ELs,t,rco)*Elsnorm(ELs))$rport(rco)
@@ -608,7 +614,14 @@ Dcoaluse(COf,cv,sulf,Els,t,rco)$(COfcv(COf,cv)).. 0 =g=
 ;
 
 
-DCotransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
+DCOtransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco)..
+
+
+  -COtransconstcst(tr,t,rco,rrco)*COtransD(tr,rco,rrco)*
+   COdiscfact(t)$(COrailCFS=1 and rail(tr))
+
+         =g=
+
   +DCOtranscapbal(tr,t,rco,rrco)
   -DCOtranscapbal(tr,t-1,rco,rrco)
   +sum(ELs,DCOtranscaplim(tr,ELs,t,rco,rrco)*
@@ -621,8 +634,9 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
 
    DCOtranspurchbal(t)*COtranspurcst(tr,t,rco,rrco)*
          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
-  +DCOtranscnstrctbal(t)*COtransconstcst(tr,t,rco,rrco)*
-         (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
+  +DCOtranscnstrctbal(t)*( COtransconstcst(tr,t,rco,rrco)
+                          -(RailSurcharge/2)$(COrailCFS=1 and rail(tr))
+                         )*(COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
   +DCOtransbldeq(tr,t,rco,rrco)$(land(tr))
   -DCOtransbldeq(tr,t,rrco,rco)$(land(tr))
 *  -DCOtransbudgetlim(tr,t)*COtranscapex(tr,rco,rrco)*COtransD(tr,rco,rrco)$(
@@ -634,9 +648,11 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
          Elsnorm(ELs))$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
 ;
 
-DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))
-         .. 0 =g=
-   DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
+
+DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
+  +RailSurcharge*COtransD(tr,rco,rrco)*COdiscfact(t)$(COrailCFS=1 and rail(tr))
+                 +0 =g=
+  +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
 *$(not rimp(rco) and not rexp(rrco))
   +DCOtransopmaintbal(t)*COtransomcst1(COf,tr)$(port(tr))
 * and not rimp(rco) and not rexp(rrco)
@@ -649,7 +665,9 @@ DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))
   +DCOsup(COf,cv,sulf,ELs,t,rrco)*COtransyield(tr,rco,rrco)
   -DCOsup(COf,cv,sulf,ELs,t,rco)
 
+
   -DCOtranscaplim(tr,ELs,t,rco,rrco)$land(tr)
+
   -(DCOtransportcaplim(tr,ELs,t,rco)
          +DCOtransportcaplim(tr,ELs,t,rrco)*COtransyield(tr,rco,rrco))$(
          rport(rco) and port(tr))

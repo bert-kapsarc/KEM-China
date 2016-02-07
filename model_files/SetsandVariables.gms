@@ -528,7 +528,7 @@ positive Variables
 
          DCOexporttransbal(COf,cv,sulf,trun,rco,rrco) dual on balance coal exports and coal transport
          DCOimportsuplim(COf,ssi,cv,sulf,trun) dual capacity limit on coal import supply steps
-         DCOimportlim(Cof,trun) dual capacity limitation on coal imports
+         DCOimportlim(Cof,trun,rco) dual capacity limitation on coal imports
 
          DCOsup(COf,cv,sulf,ELs,trun,rco) dual on coal supply constraint
          DCOsuplim(f,cv,sulf,ELs,trun,rco) supply limit on the amount of coal consumption outside provincial demand center

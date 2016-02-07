@@ -24,15 +24,15 @@
          COpurcst(COf,mm,trun,rco)  = 0*COdiscoef(trun);;
          COconstcst(COf,mm,ss,trun,rco)  = 0*COdiscoef(trun);
 
-         COtranspurcst(tr,trun,r,rr) = COtranscapex(tr,r,rr)*0*COdiscoef(trun);
-         COtransconstcst(tr,trun,r,rr) = COtranscapex(tr,r,rr)*1*COdiscoef(trun);
+         COtranspurcst(tr,trun,rco,rrco) = COtranscapex(tr,rco,rrco)*0*COdiscoef(trun);
+         COtransconstcst(tr,trun,rco,rrco) = COtranscapex(tr,rco,rrco)*1*COdiscoef(trun);
 
 
 *        Discounting fgc system (25 years)
          EMdiscoef(trun) = discounting(25,ELdiscountrate,i,trun,thyb);
-         EMfgccapexD(fgc,trun) = EMfgccapex(fgc,trun)*EMdiscoef(trun)
+         EMfgccapexD(fgc,trun) = EMfgccapex(fgc,trun)*EMdiscoef(trun);
 
-
+$ontext
 if(COrailCFS=1,
 
          COtransconstcst('rail',trun,r,rr)$(path('rail',r,rr) and
@@ -41,6 +41,7 @@ if(COrailCFS=1,
                  COtransconstcst('rail',trun,r,rr)>RailSurcharge/2) =
                          COtransconstcst('rail',trun,r,rr)-RailSurcharge/2 ;
 );
+$offtext
 
 ********* Discounting water submodel
 $ontext

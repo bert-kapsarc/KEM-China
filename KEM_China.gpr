@@ -9102,9 +9102,6 @@ PlaneFilter2=Shandong
 [RP:POWERSUBMODEL_DUAL]
 1=
 
-[RP:RW_EL]
-1=
-
 [RP:LOADCURVES]
 1=idir=db;model_files;
 2=idir=../db;../submodels; gdx=temp;
@@ -9121,12 +9118,6 @@ Order=1,2
 Decim=7
 PlaneRownr=-1
 
-[RP:COALTRANSSUBMODEL]
-1=idir =model_files;db;integration_files; gdx=Coal
-2=idir =model_files;db;integration_files; gdx=Power
-3=idir =model_files;db; gdx=Power
-4=
-
 [RP:COALSUBMODEL]
 1=
 2=idir=../submodels;../db;../integration_files;../Report_Writer gdx=coalSA
@@ -9141,21 +9132,6 @@ PlaneRownr=-1
 2=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg2
 3=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
 4=
-
-[RP:REGULATEDPOWERMARKET]
-1=idir =model_files;db;integration_files;report_writer; gdx=Power
-2=idir =model_files;db;integration_files;report_writer; gdx=PowerReg
-3=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
-4=idir =model_files;db;integration_files; gdx=Power
-5=idir =model_files;db; gdx=Power
-6=idir =model_files;db;
-7=idir =../model_files;../db;
-8=idir = ../model_files;../db;
-9=
-
-[RP:DEREGULATEDPOWERMARKETLONGRUN]
-1=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRun
-2=
 
 [GDXDISP: ELexistcp Var 4]
 PlaneDim=1
@@ -9187,10 +9163,6 @@ PlaneRownr=-1
 2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
 3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
 
-[RP:DEREGULATEDPOWERMARKET]
-1=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
-2=idir =model_files;db;integration_files;report_writer; gdx=PowerOnsite
-
 [GDXDISP: ELnoxexist Par 5]
 PlaneDim=0
 RowDim=5
@@ -9199,60 +9171,68 @@ Order=1,2,3,4,5
 Decim=7
 PlaneRownr=-1
 
+[RP:WINDDIFFTOEXCEL]
+1=idir=../db;../submodels;
+2=
+
 [RP:WIND]
 1=idir=db;model_files
 2=idir=db;submodels;
 3=idir=../db;../submodels;
 4=
 
-[RP:WINDDIFFTOEXCEL]
-1=idir=../db;../submodels;
+[RP:COALTRANSSUBMODEL]
+1=idir =model_files;db;integration_files; gdx=Coal
+2=idir =model_files;db;integration_files; gdx=Power
+3=idir =model_files;db; gdx=Power
+4=
+
+[RP:RW_EL]
+1=
+
+[RP:DEREGULATEDPOWERMARKET]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerOnsite
+
+[RP:REGULATEDPOWERMARKET]
+1=idir =model_files;db;integration_files;report_writer; gdx=Power
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerReg
+3=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
+4=idir =model_files;db;integration_files; gdx=Power
+5=idir =model_files;db; gdx=Power
+6=idir =model_files;db;
+7=idir =../model_files;../db;
+8=idir = ../model_files;../db;
+9=
+
+[RP:DEREGULATEDPOWERMARKETLONGRUN]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRun
 2=
 
 [MRUFILES]
-1=C:\Users\willbj0b\OneDrive\Documents\KEM_China\db\windDiffToExcel.gms
-2=C:\Users\willbj0b\OneDrive\Documents\KEM_China\db\wind.gdx
-3=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerDereg2.gdx
-4=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerDereg2static.gdx
-5=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerDereg3.gdx
-6=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\model_files\coalsubmodel.gms
-7=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\model_files\coaltranssubmodel.gms
-8=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\db\ELonsite.gdx
-9=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\db\power.gdx
+1=C:\Users\willbj0b\OneDrive\Documents\KEM_China\db\Wind.gms
+2=C:\Users\willbj0b\OneDrive\Documents\KEM_China\Wind.lst
+3=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\report_writer\RW_EL.gms
+4=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMCP.lst
+5=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.lst
+6=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.gms
+7=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerLongRun.gdx
 
 [OPENWINDOW_1]
-FILE0=C:\Users\willbj0b\OneDrive\Documents\KEM_China\db\Wind.gms
-FILE1=C:\Users\willbj0b\OneDrive\Documents\KEM_China\Wind.lst
-FILE2=C:\Users\willbj0b\OneDrive\Documents\KEM_China\Wind.lst
+FILE0=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarket.gms
+FILE1=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarket.lst
+FILE2=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketLongRun.gms
+FILE3=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketLongRun.lst
+FILE4=C:\Users\willbj0b\OneDrive\KEM_China\model_files\coaltranssubmodel.gms
+FILE5=C:\Users\willbj0b\OneDrive\KEM_China\Power.gdx
+FILE6=C:\Users\willbj0b\OneDrive\KEM_China\PowerDereg.gdx
+FILE7=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRun.gdx
+FILE8=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.gms
+FILE9=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.lst
+FILE10=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_EL.gms
+FILE11=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRun.gdx
 MAXIM=0
-TOP=182
-LEFT=73
-HEIGHT=628
-WIDTH=1953
-
-[OPENWINDOW_2]
-FILE0=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\db\ACCESS_EL.gms
-FILE1=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket.gms
-FILE2=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket.lst
-FILE3=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket2.gms
-FILE4=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket2.lst
-FILE5=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket3.gms
-FILE6=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarket3.lst
-FILE7=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarketLongRun.gms
-FILE8=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\DeregulatedPowerMarketLongRun.lst
-FILE9=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\integration_files\scenarios.gms
-FILE10=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\model_files\powersubmodel.gms
-FILE11=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\model_files\SetsandVariables.gms
-FILE12=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\Power.gdx
-FILE13=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerDereg.gdx
-FILE14=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerLongRun.gdx
-FILE15=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.gms
-FILE16=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.lst
-FILE17=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMCP.lst
-FILE18=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\report_writer\RW_EL.gms
-FILE19=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\report_writer\RW_EL.gms
-MAXIM=0
-TOP=46
-LEFT=178
-HEIGHT=869
-WIDTH=1891
+TOP=5
+LEFT=-1
+HEIGHT=898
+WIDTH=1307
