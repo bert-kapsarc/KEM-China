@@ -39,7 +39,8 @@ parameter contract;
          ELptariff(ELpcoal,v) = yes;
          ELptariff(ELpCC,v) = yes;
          ELptariff(ELpog,v) = yes;
-*         ELptariff(ELphyd,v) = yes;
+         ELptariff('ST',vn) = no;
+         ELptariff(ELphyd,v) = yes;
 *         ELptariff(ELpw,vn) = yes;
 
 $INCLUDE short_run.gms

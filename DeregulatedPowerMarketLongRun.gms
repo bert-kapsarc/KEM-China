@@ -10,28 +10,14 @@ $INCLUDE RW_param.gms
 $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
-*        Turn on demand in selected regions
-*         rdem_on(South) = yes;
-*        rdem_on(North) = yes;
-*         rdem_on(Shandong) = yes;
-*         rdem_on(East) = yes;
-*         rdem_on(Northeast) = yes;
-*         rdem_on(Henan) = yes;
-*         rdem_on(Central) = yes;
-*         rdem_on(West) = yes;
 
-*         rdem_on('South') = yes;
-*         rdem_on('North') = yes;
-*         rdem_on('Central') = yes;
-*         rdem_on('Sichuan') = yes;
-*         rdem_on('West') = yes;
-*         rdem_on('Xinjiang') = yes;
-
+*!!!     Turn on demand in all regions
          rdem_on(r) = yes;
 
 $INCLUDE powersubmodel.gms
 
 $INCLUDE imports.gms
+
 
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
@@ -41,36 +27,27 @@ $INCLUDE scenarios.gms
 
 parameter contract;
 
-*         option savepoint=2;
+*         option savepoint=1;
          option MCP=path;
 
-         PowerMCP.Optfile=1;
-         PowerLP.Optfile=1;
 
-*$ontext
-* !!!    Solve MCP
+*!!!     Turn on railway construction tax
+*         COrailCFS=1;
 
-$ontext
-         ELbld.up('GTtoCC',vo,trun,r)=0;
-         ELbld.up('CC',vn,trun,r)=0;
-         ELbld.up('Ultrsc',vn,trun,r)=0;
-         ELbld.up('Superc',vn,trun,r)=0;
-         ELbld.up('Subcr',vn,trun,r)=0;
-         ELbld.up(ELpnuc,vn,trun,r)=0;
-         ELbld.up('GT',vn,trun,r)=0;
-$offtext
-         ELhydbld.up(Elphyd,vn,trun,r)=0;
-         ELbld.up(ELpnuc,vn,trun,r)=0;
+*$INCLUDE short_run.gms
 
+         PowerMCP.scaleopt=1;
 
-         execute_loadpoint "PowerMCP_p1.gdx"
+         ELprofit.scale(ELp,v,t,r)=1e3;
+         DELprofit.scale(ELp,v,t,r)=1e-3;
+
+         execute_loadpoint "PowerDeregLongRun.gdx"
          Solve PowerMCP using MCP;
+
 
 $INCLUDE RW_EL.gms
 
 
-
-         PowerMCP.scaleopt=1;
 
 
 parameter ELpcostfuel ;

@@ -15,7 +15,7 @@ RowDim=1
 Squeeze=1
 Order=1,2,3
 Decim=7
-PlaneRownr=1
+PlaneRownr=-1
 PlaneFilter1=port
 SqTrail0=0
 
@@ -177,15 +177,6 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: rco Set 1]
-PlaneDim=0
-RowDim=1
-Squeeze=1
-Order=1
-Decim=7
-PlaneRownr=-1
-Sorted=Y
-
 [GDXDISP: r Set 1]
 PlaneDim=0
 RowDim=1
@@ -346,13 +337,15 @@ SqTrail0=0
 
 [GDXDISP: COexist Par 4]
 PlaneDim=1
-RowDim=3
+RowDim=2
 Squeeze=1
-Order=1,2,3,4
+Order=4,2,3,1
 Decim=7
-PlaneRownr=1
-PlaneFilter1=met
+PlaneRownr=3
+PlaneFilter1=CoalCCBRS
 SqTrail0=0
+Sorted=YYYY
+PlaneFilter2=Sichuan
 
 [GDXDISP: rr Alias 1]
 PlaneDim=0
@@ -1550,17 +1543,6 @@ Order=1,2
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: COtranstot Par 4]
-PlaneDim=1
-RowDim=3
-Squeeze=1
-Order=1,2,3,4
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=truck
-Sorted=YYYY
-SqTrail0=0
-
 [GDXDISP: COtransexist Par 3]
 PlaneDim=1
 RowDim=2
@@ -1742,17 +1724,6 @@ Decim=7
 PlaneRownr=2
 PlaneFilter1=Central
 Sorted=YYY
-SqTrail0=0
-
-[GDXDISP: ELbld Var 4]
-PlaneDim=2
-RowDim=3
-Squeeze=1
-Order=5,1,2,3,4
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Level
-PlaneFilter2=Ultrsc
 SqTrail0=0
 
 [GDXDISP: ELf Set 1]
@@ -2629,7 +2600,7 @@ Order=1,2
 Decim=7
 PlaneRownr=-1
 SqTrail0=0
-PlaneFilter1=Superc
+PlaneFilter1=Ultrsc
 
 [RP:POWERSUBMODEL_LCP]
 1=
@@ -3063,11 +3034,11 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: DCOprod Equ 7]
-PlaneDim=0
+PlaneDim=1
 RowDim=7
 Squeeze=1
 SqTrail0=0
-Order=1,2,3,4,5,6,7,8
+Order=8,1,2,3,4,5,6,7
 Decim=7
 PlaneRownr=-1
 
@@ -3180,11 +3151,11 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: DCOtranscaplim Var 5]
-PlaneDim=0
+PlaneDim=1
 RowDim=5
 Squeeze=1
 SqTrail0=0
-Order=1,2,3,4,5,6
+Order=6,1,2,3,4,5
 Decim=7
 PlaneRownr=-1
 
@@ -4752,12 +4723,14 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: ELtransbld Var 4]
-PlaneDim=1
-RowDim=4
+PlaneDim=2
+RowDim=2
 Squeeze=1
-Order=5,1,2,3,4
+Order=5,4,2,3,1
 Decim=7
 PlaneRownr=-1
+PlaneFilter1=Level
+PlaneFilter2=Shandong
 
 [RP:SOLVE_RECURSIVE]
 1=
@@ -4793,13 +4766,14 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: ELfavail Equ 3]
-PlaneDim=1
+PlaneDim=2
 RowDim=2
 Squeeze=1
-Order=1,2,3,4
+Order=4,1,2,3
 Decim=7
-PlaneRownr=3
-PlaneFilter1=lightcrude
+PlaneRownr=2
+PlaneFilter1=Level
+PlaneFilter2=methane
 
 [GDXDISP: HLC_rank Par 2]
 PlaneDim=1
@@ -4939,18 +4913,9 @@ RowDim=3
 Squeeze=1
 Order=4,1,2,3
 Decim=7
-PlaneRownr=1
-PlaneFilter1=CoalC
+PlaneRownr=17
+PlaneFilter1=SWCBR
 Sorted=YYYY
-
-[GDXDISP: nodes Set 5]
-PlaneDim=1
-RowDim=4
-Squeeze=1
-Order=2,1,3,4,5
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=SCCB1
 
 [GDXDISP: COprodyield Par 6]
 PlaneDim=1
@@ -6107,6 +6072,7 @@ Squeeze=1
 Order=1,2
 Decim=7
 PlaneRownr=-1
+Sorted=YY
 
 [GDXDISP: ELonsitegen Par 2]
 PlaneDim=0
@@ -7521,9 +7487,6 @@ Order=1,2,3
 Decim=7
 PlaneRownr=-1
 
-[RP:LDC_TRANSMISSION COEFFICIENTS]
-1=
-
 [RP:SETSANDVARIABLES_TARIFF_SULF]
 1=
 
@@ -7663,14 +7626,6 @@ Decim=7
 PlaneRownr=2
 PlaneFilter1=t13
 
-[GDXDISP: ELhydexist Par 2]
-PlaneDim=0
-RowDim=1
-Squeeze=1
-Order=2,1
-Decim=7
-PlaneRownr=-1
-
 [GDXDISP: ELlcgw Par 2]
 PlaneDim=0
 RowDim=1
@@ -7688,12 +7643,13 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: ELtransexist Par 3]
-PlaneDim=0
-RowDim=2
+PlaneDim=1
+RowDim=1
 Squeeze=1
-Order=2,3,1
+Order=3,2,1
 Decim=7
-PlaneRownr=-1
+PlaneRownr=3
+PlaneFilter1=East
 
 [GDXDISP: contract Par 9]
 PlaneDim=1
@@ -7734,12 +7690,13 @@ PlaneRownr=12
 PlaneFilter1=China
 
 [GDXDISP: rco_dem Set 2]
-PlaneDim=0
+PlaneDim=1
 RowDim=1
 Squeeze=1
-Order=1,2
+Order=2,1
 Decim=7
 PlaneRownr=-1
+Sorted=YY
 
 [GDXDISP: ELcapELlmcontr Var 8]
 PlaneDim=2
@@ -7804,7 +7761,7 @@ RowDim=3
 Squeeze=1
 Order=7,1,2,4,5,6,3
 Decim=7
-PlaneRownr=1
+PlaneRownr=-1
 PlaneFilter1=Level
 PlaneFilter2=coal
 PlaneFilter3=CV38
@@ -8044,7 +8001,7 @@ Squeeze=1
 Order=3,1,2
 Decim=7
 PlaneRownr=-1
-PlaneFilter1=Northeast
+PlaneFilter1=Xinjiang
 
 [GDXDISP: ELcapELlm Var 9]
 PlaneDim=3
@@ -8058,9 +8015,6 @@ PlaneFilter2=nospin
 PlaneFilter3=GT
 
 [RP:ACCESS_HLC]
-1=
-
-[RP:ELTRANSCOEF]
 1=
 
 [GDXDISP: EMfgdeff Par 1]
@@ -8282,9 +8236,6 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[RP:SCENARIO_FLAGS]
-1=
-
 [GDXDISP: ELtariff Var 9]
 PlaneDim=2
 RowDim=8
@@ -8342,14 +8293,6 @@ PlaneDim=0
 RowDim=5
 Squeeze=1
 Order=1,2,3,4,5,6
-Decim=7
-PlaneRownr=-1
-
-[GDXDISP: DCOsup Var 6]
-PlaneDim=0
-RowDim=6
-Squeeze=1
-Order=1,2,3,4,5,6,7
 Decim=7
 PlaneRownr=-1
 
@@ -8429,9 +8372,6 @@ PlaneRownr=-1
 PlaneFilter1=Level
 PlaneFilter2=med
 
-[RP:UNTITLED_1]
-1=
-
 [GDXDISP: ELupspincap Var 10]
 PlaneDim=2
 RowDim=8
@@ -8457,7 +8397,7 @@ RowDim=2
 Squeeze=1
 Order=4,3,2,5,1
 Decim=7
-PlaneRownr=9
+PlaneRownr=-1
 PlaneFilter1=CVf
 PlaneFilter2=methane
 PlaneFilter3=coal
@@ -8571,8 +8511,8 @@ RowDim=3
 Squeeze=1
 Order=1,3,4,5,2
 Decim=7
-PlaneRownr=4
-PlaneFilter1=CCcon
+PlaneRownr=6
+PlaneFilter1=SubcrSML
 
 [GDXDISP: ELpcost Par 6]
 PlaneDim=1
@@ -8597,8 +8537,8 @@ RowDim=2
 Squeeze=1
 Order=1,3,4,2
 Decim=7
-PlaneRownr=10
-PlaneFilter1=Windon
+PlaneRownr=8
+PlaneFilter1=Hydrosto
 
 [GDXDISP: ELppd Alias 1]
 PlaneDim=0
@@ -8638,8 +8578,8 @@ RowDim=6
 Squeeze=1
 Order=1,2,3,4,5,6,7
 Decim=7
-PlaneRownr=4
-PlaneFilter1=Nuclear
+PlaneRownr=8
+PlaneFilter1=Windon
 
 [GDXDISP: DCOcaplim Var 6]
 PlaneDim=0
@@ -8731,7 +8671,7 @@ PlaneRownr=-1
 
 [GDXDISP: ELlchours Par 1]
 PlaneDim=0
-RowDim=1
+RowDim=0
 Squeeze=1
 Order=1
 Decim=7
@@ -8771,15 +8711,6 @@ Squeeze=1
 Order=1
 Decim=7
 PlaneRownr=-1
-
-[GDXDISP: ELprofit Equ 4]
-PlaneDim=1
-RowDim=4
-Squeeze=1
-Order=5,1,2,3,4
-Decim=7
-PlaneRownr=1
-PlaneFilter1=Marginal
 
 [GDXDISP: ELsulf Set 1]
 PlaneDim=0
@@ -8865,9 +8796,6 @@ Order=7,1,3,4,5,6,2
 Decim=7
 PlaneRownr=-1
 
-[RP:SCALARSANDPARAMETERS]
-1=
-
 [GDXDISP: ELtariffELp Par 5]
 PlaneDim=1
 RowDim=3
@@ -8899,24 +8827,14 @@ PlaneFilter1=China
 [RP:EMISSIONSUBMODEL]
 1=
 
-[GDXDISP: ELfconsump Var 6]
-PlaneDim=2
-RowDim=4
-Squeeze=1
-Order=7,3,1,2,5,6,4
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Level
-PlaneFilter2=methane
-
 [GDXDISP: ELgenELl Par 4]
 PlaneDim=1
 RowDim=2
 Squeeze=1
 Order=4,1,3,2
 Decim=7
-PlaneRownr=10
-PlaneFilter1=Shandong
+PlaneRownr=12
+PlaneFilter1=China
 
 [GDXDISP: ELtariffELp Par 6]
 PlaneDim=2
@@ -8965,9 +8883,6 @@ Decim=7
 PlaneRownr=-1
 PlaneFilter1=North
 
-[RP:IMPORTS]
-1=
-
 [GDXDISP: ELtransTot Par 3]
 PlaneDim=1
 RowDim=2
@@ -8976,15 +8891,6 @@ Order=3,1,2
 Decim=7
 PlaneRownr=10
 PlaneFilter1=Shandong
-
-[GDXDISP: ELtrans Var 5]
-PlaneDim=1
-RowDim=4
-Squeeze=1
-Order=4,1,2,3,5,6
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Northeast
 
 [GDXDISP: Cost Par 1]
 PlaneDim=0
@@ -9002,9 +8908,6 @@ Order=
 Decim=7
 PlaneRownr=-1
 
-[RP:RW_PARAM]
-1=
-
 [RP:REGULATEDPOWERMARKET2]
 1=idir =model_files;db;integration_files;report_writer; gdx=Power2
 2=idir =model_files;db;integration_files;report_writer; gdx=Power
@@ -9020,9 +8923,6 @@ Decim=7
 PlaneRownr=8
 PlaneFilter1=Windon
 
-[RP:DISCOUNTING]
-1=
-
 [RP:REGULATEDPOWERMCP]
 1=idir =model_files;db;integration_files;report_writer; gdx=PowerReg
 2=
@@ -9036,19 +8936,11 @@ Decim=7
 PlaneRownr=-1
 PlaneFilter1=Northeast
 
-[GDXDISP: ELtariffmax Par 2]
-PlaneDim=1
-RowDim=0
-Squeeze=1
-Order=2,1
-Decim=7
-PlaneRownr=-1
-
 [GDXDISP: ELwindexistcs Var 4]
-PlaneDim=0
-RowDim=4
+PlaneDim=1
+RowDim=3
 Squeeze=1
-Order=1,2,3,4,5
+Order=5,1,2,3,4
 Decim=7
 PlaneRownr=-1
 
@@ -9061,16 +8953,6 @@ Decim=7
 PlaneRownr=5
 PlaneFilter1=South
 
-[GDXDISP: ELexistcs Var 4]
-PlaneDim=2
-RowDim=3
-Squeeze=1
-Order=5,4,1,2,3
-Decim=7
-PlaneRownr=10
-PlaneFilter1=Level
-PlaneFilter2=Shandong
-
 [GDXDISP: coalimports Var 6]
 PlaneDim=1
 RowDim=5
@@ -9080,13 +8962,13 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: COtransexistcp Var 4]
-PlaneDim=2
+PlaneDim=1
 RowDim=3
 Squeeze=1
-Order=5,3,1,2,4
+Order=3,1,2,4,5
 Decim=7
-PlaneRownr=20
-PlaneFilter1=Level
+PlaneRownr=-1
+PlaneFilter1=East
 PlaneFilter2=Shandong
 
 [GDXDISP: ELcaplim Equ 5]
@@ -9095,20 +8977,12 @@ RowDim=3
 Squeeze=1
 Order=6,5,1,2,4,3
 Decim=7
-PlaneRownr=10
+PlaneRownr=5
 PlaneFilter1=Level
-PlaneFilter2=Shandong
+PlaneFilter2=South
 
 [RP:POWERSUBMODEL_DUAL]
 1=
-
-[RP:LOADCURVES]
-1=idir=db;model_files;
-2=idir=../db;../submodels; gdx=temp;
-3=idir=../db;../submodels;
-4=idir = ../db; ../submodels;
-5=idir = ../db
-6=
 
 [GDXDISP: Accounting Par 2]
 PlaneDim=1
@@ -9117,11 +8991,7 @@ Squeeze=1
 Order=1,2
 Decim=7
 PlaneRownr=-1
-
-[RP:COALSUBMODEL]
-1=
-2=idir=../submodels;../db;../integration_files;../Report_Writer gdx=coalSA
-3=idir=../submodels;../db;../integration_files;../Report_Writer
+PlaneFilter1=Revenue
 
 [RP:DEREGULATEDPOWERMARKET3]
 1=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg3
@@ -9135,33 +9005,11 @@ PlaneRownr=-1
 
 [GDXDISP: ELexistcp Var 4]
 PlaneDim=1
-RowDim=2
+RowDim=3
 Squeeze=1
-Order=5,3,4,2,1
+Order=5,1,2,3,4
 Decim=7
 PlaneRownr=-1
-
-[RP:SCENARIOS]
-1=
-
-[RP:SETSANDVARIABLES]
-1=
-
-[GDXDISP: ELexist Par 5]
-PlaneDim=0
-RowDim=5
-Squeeze=1
-Order=1,2,3,4,5
-Decim=7
-PlaneRownr=-1
-
-[RP:ACCESS_EL]
-1=
-
-[RP:POWERSUBMODEL]
-1=
-2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
-3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
 
 [GDXDISP: ELnoxexist Par 5]
 PlaneDim=0
@@ -9175,11 +9023,374 @@ PlaneRownr=-1
 1=idir=../db;../submodels;
 2=
 
+[GDXDISP: rgrid Set 2]
+PlaneDim=1
+RowDim=1
+Squeeze=1
+Order=2,1
+Decim=7
+PlaneRownr=3
+PlaneFilter1=East
+
+[GDXDISP: ELfconsump Var 6]
+PlaneDim=2
+RowDim=4
+Squeeze=1
+Order=7,3,1,2,5,6,4
+Decim=7
+PlaneRownr=3
+PlaneFilter1=Level
+PlaneFilter2=methane
+
+[GDXDISP: ELop Var 12]
+PlaneDim=0
+RowDim=12
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELoploc Var 12]
+PlaneDim=1
+RowDim=11
+Squeeze=1
+Order=3,1,2,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=1
+PlaneFilter1=small
+
+[GDXDISP: ELpbld Set 3]
+PlaneDim=0
+RowDim=3
+Squeeze=1
+Order=1,2,3
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELoploc Equ 12]
+PlaneDim=0
+RowDim=12
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ElpELf Set 8]
+PlaneDim=1
+RowDim=6
+Squeeze=1
+Order=1,3,4,5,6,7,8,2
+Decim=7
+PlaneRownr=-1
+PlaneFilter1=Ultrsc
+
+[RP:UNTITLED_1]
+1=
+
+[GDXDISP: ELlcgwdiff Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfuelburn Par 6]
+PlaneDim=0
+RowDim=6
+Squeeze=1
+Order=1,2,3,4,5,6
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfixedOMcst Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgdexist Par 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgcexistcp Var 6]
+PlaneDim=0
+RowDim=6
+Squeeze=1
+Order=1,2,3,4,5,6,7
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgccapmax Equ 6]
+PlaneDim=0
+RowDim=6
+Squeeze=1
+Order=1,2,3,4,5,6,7
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgccaplim Equ 7]
+PlaneDim=0
+RowDim=7
+Squeeze=1
+Order=1,2,3,4,5,6,7,8
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgccapbal Equ 6]
+PlaneDim=0
+RowDim=6
+Squeeze=1
+Order=1,2,3,4,5,6,7
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELfgcbld Var 6]
+PlaneDim=0
+RowDim=6
+Squeeze=1
+Order=1,2,3,4,5,6,7
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELexistcs Var 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5,6
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELexistcp Var 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5,6
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELCOconsump Equ 8]
+PlaneDim=0
+RowDim=8
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELupspincap Equ 12]
+PlaneDim=0
+RowDim=12
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELupspincap Var 12]
+PlaneDim=0
+RowDim=12
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELop Equ 12]
+PlaneDim=0
+RowDim=12
+Squeeze=1
+Order=1,2,3,4,5,6,7,8,9,10,11,12,13
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELexist Par 5]
+PlaneDim=1
+RowDim=2
+Squeeze=1
+Order=1,4,5,3,2
+Decim=7
+PlaneRownr=2
+PlaneFilter1=CC
+
+[GDXDISP: ELexistcs Var 4]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=5,1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELhydexist Par 2]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: E Alias 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:ELTRANSCOEF]
+1=
+
+[RP:LDC_TRANSMISSION COEFFICIENTS]
+1=
+
+[RP:LOADCURVES]
+1=idir=db;model_files;
+2=idir=../db;../submodels; gdx=temp;
+3=idir=../db;../submodels;
+4=idir = ../db; ../submodels;
+5=idir = ../db
+6=
+
 [RP:WIND]
 1=idir=db;model_files
 2=idir=db;submodels;
 3=idir=../db;../submodels;
 4=
+
+[GDXDISP: ELhydexistcs Var 4]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=5,1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: C Alias 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:SCENARIO_FLAGS]
+1=
+
+[GDXDISP: ELprofit Equ 4]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=5,2,3,4,1
+Decim=7
+PlaneRownr=1
+PlaneFilter1=Marginal
+
+[GDXDISP: rail_disc Par 0]
+PlaneDim=0
+RowDim=0
+Squeeze=1
+Order=
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COtranstot Par 4]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=1
+Sorted=YYYY
+PlaneFilter1=rail
+
+[GDXDISP: ELbld Var 4]
+PlaneDim=2
+RowDim=3
+Squeeze=1
+Order=5,1,2,3,4
+Decim=7
+PlaneRownr=-1
+PlaneFilter1=Level
+PlaneFilter2=Ultrsc
+
+[GDXDISP: ELtrans Var 5]
+PlaneDim=2
+RowDim=3
+Squeeze=1
+Order=6,5,2,3,4,1
+Decim=7
+PlaneRownr=3
+PlaneFilter1=Level
+PlaneFilter2=East
+
+[RP:RW_PARAM]
+1=
+
+[RP:RW_CO]
+1=
+
+[RP:ACCESS_EL]
+1=
+
+[RP:DISCOUNTING]
+1=
+
+[GDXDISP: ELtariffmax Par 2]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=2,1
+Decim=7
+PlaneRownr=-1
+
+[RP:DEREGULATEDPOWERMARKET]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerOnsite
+
+[RP:IMPORTS]
+1=
+
+[GDXDISP: N Alias 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:SHORT_RUN]
+1=
+
+[RP:DEREGULATEDPOWERMARKETLONGRUN]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerDeregLongRun
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerDeregLongRunCFS
+3=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRunCFS
+4=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRun
+5=idir =model_files;db;integration_files;report_writer;
+6=idir =model_files;db;integration_files;report_writer; CFS
+7=
+
+[RP:REGULATEDPOWERMARKETNEWSTOCK]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerNewStock
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRunNewStock
+3=idir =model_files;db;integration_files;report_writer; gdx=PowerLonRunNewStock
+
+[GDXDISP: DCOsup Var 6]
+PlaneDim=1
+RowDim=4
+Squeeze=1
+Order=2,1,4,5,6,3,7
+Decim=7
+PlaneRownr=-1
+
+[RP:RW_EL]
+1=
+
+[RP:SCENARIOS]
+1=
 
 [RP:COALTRANSSUBMODEL]
 1=idir =model_files;db;integration_files; gdx=Coal
@@ -9187,12 +9398,21 @@ PlaneRownr=-1
 3=idir =model_files;db; gdx=Power
 4=
 
-[RP:RW_EL]
+[GDXDISP: rail_disc Par 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[RP:SCALARSANDPARAMETERS]
 1=
 
-[RP:DEREGULATEDPOWERMARKET]
-1=idir =model_files;db;integration_files;report_writer; gdx=PowerDereg
-2=idir =model_files;db;integration_files;report_writer; gdx=PowerOnsite
+[RP:POWERSUBMODEL]
+1=
+2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
+3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
 
 [RP:REGULATEDPOWERMARKET]
 1=idir =model_files;db;integration_files;report_writer; gdx=Power
@@ -9205,34 +9425,80 @@ PlaneRownr=-1
 8=idir = ../model_files;../db;
 9=
 
-[RP:DEREGULATEDPOWERMARKETLONGRUN]
+[GDXDISP: nodes Set 5]
+PlaneDim=1
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=13
+Sorted=YYYYY
+PlaneFilter1=NMCBXilin
+
+[RP:SETSANDVARIABLES]
+1=
+
+[RP:COALSUBMODEL]
+1=
+2=idir=../submodels;../db;../integration_files;../Report_Writer gdx=coalSA
+3=idir=../submodels;../db;../integration_files;../Report_Writer
+
+[RP:DEREGULATEDPOWERMARKETNEWSTOCK]
+1=idir =model_files;db;integration_files;report_writer; gdx=PowerDeregNewStock
+2=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRunNewStock
+3=
+
+[GDXDISP: rco Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:REGULATEDPOWERMARKETLONGRUN]
 1=idir =model_files;db;integration_files;report_writer; gdx=PowerLongRun
 2=
 
 [MRUFILES]
-1=C:\Users\willbj0b\OneDrive\Documents\KEM_China\db\Wind.gms
-2=C:\Users\willbj0b\OneDrive\Documents\KEM_China\Wind.lst
-3=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\report_writer\RW_EL.gms
-4=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMCP.lst
-5=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.lst
-6=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\RegulatedPowerMarket.gms
-7=C:\Users\willbj0b\Dropbox (KAPSARC)\ES- KEM\KEM_China\KEM China Feb 2016\PowerLongRun.gdx
+1=C:\Users\willbj0b\OneDrive\Documents\KEM_China\integration_files\imports.gms
+2=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketLongRun.gms
+3=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRunCFS.gdx
+4=C:\Users\willbj0b\OneDrive\KEM_China\integration_files\discounting.gms
 
 [OPENWINDOW_1]
 FILE0=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarket.gms
 FILE1=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarket.lst
 FILE2=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketLongRun.gms
 FILE3=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketLongRun.lst
-FILE4=C:\Users\willbj0b\OneDrive\KEM_China\model_files\coaltranssubmodel.gms
-FILE5=C:\Users\willbj0b\OneDrive\KEM_China\Power.gdx
-FILE6=C:\Users\willbj0b\OneDrive\KEM_China\PowerDereg.gdx
-FILE7=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRun.gdx
-FILE8=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.gms
-FILE9=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.lst
-FILE10=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_EL.gms
-FILE11=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRun.gdx
+FILE4=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketNewStock.gms
+FILE5=C:\Users\willbj0b\OneDrive\KEM_China\DeregulatedPowerMarketNewStock.lst
+FILE6=C:\Users\willbj0b\OneDrive\KEM_China\integration_files\imports.gms
+FILE7=C:\Users\willbj0b\OneDrive\KEM_China\integration_files\scenarios.gms
+FILE8=C:\Users\willbj0b\OneDrive\KEM_China\integration_files\short_run.gms
+FILE9=C:\Users\willbj0b\OneDrive\KEM_China\model_files\coalsubmodel.gms
+FILE10=C:\Users\willbj0b\OneDrive\KEM_China\model_files\coaltranssubmodel.gms
+FILE11=C:\Users\willbj0b\OneDrive\KEM_China\model_files\powersubmodel.gms
+FILE12=C:\Users\willbj0b\OneDrive\KEM_China\model_files\ScalarsandParameters.gms
+FILE13=C:\Users\willbj0b\OneDrive\KEM_China\model_files\SetsandVariables.gms
+FILE14=C:\Users\willbj0b\OneDrive\KEM_China\Power.gdx
+FILE15=C:\Users\willbj0b\OneDrive\KEM_China\PowerDereg.gdx
+FILE16=C:\Users\willbj0b\OneDrive\KEM_China\PowerDeregLongRun.gdx
+FILE17=C:\Users\willbj0b\OneDrive\KEM_China\PowerDeregLongRunCFS.gdx
+FILE18=C:\Users\willbj0b\OneDrive\KEM_China\PowerDeregNewStock.gdx
+FILE19=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRun.gdx
+FILE20=C:\Users\willbj0b\OneDrive\KEM_China\PowerLongRunNewStock.gdx
+FILE21=C:\Users\willbj0b\OneDrive\KEM_China\PowerNewStock.gdx
+FILE22=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.gms
+FILE23=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarket.lst
+FILE24=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarketLongRun.gms
+FILE25=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarketLongRun.lst
+FILE26=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarketNewStock.gms
+FILE27=C:\Users\willbj0b\OneDrive\KEM_China\RegulatedPowerMarketNewStock.lst
+FILE28=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_EL.gms
+FILE29=C:\Users\willbj0b\OneDrive\KEM_China\Power.gdx
 MAXIM=0
-TOP=5
-LEFT=-1
-HEIGHT=898
-WIDTH=1307
+TOP=-9
+LEFT=70
+HEIGHT=928
+WIDTH=1604

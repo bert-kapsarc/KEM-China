@@ -39,7 +39,7 @@ parameter  FuelperMWH(f) quantity of fuel per MWH
 *       Energy density for HFO: 43MJ/kg, 3600MJ/42MJ/kg = 85.71kg/MWh = 0.08571 ton/kg
 *       Energy density for diesel: 44.8MJ/kg, 3600MJ/44.8MJ/kg = 80.36kg/MWh = 0.08036 ton/kg
 *       Energy density of boe; 0.588 boe/mwh
-*       ENergy density of coal 860 420.65 calories/kwh / 7000000000 cal/ton = 0.122917 ton/MWh
+*       ENergy density of coal 860 420.65 calories/kwh / 7000000000 cal/ton = 0.1228 ton/MWh
 *       Energy Density of uranium for electric power pupposes = 0.045346
 *        http://www.whatisnuclear.com/physics/energy_density_of_nuclear.html
 *       1MWh = 3600 MJ, 3600MJ/MWh/79390000MJ/kg = 0.000045346kg/MWh = 0.045346 kg/MWh
@@ -48,7 +48,7 @@ parameter  FuelperMWH(f) quantity of fuel per MWH
          diesel     0.08036
          HFO        0.08571
          lightcrude 0.588
-         coal       0.122917
+         coal       0.1228
          u-235      0.045346
 /;
 
@@ -111,7 +111,7 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
 
 *       mg per cubic meter
 table NOxC(r,ELp) concentration of nox in flu gas ton per cubic meter
-                         subcr           superc          ultrsc
+                         Subcr           Superc          ultrsc
          South           650             625             600
 
          CoalC           600             600             600
@@ -158,8 +158,8 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
          rho('hfo') = 1.075  ;
          rho('methane') = 1.075  ;
 
-         alpha0('subcr',Elfcoal) = 1.35;
-         alpha0('superc',Elfcoal) = 1.2;
+         alpha0(ELpSubcr,Elfcoal) = 1.35;
+         alpha0(ELpSuperc,Elfcoal) = 1.2;
          alpha0('ultrsc',Elfcoal) = 1.25;
          alpha0(Elpog,Elfmethane) = 1.075;
          alpha0(Elpog,Elfliquid) = 1.175;

@@ -343,6 +343,9 @@ COtranscapex('port',rco,rco) = 100;
          num_nodes_reg(r) = card(rtemp);
          );
 
+
+         parameter rail_disc discount on rail investments from rail tax CFS;
+
 Equations
 * ====================== Primal Relationships =================================*
          COtransobjective
@@ -421,8 +424,8 @@ COtranspurchbal(t).. sum((tr,rco,rrco)$arc(tr,rco,rrco),
 
 COtranscnstrctbal(t)..
   +sum((tr,rco,rrco)$arc(tr,rco,rrco),
-         (       COtransconstcst(tr,t,rco,rrco)
-                 -(RailSurcharge/2)$(COrailCFS=1 and rail(tr))
+         (       COtransconstcst(tr,t,rco,rrco)-rail_disc(tr,t,rco,rrco)$(COrailCFS=1)
+
          )*COtransbld(tr,t,rco,rrco)*
          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
    )
@@ -609,6 +612,8 @@ Dcoaluse(COf,cv,sulf,Els,t,rco)$(COfcv(COf,cv)).. 0 =g=
   -DCOsup(COf,cv,sulf,ELs,t,rco)
 
   -DCOsuplim(COf,cv,sulf,ELs,t,rco)$(rcodem(rco) and not r(rco))
+
+
   +sum((rr)$(rco_dem(rco,rr)),
          DCOdem(COf,cv,sulf,ELs,t,rr))
 ;
@@ -617,11 +622,7 @@ Dcoaluse(COf,cv,sulf,Els,t,rco)$(COfcv(COf,cv)).. 0 =g=
 DCOtransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco)..
 
 
-  -COtransconstcst(tr,t,rco,rrco)*COtransD(tr,rco,rrco)*
-   COdiscfact(t)$(COrailCFS=1 and rail(tr))
-
-         =g=
-
+   0=g=
   +DCOtranscapbal(tr,t,rco,rrco)
   -DCOtranscapbal(tr,t-1,rco,rrco)
   +sum(ELs,DCOtranscaplim(tr,ELs,t,rco,rrco)*
@@ -635,7 +636,7 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
    DCOtranspurchbal(t)*COtranspurcst(tr,t,rco,rrco)*
          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
   +DCOtranscnstrctbal(t)*( COtransconstcst(tr,t,rco,rrco)
-                          -(RailSurcharge/2)$(COrailCFS=1 and rail(tr))
+                          -rail_disc(tr,t,rco,rrco)$(COrailCFS=1 and rail(tr))
                          )*(COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
   +DCOtransbldeq(tr,t,rco,rrco)$(land(tr))
   -DCOtransbldeq(tr,t,rrco,rco)$(land(tr))
@@ -650,8 +651,9 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
 
 
 DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
-  +RailSurcharge*COtransD(tr,rco,rrco)*COdiscfact(t)$(COrailCFS=1 and rail(tr))
-                 +0 =g=
+
+  +RailSurcharge*COtransD(tr,rco,rrco)$(COrailCFS=1 and rail(tr)) =g=
+
   +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
 *$(not rimp(rco) and not rexp(rrco))
   +DCOtransopmaintbal(t)*COtransomcst1(COf,tr)$(port(tr))
@@ -659,8 +661,6 @@ DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 
   +DCOtransloadlim(COf,tr,t,rrco)*COtransyield(tr,rco,rrco)$land(tr)
   -DCOtransloadlim(COf,tr,t,rco)$land(tr)
-
-*  -DCOexportlim(t,rco,rrco)
 
   +DCOsup(COf,cv,sulf,ELs,t,rrco)*COtransyield(tr,rco,rrco)
   -DCOsup(COf,cv,sulf,ELs,t,rco)
@@ -676,6 +676,9 @@ DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 DCOtransload(COf,tr,t,rco)$land(tr).. 0 =g=
    DCOtransopmaintbal(t)*COtransomcst1(COf,tr)
   +DCOtransloadlim(COf,tr,t,rco)
+
+
+*  -DCOexportlim(t,rco,rrco)
 ;
 
 

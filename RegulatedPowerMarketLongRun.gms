@@ -10,31 +10,16 @@ $INCLUDE RW_param.gms
 $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
-*        Turn on demand in selected regions
-*         rdem_on(South) = yes;
-*        rdem_on(North) = yes;
-*         rdem_on(Shandong) = yes;
-*         rdem_on(East) = yes;
-*         rdem_on(Northeast) = yes;
-*         rdem_on(Henan) = yes;
-*         rdem_on(Central) = yes;
-*         rdem_on(West) = yes;
 
-*         rdem_on('South') = yes;
-*         rdem_on('North') = yes;
-*         rdem_on('Central') = yes;
-*         rdem_on('Sichuan') = yes;
-*         rdem_on('West') = yes;
-*         rdem_on('Xinjiang') = yes;
-
+*!!!     Turn on demand in all regions
          rdem_on(r) = yes;
 
 $INCLUDE powersubmodel.gms
 
 $INCLUDE imports.gms
 
-$INCLUDE discounting.gms
 
+$INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
 
@@ -42,31 +27,36 @@ $INCLUDE scenarios.gms
 
 parameter contract;
 
-         option savepoint=2;
+*         option savepoint=1;
          option MCP=path;
 
-         PowerMCP.Optfile=1;
-         PowerLP.Optfile=1;
-$ontext
-*        Remove existing capacity stock
-         ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=    0;
-         ELfgcexistcp.fx(ELpd,v,DeSOx,trun,r)$(ord(trun)=1)=0
-         ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0
-;
-$offtext
 
-$INCLUDE short_run.gms
+*!!!     Turn on railway construction tax
+         COrailCFS=1;
 
-* !!!    Solve MCP
+*!!!     Enforce maximum on-grid tariffs
+         ELptariff(ELpnuc,v) = yes;
+         ELptariff(ELpcoal,v) = yes;
+         ELptariff(ELpCC,v) = yes;
+         ELptariff(ELpog,v) = yes;
+         ELptariff('ST',vn) = no;
+         ELptariff(ELphyd,v) = yes;
+*         ELptariff(ELpw,vn) = yes;
 
-         execute_loadpoint "PowerMCP_p1.gdx"
+*$INCLUDE short_run.gms
+
+         PowerMCP.scaleopt=1;
+
+         ELprofit.scale(ELp,v,t,r)=1e3;
+         DELprofit.scale(ELp,v,t,r)=1e-3;
+
+         execute_loadpoint "PowerLongRun.gdx"
          Solve PowerMCP using MCP;
+
 
 $INCLUDE RW_EL.gms
 
 
-
-         PowerMCP.scaleopt=1;
 
 
 parameter ELpcostfuel ;

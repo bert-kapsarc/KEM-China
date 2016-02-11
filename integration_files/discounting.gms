@@ -1,7 +1,7 @@
 ********* Discounting power sector
          ELdiscfact(trun)=discfact(ELdiscountrate,trun);
 
-*        Discounting plant capital costs over lifetrun
+*        Discounting plant capital costs over lifetime
          ELdiscoef1(ELp,trun) = discounting(ELlifetime(ELp),ELdiscountrate,i,trun,thyb);
 *        intdiscfact(ELdiscountrate,trun,thyb)/sumdiscfact(ELlifetime(ELp),ELdiscountrate,i);
 

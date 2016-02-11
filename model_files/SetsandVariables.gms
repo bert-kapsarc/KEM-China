@@ -168,24 +168,28 @@ $load latitude, longitude
 $gdxin
 
 set
-         North(r) /North,CoalC/
+         North(r) /North,CoalC,Shandong/
          Northeast(r) /Northeast/
          South(r) /South,Southwest/
          East(r) /East/
-         Central(r) /Central,Sichuan/
+         Central(r) /Central,Sichuan,Henan/
          West(r) /West,Xinjiang/
          Henan(r) /Henan/
          Shandong(r) /Shandong/
 
          rdem_on(rco);
 
+         Alias(North,N) ;
+         Alias(Northeast,NE) ;
+         Alias(South,S) ;
+         Alias(East,E) ;
+         Alias(Central,C) ;
+         Alias(West,W) ;
 
          rgrid(North,'North') = yes;
-         rgrid(Shandong,'North') = yes;
          rgrid(Northeast,'Northeast') = yes;
          rgrid(East,'East') = yes;
          rgrid(Central,'Central') = yes;
-         rgrid(Henan,'Central') = yes;
          rgrid(West,'West') = yes;
          rgrid(South,'South') = yes;
 
@@ -233,16 +237,18 @@ Sets
 
          ELp power plant types /ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
                                 Hydrolg,Hydrosto,HydroROR,
-                                Windon, Windoff,Subcr,Superc,Ultrsc/
-         ELpd(ELp) dispatchable technologies /Nuclear,Subcr,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
+                                Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                Superc,Ultrsc/
+         ELpd(ELp) dispatchable technologies /Nuclear,SubcrSML,SubcrLRG,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
          ELps(ELp) solar technologies /PV/
          ELpog(ELp) oil and gas fueled technologies /ST,GT,CC,CCcon/
          ELpCC(ELp) single cycle GT /CC,CCcon/
          ELpCCcon(ELp) /CCcon/
-         ELpcoal(ELp) coal technologies /Subcr,Superc,Ultrsc/
-         ELpsubcr(ELp) subcritical coal plant /Subcr/
+         ELpcoal(ELp) coal technologies /SubcrSML,SubcrLRG,Superc,Ultrsc/
+         ELpsubcr(ELp) subcritical coal plant /SubcrSML,SubcrLRG/
+         ELpsuperc(ELp) subcritical coal plant /Superc/
          ELpnuc(ELp) nuclear /Nuclear/
-         ELpspin(ELp) upsin plants used as renewable backup /GT,Subcr,Superc,Ultrsc/
+         ELpspin(ELp) upsin plants used as renewable backup /GT,SubcrSML,SubcrLRG,Superc,Ultrsc/
          ELpsingle(Elp) sigle cycle and standalone steam plants (not coal) /GT,ST/
          ELphyd(ELp) hydro technologies /Hydrolg,Hydrosto, HydroROR/
          ELphydsto(ELphyd) pumped storage hydro /Hydrosto/
@@ -416,7 +422,7 @@ ELtariffmax(ELp,'Shandong')$(ELtariffmax(ELp,'Shandong')=0) = ELtariffmax(ELp,'N
 ELtariffmax(ELp,'Xinjiang')$(ELtariffmax(ELp,'Xinjiang')=0) = ELtariffmax(ELp,'West');
 ELtariffmax(ELp,'Tibet')$(ELtariffmax(ELp,'Tibet')=0) = ELtariffmax(ELp,'West');
 
-ELtariffmax(ELpcoal,r)$(ELtariffmax(ELpcoal,r)=0) = ELtariffmax('Subcr',r);
+ELtariffmax(ELpcoal,r)$(ELtariffmax(ELpcoal,r)=0) = ELtariffmax('Ultrsc',r);
 ELtariffmax(ELphyd,r)$(ELtariffmax(ELphyd,r)=0) = ELtariffmax('Hydrolg',r);
 ELtariffmax(ELpw,r)$(ELtariffmax(ELpw,r)=0) = ELtariffmax('Windon',r);
 ELtariffmax(ELpog,r)$(ELtariffmax(ELpog,r)=0) = smax(rr,ELtariffmax('CC',rr));

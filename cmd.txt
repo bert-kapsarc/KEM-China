@@ -1,4 +1,3 @@
-$onecho > cmd.txt
 I=db\ChinaPower.accdb
 X=db\power.gdx
 
@@ -49,6 +48,3 @@ P12=ELtransD
 
 
 
-$offecho
-
-$call =mdb2gms @cmd.txt

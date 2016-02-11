@@ -22,12 +22,14 @@ fconsump("EL",COf,trun,r) = fconsump("EL",COf,trun,r)/ProvAvgCV(COf,trun,r);
 
 ELgenELl(Elp,ELl,trun,r) =  (
    sum((v,ELf,fss,cv,sulf,sox,nox),
-      ELop.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r)*
-         ELpCOparas(Elp,v,sulf,sox,nox))$Elpd(Elp)
-  +sum((v,ELf,fss,cv,sulf,sox,nox),
-         ELoploc.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r))$Elpd(Elp)
-  +sum((v),ELwindop.l(ELp,v,ELl,trun,r)*ELparasitic(Elp,v))$Elpw(Elp)
-  +sum((v),ELhydop.l(ELp,v,ELl,trun,r)*ELparasitic(Elp,v))$Elphyd(Elp)
+      ELop.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r))$Elpd(Elp)
+*
+*ELpCOparas(Elp,v,sulf,sox,nox)
+*  +sum((v,ELf,fss,cv,sulf,sox,nox),
+*         ELoploc.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r))$Elpd(Elp)
+  +sum((v),ELwindop.l(ELp,v,ELl,trun,r))$Elpw(Elp)
+  +sum((v),ELhydop.l(ELp,v,ELl,trun,r))$Elphyd(Elp)
+*ELparasitic(Elp,v)
 )
 ;
 
@@ -41,7 +43,7 @@ ELgenELl(ELp,ELl,trun,"China") = sum(r, ELgenELl(ELp,ELl,trun,r));
 ELgenELp(ELp,trun,r) = sum(ELl, ELgenELl(ELp,ELl,trun,r));
 
 ELgenELp(ELp,trun,"China") = sum(r, ELgenELp(ELp,trun,r));
-
+ELgenELp('Total',trun,"China") = sum(Elp, ELgenELp(ELp,trun,"China"));
 
 ELcapELp(ELpd,trun,r) = sum(v,ELexistcp.l(ELpd,v,trun,r));
 ELcapELp(ELphyd,trun,r) = sum(v,ELhydexistcp.l(ELphyd,v,trun,r));
@@ -86,14 +88,14 @@ ELdiscfact(t)*(
   +(ELexistcp.l(ELpd,v,t,r)
     -sum((ELl,ELf,fss,cv,sulf,sox,nox)$(ELpELf(ELpd,ELf,fss,cv,sulf,sox,nox)),
           ELupspincap.l(Elpd,v,ELl,ELf,fss,cv,sulf,sox,nox,t,r)$(ELpspin(ELpd))
-         +ELoploc.l(ELpd,v,ELl,ELf,fss,cv,sulf,sox,nox,t,r)$(not ELpnuc(ELpd))
+*         +ELoploc.l(ELpd,v,ELl,ELf,fss,cv,sulf,sox,nox,t,r)$(not ELpnuc(ELpd))
     )
   )*ELpsunkcost(ELpd,v,t,r)
 
 
-  +( ELfgcexistcp.l(ELpd,v,'DeSOX',t,r)
-    +ELfgcbld.l(ELpd,v,'DeSOX',t-ELfgcleadtime(ELpd),r)
-   )*EMfgccapexD('DeSOX',t)$(ELpcoal(ELpd))
+  +sum(fgc,( ELfgcexistcp.l(ELpd,v,fgc,t,r)
+    +ELfgcbld.l(ELpd,v,fgc,t-ELfgcleadtime(fgc),r)
+   )*EMfgccapexD(fgc,t))$(ELpcoal(ELpd))
 )
 ;
 
@@ -154,7 +156,7 @@ Accounting('Cost','Total')=
   +sum(t,(COtranspurchase.l(t)+COtransConstruct.l(t)
          +COtransOpandmaint.l(t)+COimports.l(t))*COdiscfact(t))
 
-  +sum((tr,rco,rrco,t)$rail(tr),RailSurcharge/2*
+  +sum((tr,rco,rrco,t)$rail(tr),rail_disc(tr,t,rco,rrco)*
          COtransbld.l(tr,t,rco,rrco)*COtransD(tr,rco,rrco)*COdiscfact(t)
   )$(COrailCFS=1)
 
@@ -166,7 +168,7 @@ Accounting('Cost','Total')=
          ELfconsump.l(Elpd,v,ELf,fss,t,r)*ELdiscfact(t))
 
   +sum((fgc,ELpd,v,t,r)$(DeSOx(fgc) and ELpcoal(Elpd)),(
-          +ELfgcbld.l(ELpd,v,fgc,t-ELfgcleadtime(ELpd),r)
+          +ELfgcbld.l(ELpd,v,fgc,t-ELfgcleadtime(fgc),r)
          )*EMfgccapexD(fgc,t)*ELdiscfact(t))
 ;
 
@@ -206,7 +208,7 @@ sum(t,ELdiscfact(t)*(
 
 ;
 
-
+$ontext
 Accounting('Revenue','Power onsite')=
 
 sum(t,ELdiscfact(t)*(
@@ -218,6 +220,7 @@ sum(t,ELdiscfact(t)*(
          )
   )
 ))
+$offtext
 
 ;
 
@@ -242,7 +245,7 @@ Accounting('Revenue','Coal Power')
          ELfconsump.l(Elpd,v,ELf,fss,t,r))
 
   +sum((fgc,ELpd,v,r)$(DeSOx(fgc) and ELpcoal(Elpd)),
-          ELfgcbld.l(ELpd,v,fgc,t-ELfgcleadtime(ELpd),r)*EMfgccapexD(fgc,t)
+          ELfgcbld.l(ELpd,v,fgc,t-ELfgcleadtime(fgc),r)*EMfgccapexD(fgc,t)
   )
 
 ))

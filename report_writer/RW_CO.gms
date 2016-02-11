@@ -6,45 +6,45 @@ parameter OTHERCOconsumpNat(COf,trun);
 
 *temp(COf,mm,ss,trun,rco) = COexistcp.l(COf,mm,ss,trun,rco)+CObld.l(COf,mm,ss,trun,rco) - sum(rwnoot,COprod.l(COf,mm,ss,rwnoot,trun,rco)) ;
 COexistrco(Cof,trun,rco) = sum((mm,ss),COexistcp.l(COf,mm,ss,trun,rco));
-COprodRaw(COf,trun,rco) = sum((mm,ss,ash,sulf,rw),COprod.l(COf,ash,sulf,mm,ss,rw,trun,rco));
-COprodPUraw(COf,mm,ss,trun,rco) = sum((ash,sulf,rw),COprod.l(COf,ash,sulf,mm,ss,rw,trun,rco));
-COprodNet(COf,rw,trun,rco) = sum((mm,ss,ash,sulf),COprod.l(COf,ash,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
-COprodPUnet(COf,mm,ss,rw,trun,rco) = sum((ash,sulf),COprod.l(COf,ash,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
+COprodRaw(COf,trun,rco) = sum((mm,ss,sulf,rw),COprod.l(COf,sulf,mm,ss,rw,trun,rco));
+COprodPUraw(COf,mm,ss,trun,rco) = sum((sulf,rw),COprod.l(COf,sulf,mm,ss,rw,trun,rco));
+COprodNet(COf,rw,trun,rco) = sum((mm,ss,sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
+COprodPUnet(COf,mm,ss,rw,trun,rco) = sum((sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
 CObldrco(Cof,trun,rco) = sum((mm,ss),CObld.l(COf,mm,ss,trun,rco));
 
 
-Cotranstot(tr,trun,rco,rrco) = sum((COf,cv,ash,sulf,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco));
+Cotranstot(tr,trun,rco,rrco) = sum((COf,cv,sulf,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
 
 
-COtransin(tr,trun,rrco) = sum((COf,cv,ash,sulf,rco,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco));
-COtransout(tr,trun,rco) = sum((COf,cv,ash,sulf,rrco,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco));
+COtransin(tr,trun,rrco) = sum((COf,cv,sulf,rco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
+COtransout(tr,trun,rco) = sum((COf,cv,sulf,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
 
 Cotransnet(tr,trun,rrco) = COtransin(tr,trun,rrco) - COtransout(tr,trun,rrco);
 
-COtransfrom(tr,trun,rco) = sum((COf,cv,ash,sulf,rrco,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco));
+COtransfrom(tr,trun,rco) = sum((COf,cv,sulf,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
 
-COtransimp(COf,cv,trun,rrco) = sum((ash,sulf,rimp,tr,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rimp,rrco));
+COtransimp(COf,cv,trun,rrco) = sum((sulf,rimp,tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
 
-*coalimports.l(Cof,cv,ash,sulf,trun,rimp,rrco) = sum((tr,ELs),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rimp,rrco));
+*coalimports.l(Cof,cv,sulf,trun,rimp,rrco) = sum((tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
 
 parameter COtransimp_temp;
 
 
 loop(i,
 COtransimp_temp(COf,cv,trun,rco) = 0;
-COtransimp_temp(COf,cv,trun,rco)$(COtransimp(COf,cv,trun,rco)>0) = sum(rrco, sum((ash,sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco)));
-COtransimp(COf,cv,trun,rrco)$(COtransimp(COf,cv,trun,rrco)=0) = sum(rco, sum((ash,sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco))) ;
+COtransimp_temp(COf,cv,trun,rco)$(COtransimp(COf,cv,trun,rco)>0) = sum(rrco, sum((sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco)));
+COtransimp(COf,cv,trun,rrco)$(COtransimp(COf,cv,trun,rrco)=0) = sum(rco, sum((sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco))) ;
 COtransimp(COf,cv,trun,rrco) = COtransimp(COf,cv,trun,rrco)-COtransimp_temp(COf,cv,trun,rrco);
 );
 
 
 
-Cotr(tr,trun) = sum((COf,cv,ash,sulf,rrco,rco,ELs)$(coalprod.l(COf,cv,ash,sulf,trun,rco)>0),COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco) - COtrans.l(COf,cv,ash,sulf,tr,ELs,trun,rrco,rco)) ;
-Cotrriver(trun) = sum((COf,cv,ash,sulf,rport_riv,rrport_riv,ELs),COtrans.l(COf,cv,ash,sulf,'port',ELs,trun,rport_riv,rrport_riv));
-*-COtrans.l(COf,cv,ash,sulf,'port',ELs,'t01',rrport_riv,rport_riv)
-COtrport(rport,trun)  = sum((COf,cv,ash,sulf,rrport,ELs),COtrans.l(COf,cv,ash,sulf,'port',ELs,trun,rport,rrport)) ;
-Cotrsea(trun) = sum((COf,cv,ash,sulf,rport_sea,rrport_sea,ELs),COtrans.l(COf,cv,ash,sulf,'port',ELs,trun,rport_sea,rrport_sea)) ;
-*-COtrans.l(COf,cv,ash,sulf,'port',ELs,'t01',rrport_sea,rport_sea)
+Cotr(tr,trun) = sum((COf,cv,sulf,rrco,rco,ELs)$(coalprod.l(COf,cv,sulf,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) - COtrans.l(COf,cv,sulf,tr,ELs,trun,rrco,rco)) ;
+Cotrriver(trun) = sum((COf,cv,sulf,rport_riv,rrport_riv,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport_riv,rrport_riv));
+*-COtrans.l(COf,cv,sulf,'port',ELs,'t01',rrport_riv,rport_riv)
+COtrport(rport,trun)  = sum((COf,cv,sulf,rrport,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport,rrport)) ;
+Cotrsea(trun) = sum((COf,cv,sulf,rport_sea,rrport_sea,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport_sea,rrport_sea)) ;
+*-COtrans.l(COf,cv,sulf,'port',ELs,'t01',rrport_sea,rport_sea)
 *$offtext
 
 parameter transport ;
@@ -77,13 +77,13 @@ costs('port_cap',trun)= Cotransbldport(trun);
 set path_order/1,2/
     path_name;
 
-parameter Cotranspath(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco,path_order);
+parameter Cotranspath(COf,cv,sulf,tr,ELs,trun,rco,rrco,path_order);
 
 
 
-Cotranspath(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco,'1') = Cotrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco) ;
-Cotranspath(COf,cv,ash,sulf,tr,ELs,trun,rrco,rco,'2') = Cotrans.l(COf,cv,ash,sulf,tr,ELs,trun,rco,rrco) ;
-Cotranspath(COf,cv,ash,sulf,tr,ELs,trun,rrco,rco,path_order)$(not port(tr))= Cotranspath(COf,cv,ash,sulf,tr,ELs,trun,rrco,rco,path_order);
+Cotranspath(COf,cv,sulf,tr,ELs,trun,rco,rrco,'1') = Cotrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) ;
+Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,'2') = Cotrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) ;
+Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,path_order)$(not port(tr))= Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,path_order);
 
 parameter Cotransbldpath(tr,trun,rco,rrco,path_order);
 
@@ -96,40 +96,40 @@ Cotransbldpath(tr,trun,rrco,rco,path_order)$(not port(tr))= Cotransbldpath(tr,tr
 
 * reset node type if no production
 
-    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,ash,sulf,trun),coalprod.l(COf,cv,ash,sulf,trun,rco))>0) =yes;
-    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,ash,sulf,trun),coalprod.l(COf,cv,ash,sulf,trun,rco))>0) =no;
+    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))>0) =yes;
+    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))>0) =no;
 
-    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,ash,sulf,trun),coalprod.l(COf,cv,ash,sulf,trun,rco))=0) =yes;
-    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,ash,sulf,trun),coalprod.l(COf,cv,ash,sulf,trun,rco))=0) =no;
+    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))=0) =yes;
+    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))=0) =no;
 
-parameter coalprod_calib(COf,cv,ash,sulf,trun,rco) ;
+parameter coalprod_calib(COf,cv,sulf,trun,rco) ;
 
 
 *use to calaculate shift in coal coalprod
 *Execute_Load '../reduced_model/ChinaCoal.gdx', coalprod_calib=coalprod.l;
- coalprod_calib(COf,cv,ash,sulf,trun,rco) =0;
+ coalprod_calib(COf,cv,sulf,trun,rco) =0;
 
 set mag /pos,neg/;
 parameter coalprod_shift(rco,trun,mag),coalprod_shift_rel(rco,trun,mag);
 
-coalprod_shift(rco,trun,'pos')$(sum((COf,cv,ash,sulf),coalprod.l(COf,cv,ash,sulf,trun,rco)-coalprod_calib(COf,cv,ash,sulf,trun,rco))>0) =  sum((COf,cv,ash,sulf),coalprod.l(COf,cv,ash,sulf,trun,rco)-coalprod_calib(COf,cv,ash,sulf,trun,rco));
-coalprod_shift(rco,trun,'neg')$(sum((COf,cv,ash,sulf),coalprod.l(COf,cv,ash,sulf,trun,rco)-coalprod_calib(COf,cv,ash,sulf,trun,rco))<=0) =  sum((COf,cv,ash,sulf),coalprod.l(COf,cv,ash,sulf,trun,rco)-coalprod_calib(COf,cv,ash,sulf,trun,rco));
+coalprod_shift(rco,trun,'pos')$(sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco))>0) =  sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco));
+coalprod_shift(rco,trun,'neg')$(sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco))<=0) =  sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco));
 
-coalprod_shift_rel(rco,trun,mag)$(sum((COf,cv,ash,sulf),coalprod_calib(COf,cv,ash,sulf,trun,rco)))= coalprod_shift(rco,trun,mag)/sum((COf,cv,ash,sulf),coalprod_calib(COf,cv,ash,sulf,trun,rco)) ;
+coalprod_shift_rel(rco,trun,mag)$(sum((COf,cv,sulf),coalprod_calib(COf,cv,sulf,trun,rco)))= coalprod_shift(rco,trun,mag)/sum((COf,cv,sulf),coalprod_calib(COf,cv,sulf,trun,rco)) ;
 *$offtext
 
 parameter coal_price(*,COf,trun);
 
 
-coal_price('Other',COf,trun) = sum((cv,r,ash,sulf)$(COdem.m(COf,cv,ash,sulf,'summ',trun,r)>0),COdem.m(COf,cv,ash,sulf,'summ',trun,r)*OTHERcoconsump(COf,trun,r)/sum(rr,OTHERCOconsump(COf,trun,rr)));
+coal_price('Other',COf,trun) = sum((cv,r,sulf)$(COdem.m(COf,cv,sulf,'summ',trun,r)>0),COdem.m(COf,cv,sulf,'summ',trun,r)*OTHERcoconsump(COf,trun,r)/sum(rr,OTHERCOconsump(COf,trun,rr)));
 
-coal_price('Qinghuangdao',COf,trun) = smax(ELs,COsup.m(COf,'CV60','noash','LOW',ELs,trun,'North'));
+coal_price('Qinghuangdao',COf,trun) = smax(ELs,COsup.m(COf,'CV62','LOW',ELs,trun,'North'));
 
 parameter coal_prod_SCE(COf,trun);
 parameter coal_imp_SCE(COf,trun);
 
-       coal_prod_SCE(COf,trun)     = sum((ash,sulf,cv,rco),coalprod.l(COf,cv,ash,sulf,trun,rco)*COcvSCE(cv));
-       coal_imp_SCE(COf,trun)     = sum((ssi,ash,sulf,cv,rco),coalimports.l(COf,ssi,cv,ash,sulf,trun,rco)*COcvSCE(cv));
+       coal_prod_SCE(COf,trun)     = sum((sulf,cv,rco),coalprod.l(COf,cv,sulf,trun,rco)*COcvSCE(cv));
+       coal_imp_SCE(COf,trun)     = sum((ssi,sulf,cv,rco),coalimports.l(COf,ssi,cv,sulf,trun,rco)*COcvSCE(cv));
 
 
 parameter EIA(*,COF,trun);

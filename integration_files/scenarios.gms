@@ -1,6 +1,6 @@
 * !!! cost for operating capacity over ELLmchours
 
-         ELtariffmax(Elpd,r)$(not Elpnuc(Elpd)) = ELtariffmax(Elpd,r)*1;
+         ELtariffmax(Elpd,r)$(not Elpnuc(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
 
 
          loop((ELf,fss,cv,sulf),
@@ -22,9 +22,11 @@
          ELpfixedcost(Elp,v,trun,r)=
          (ELfixedOMcst(ELp)+ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
 
-         ELpsunkcost(ELp,v,trun,r)=
-         ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r))*
-         (1$(vn(v) or not (ELpcoal(Elp) and vo(v))) + 0$(ELpcoal(Elp) and vo(v))) ;
+
+         ELpsunkcost(ELpd,v,trun,r)=
+          ELfixedOMcst(ELpd)
+         +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
+         (1$(vn(v) or not (ELpcoal(Elpd) and vo(v))) + 0$(ELpcoal(Elpd) and vo(v)));
 
 
          ELpsunkcost(ELp,v,trun,r)$ELphyd(Elp)=
@@ -42,7 +44,18 @@
          ELptariff(ELpd,v) = no;
 
 
-if( s('calib'),
+
+         rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco);
+*       RailSurcharge/2
+*         -sum((tr,rco,rrco,t)$(arc(tr,rco,rrco) and rail(tr)),
+*                 COtransexistcp.l(tr,t,rco,rrco)*(COtransconstcst(tr,t,rco,rrco))*
+*                 COtransD(tr,rco,rrco)
+*         )/sum((tr,rco,rrco,t)$(arc(tr,rco,rrco) and rail(tr)),
+*                 COtransexistcp.l(tr,t,rco,rrco)*COtransD(tr,rco,rrco)
+*         )
+
+
+if( scen('calib'),
 
          coal_cap=1;
          rail_cap=1;
@@ -83,7 +96,7 @@ $offtext
 *CoprodIHS(COf,mm,ss,'t11',rco)=CoprodIHS(COf,mm,ss,'t11',rco)+temp2(COf,mm,ss,rco)$(temp2(COf,mm,ss,rco)>0);
 
 
-elseif s('EIA'),
+elseif scen('EIA'),
 
 COtransbld.up(tr,trun,rco,rrco) = 0;
 

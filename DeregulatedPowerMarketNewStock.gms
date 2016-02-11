@@ -11,22 +11,6 @@ $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
 *        Turn on demand in selected regions
-*         rdem_on(South) = yes;
-*        rdem_on(North) = yes;
-*         rdem_on(Shandong) = yes;
-*         rdem_on(East) = yes;
-*         rdem_on(Northeast) = yes;
-*         rdem_on(Henan) = yes;
-*         rdem_on(Central) = yes;
-*         rdem_on(West) = yes;
-
-*         rdem_on('South') = yes;
-*         rdem_on('North') = yes;
-*         rdem_on('Central') = yes;
-*         rdem_on('Sichuan') = yes;
-*         rdem_on('West') = yes;
-*         rdem_on('Xinjiang') = yes;
-
          rdem_on(r) = yes;
 
 $INCLUDE powersubmodel.gms
@@ -34,7 +18,6 @@ $INCLUDE powersubmodel.gms
 $INCLUDE imports.gms
 
 $INCLUDE discounting.gms
-
          ELdiscfact(time)  = 1;
 
 
@@ -49,43 +32,56 @@ parameter contract;
          PowerLP.Optfile=1;
 
 
+*!!!     Turn on railway construction tax
+*         COrailCFS=1;
+
+$ontext
          ELhydbld.up(Elphyd,vn,trun,r)=0;
          ELbld.up(ELpnuc,vn,trun,r)=0;
 
-$ontext
 *        Remove existing capacity stock
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=    0;
+
+         ELtransexistcp.fx(Elt,trun,r,rr)$(ord(trun)=1)= 0;
+
          ELfgcexistcp.fx(ELpd,v,DeSOx,trun,r)$(ord(trun)=1)=0;
          ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0;
+
+         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=0;
 ;
 $offtext
 
 
 *!!!     Run model short run with adjusted capacity stocks
-$ontext
+*$ontext
 
-$INCLUDE short_run.gms
-         execute_loadpoint "PowerLongRunNewStock.gdx" ELbld, ELfgcbld;
+*
+         execute_loadpoint "PowerLongRunNewStock.gdx" ELbld, ELfgcbld, ELrsrvbld,ELtransbld, COtransbld;
 
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=
-                 ELbld.l(ELpd,v,trun,r);
+                 ELbld.l(ELpd,v,trun,r)+ELrsrvbld.l(Elpd,v,trun,r);
+
+         ELtransexistcp.fx(Elt,trun,r,rr)$(ord(trun)=1)=
+         ELtransbld.l(ELt,trun,r,rr);
 
          ELfgcexistcp.fx(ELpd,v,fgc,trun,r)$(ord(trun)=1)=
                  ELfgcbld.l(ELpd,v,fgc,trun,r);
-$offtext
+         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=
+         COtransbld.l(tr,trun,rco,rrco);
+
+*$INCLUDE short_run.gms
+
+*$offtext
 
 
-
+*$ontext
 * !!!    Solve MCP
-
-         execute_loadpoint "PowerMCP_p1.gdx"
+         execute_loadpoint "PowerLongRunNewStock.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms
+$INCLUDE RW_Co.gms
 
-
-
-         PowerMCP.scaleopt=1;
 
 
 parameter ELpcostfuel ;
