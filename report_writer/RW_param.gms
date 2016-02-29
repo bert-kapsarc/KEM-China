@@ -2,6 +2,8 @@
 
          Sets    sector differnet sectors /EL,WA,PC,RF,CM,f,other,ALL/
 *                 rN(rall)      /nation/
+                 path_order/1,2/
+                 path_name;
          ;
 
          scalar MMBTUtoTOE MMTOE per trillion BTU /2.52e-2/
@@ -11,6 +13,7 @@
 *        Example in WaterSubmodel:
 
 *        Quantities calacualted across sectors
+
          Parameters
          netrevenue Net revenue in USD
          revenue Total revenues in USD

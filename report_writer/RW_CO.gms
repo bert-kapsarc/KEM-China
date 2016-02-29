@@ -62,20 +62,17 @@ Cotransbldton(trun) = sum((rco,rrco)$(COtransbld.l('rail',trun,rco,rrco)>0),COtr
 Cotransbldport(trun) = sum(rco$(COtransbld.l('port',trun,rco,rco)>0),COtransbld.l('port',trun,rco,rco));
 
 
-parameter costs;
+parameter COcosts;
 
-costs('total_economic_cost ',trun) = COobjvalue;
-costs('mining_cost ',trun) = COOpandmaint.l(trun);
-costs('import_cost ',trun) =  COimports.l(trun);
-costs('rail_investment ',trun) = sum((rco,rrco),COtranscapex('rail',rco,rrco)*COtransbld.l('rail',trun,rco,rrco)*COtransD('rail',rco,rrco) ) ;
-costs('rail_length',trun)= CotransbldD(trun);
-costs('rail_cap',trun)= Cotransbldton(trun);
+COcosts('total_economic_cost ',trun) = COobjvalue;
+COcosts('mining_cost ',trun) = COOpandmaint.l(trun);
+COcosts('import_cost ',trun) =  COimports.l(trun);
+COcosts('rail_investment ',trun) = sum((rco,rrco),COtranscapex('rail',rco,rrco)*COtransbld.l('rail',trun,rco,rrco)*COtransD('rail',rco,rrco) ) ;
+COcosts('rail_length',trun)= CotransbldD(trun);
+COcosts('rail_cap',trun)= Cotransbldton(trun);
 
-costs('port_investment',trun) = sum((rco),COtranscapex('port',rco,rco)*COtransbld.l('port',trun,rco,rco)) ;
-costs('port_cap',trun)= Cotransbldport(trun);
-
-set path_order/1,2/
-    path_name;
+COcosts('port_investment',trun) = sum((rco),COtranscapex('port',rco,rco)*COtransbld.l('port',trun,rco,rco)) ;
+COcosts('port_cap',trun)= Cotransbldport(trun);
 
 parameter Cotranspath(COf,cv,sulf,tr,ELs,trun,rco,rrco,path_order);
 

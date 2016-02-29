@@ -10,6 +10,8 @@ scalars  import_cap set to 1 to enforce the import constraint /0/
          rail_cap   set to 1 to cap mixed freight rail lines /1/
          COrailCFS  set to 1 to apply railway surcharges to railway costs /1/
          ELdereg    set to 1 to switch on deregulated power supply market /1/
+         EL2020     set to 1 switch on 2020 strategic targets /0/
+         ELpfit      set to 1 switch on fit for renewables /1/
 
          t_start the year to start optimization when running recursive dynamic
 

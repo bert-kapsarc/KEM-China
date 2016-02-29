@@ -97,7 +97,7 @@ $offtext
 * COsulfDW(sulf) = COsulfDW(sulf)*0.5;
 EMsulflim(t,r)$rdem_on(r)..
   -sum((cv,sulf),(
-     sum((ELpcoal,v,sox,nox)$cv_ord(cv),
+     sum((ELpcoal,v,sox,nox)$ELpELf(ELpcoal,'coal','ss0',cv,sulf,sox,nox),
          ELCOconsump(Elpcoal,v,cv,sulf,sox,nox,t,r)*EMfgc(sox))
     +sum((coal)$(COfcv(coal,cv)),OTHERCOconsumpsulf(coal,cv,sulf,t,r))
    )*COsulfDW(sulf)*1.6)
@@ -108,14 +108,13 @@ EMsulflim(t,r)$rdem_on(r)..
 EMELnoxlim(t,r)..
   -sum((ELpcoal,v),
 
-      sum((cv,sulf)$cv_ord(cv),(
-
-         +sum((sox,nox),ELCOconsump(ELpcoal,v,cv,sulf,sox,nox,t,r)*EMfgc(nox))
-
-       )*VrCo(ELpcoal,'coal',cv)
+      sum((cv,sulf),
+         sum((sox,nox)$ELpELf(ELpcoal,'coal','ss0',cv,sulf,sox,nox),
+                 ELCOconsump(ELpcoal,v,cv,sulf,sox,nox,t,r)*EMfgc(nox))*
+         VrCo(ELpcoal,'coal',cv)
       )*NOxC(r,ELpcoal)
    )
-                 =g= -EMELnoxmax(t,r)
+                 =g= -EMELnoxmax(t,r)*1000
 ;
 
 

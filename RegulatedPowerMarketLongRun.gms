@@ -1,5 +1,5 @@
 
-*$INCLUDE ACCESS_sets.gms
+$INCLUDE ACCESS_sets.gms
 *$INCLUDE ACCESS_CO.gms
 *$INCLUDE ACCESS_COtrans.gms
 *$INCLUDE ACCESS_EL.gms
@@ -39,8 +39,8 @@ parameter contract;
          ELptariff(ELpcoal,v) = yes;
          ELptariff(ELpCC,v) = yes;
          ELptariff(ELpog,v) = yes;
-         ELptariff('ST',vn) = no;
-         ELptariff(ELphyd,v) = yes;
+         ELptariff('ST',v) = no;
+*         ELptariff(ELphyd,v) = yes;
 *         ELptariff(ELpw,vn) = yes;
 
 *$INCLUDE short_run.gms
@@ -50,12 +50,12 @@ parameter contract;
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-         execute_loadpoint "PowerLongRun.gdx"
+         execute_loadpoint "PowerDeregLongRun.gdx"
          Solve PowerMCP using MCP;
 
 
 $INCLUDE RW_EL.gms
-
+$INCLUDE RW_CO.gms
 
 
 

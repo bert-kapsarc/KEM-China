@@ -1,7 +1,8 @@
 * !!! cost for operating capacity over ELLmchours
-
-         ELtariffmax(Elpd,r)$(not Elpnuc(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
-
+         ELtariffmax(Elpd,r)$(not ELpnuc(Elpd)) = ELtariffmax(Elpd,r)*1;
+         ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
+*
+*         ELtariffmax(Elpw,r) = ELtariffmax('Ultrsc',r);
 
          loop((ELf,fss,cv,sulf),
          ELpcost(Elpd,v,sox,nox,trun,r)$ELpELf(Elpd,ELf,fss,cv,sulf,sox,nox)=
@@ -12,12 +13,13 @@
          DELTA2(Elp,v,trun,r)=
          ELtariffmax(Elp,r)*ELparasitic(Elp,v)-ELomcst(Elp,v,r);
 
-         DELTA(Elpd,v,sulf,sox,nox,trun,r)=
+
+         loop((ELf,fss,cv),
+         DELTA(Elpd,v,sulf,sox,nox,trun,r)$ELpELf(Elpd,ELf,fss,cv,sulf,sox,nox)=
          (ELtariffmax(Elpd,r)+ELfgctariff(sox)+ELfgctariff(nox))
                  *ELpCOparas(Elpd,v,sulf,sox,nox)
-         -ELpcost(Elpd,v,sox,nox,trun,r);
-
-
+         -ELpcost(Elpd,v,sox,nox,trun,r)
+         );
 
          ELpfixedcost(Elp,v,trun,r)=
          (ELfixedOMcst(ELp)+ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
@@ -26,7 +28,15 @@
          ELpsunkcost(ELpd,v,trun,r)=
           ELfixedOMcst(ELpd)
          +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
-         (1$(vn(v) or not (ELpcoal(Elpd) and vo(v))) + 0$(ELpcoal(Elpd) and vo(v)));
+         (1$(vn(v) or ELpnuc(ELpd)) + 0$(not ELpnuc(Elpd) and vo(v)))
+;
+*$ontext
+         ELpsunkcost(ELpd,v,trun,r)$ELpsubcr(ELpd)=
+          ELfixedOMcst(ELpd)
+         +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
+         (1$(vn(v)) + 0$(vo(v)))
+*$offtext
+;
 
 
          ELpsunkcost(ELp,v,trun,r)$ELphyd(Elp)=
@@ -34,25 +44,19 @@
 
 
          ELpsunkcost(ELp,v,trun,r)$ELpw(Elp)=
-         ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r))*0;
+         ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
 
          COintlprice(coal,ssi,cv_ord,sulf,time,rimp)=
          COintlprice(coal,ssi,cv_ord,sulf,time,rimp)*1;
 
 
-*        no grid electricity tarrifs
+*        no on-grid electricity tarrifs
          ELptariff(ELpd,v) = no;
+         ELptariffcoal(v) = no;
 
 
 
          rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco);
-*       RailSurcharge/2
-*         -sum((tr,rco,rrco,t)$(arc(tr,rco,rrco) and rail(tr)),
-*                 COtransexistcp.l(tr,t,rco,rrco)*(COtransconstcst(tr,t,rco,rrco))*
-*                 COtransD(tr,rco,rrco)
-*         )/sum((tr,rco,rrco,t)$(arc(tr,rco,rrco) and rail(tr)),
-*                 COtransexistcp.l(tr,t,rco,rrco)*COtransD(tr,rco,rrco)
-*         )
 
 
 if( scen('calib'),
@@ -69,9 +73,8 @@ if( scen('calib'),
 
          t_start=1;
 
-* !!!    Switch off renewables
-*         ELhydop.fx(ELphyd,v,ELl,trun,r)=0;
-*         ELwindop.fx(ELpw,v,ELl,trun,r)=0;
+*!!!     Restrict hydro investment
+         ELhydbld.up(Elphyd,'new',trun,r)=0;
 
 $ontext
 *!!!     force existing wind to operate

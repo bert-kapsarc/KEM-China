@@ -1,6 +1,6 @@
-major_iteration_limit 2500;
+major_iteration_limit 1500;
 time_limit 1e5;
-convergence_tolerance 1e-6;
 crash_searchtype arc;
+convergence_tolerance 1e-5;
 
 

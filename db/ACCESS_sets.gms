@@ -46,10 +46,10 @@ Q17=SELECT NodeType from nodes
 s17=node_type
 
 
-Q24=SELECT GB, Latitude FROM nodes
+Q24=SELECT Region, Latitude FROM Regions
 p24=latitude
 
-Q25=SELECT GB, Longitude FROM nodes
+Q25=SELECT Region, Longitude FROM Regions
 p25=longitude
 
 $offecho

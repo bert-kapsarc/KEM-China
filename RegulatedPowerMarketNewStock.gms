@@ -42,40 +42,41 @@ parameter contract;
          ELptariff(ELpog,v) = yes;
 *         ELptariff('ST',vn) = no;
          ELptariff(ELphyd,v) = yes;
-*         ELptariff(ELpw,vn) = yes;
+         ELptariff(ELpw,vn) = yes;
 
-$ontext
-         ELhydbld.up(Elphyd,vn,trun,r)=0;
+*$ontext
          ELbld.up(ELpnuc,vn,trun,r)=0;
-         ELbld.up('ST',vn,trun,r)=0;
-
-         COtransbld.up('rail',trun,rco,rrco)$arc('rail',rco,rrco) = 0;
-         COtransbld.up('truck',trun,rco,rrco)$arc('truck',rco,rrco) = 0;
-         COtransbld.up(port,trun,rco,rrco)$arc(port,rco,rrco) = 0;
-
-* !!!    No transmission investments
-         ELtransbld.up(Elt,trun,r,rr)= 0;
 
 *        Remove existing capacity stock
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=    0;
+
+         ELtransexistcp.fx(Elt,trun,r,rr)$(ord(trun)=1)= 0;
+
          ELfgcexistcp.fx(ELpd,v,DeSOx,trun,r)$(ord(trun)=1)=0;
          ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0;
+
+         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=0;
 ;
-$offtext
+*$offtext
 
 
 *!!!     Run model short run with adjusted capacity stocks
 *$ontext
 
 $INCLUDE short_run.gms
-         execute_loadpoint "PowerLongRunNewStock.gdx" ELbld, ELfgcbld, ELrsrvbld;
+         execute_loadpoint "PowerLongRunNewStock.gdx" ELbld, ELfgcbld, ELrsrvbld, ELtransbld, COtransbld;
 
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=
                  ELbld.l(ELpd,v,trun,r)+ELrsrvbld.l(Elpd,v,trun,r);
 
+         ELtransexistcp.fx(Elt,trun,r,rr)$(ord(trun)=1)=
+         ELtransbld.l(ELt,trun,r,rr);
+
          ELfgcexistcp.fx(ELpd,v,fgc,trun,r)$(ord(trun)=1)=
                  ELfgcbld.l(ELpd,v,fgc,trun,r);
 
+         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=
+         COtransbld.l(tr,trun,rco,rrco);
 
 *$offtext
 
@@ -84,9 +85,9 @@ $INCLUDE short_run.gms
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-*$ontext
+
 * !!!    Solve MCP
-         execute_loadpoint "PowerNewStock.gdx"
+*         execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms

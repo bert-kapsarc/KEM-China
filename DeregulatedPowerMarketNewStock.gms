@@ -32,11 +32,22 @@ parameter contract;
          PowerLP.Optfile=1;
 
 
+$ontext
+*!!!     Enforce maximum on-grid tariffs
+         ELptariff(ELpnuc,v) = yes;
+         ELptariff(ELpcoal,v) = yes;
+         ELptariff(ELpCC,v) = yes;
+         ELptariff(ELpog,v) = yes;
+*         ELptariff('ST',vn) = no;
+         ELptariff(ELphyd,v) = yes;
+         ELptariff(ELpw,vn) = yes;
+$offtext
+
+
 *!!!     Turn on railway construction tax
 *         COrailCFS=1;
 
-$ontext
-         ELhydbld.up(Elphyd,vn,trun,r)=0;
+*$ontext
          ELbld.up(ELpnuc,vn,trun,r)=0;
 
 *        Remove existing capacity stock
@@ -47,16 +58,15 @@ $ontext
          ELfgcexistcp.fx(ELpd,v,DeSOx,trun,r)$(ord(trun)=1)=0;
          ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0;
 
-         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=0;
+*         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=0;
 ;
-$offtext
+*$offtext
 
 
 *!!!     Run model short run with adjusted capacity stocks
 *$ontext
-
-*
-         execute_loadpoint "PowerLongRunNewStock.gdx" ELbld, ELfgcbld, ELrsrvbld,ELtransbld, COtransbld;
+$INCLUDE short_run.gms
+         execute_loadpoint "PowerDeregLongRunNewStock.gdx" ELbld, ELfgcbld, ELrsrvbld,ELtransbld, COtransbld;
 
          ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=
                  ELbld.l(ELpd,v,trun,r)+ELrsrvbld.l(Elpd,v,trun,r);
@@ -66,17 +76,14 @@ $offtext
 
          ELfgcexistcp.fx(ELpd,v,fgc,trun,r)$(ord(trun)=1)=
                  ELfgcbld.l(ELpd,v,fgc,trun,r);
-         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=
-         COtransbld.l(tr,trun,rco,rrco);
-
-*$INCLUDE short_run.gms
-
+*         COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=
+*         COtransbld.l(tr,trun,rco,rrco);
 *$offtext
 
 
 *$ontext
 * !!!    Solve MCP
-         execute_loadpoint "PowerLongRunNewStock.gdx"
+         execute_loadpoint "PowerDeregNewStock.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms

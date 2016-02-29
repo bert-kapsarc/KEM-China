@@ -103,14 +103,15 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
          /
          ExtLow  0.0025
          Low     0.01
-         Med     0.02
+         Med     0.03
 *         High    0.05
          /;
 
 
 
 *       mg per cubic meter
-table NOxC(r,ELp) concentration of nox in flu gas ton per cubic meter
+parameter NOxC(r,ELp) concentration of nox in flu gas ton per cubic meter
+$ontext
                          Subcr           Superc          ultrsc
          South           650             625             600
 
@@ -128,17 +129,20 @@ table NOxC(r,ELp) concentration of nox in flu gas ton per cubic meter
          Xinjiang        625             600             575
 
 ;
-
-NOxC(r,ELpcoal) = 650*1e-9;
-
-*NOxC(r,ELpd)$ELpcoal(ELpd) = 600;
+$offtext
+;
 * convert to tons per cubic meter
-NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.75;
-NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
-NOxC('South',Elpd) = NOxC('South',ELpd)*0.75;
-NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.3;
-NOxC('North',Elpd) = NOxC('North',ELpd)*0.9;
-NOxC('East',Elpd) = NOxC('East',ELpd)*0.9;
+NOxC(r,ELpcoal) = 552*1e-9;
+NOxC(r,'SubcrSML') = 500*1e-9;
+
+
+*NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.75;
+*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
+*NOxC('South',Elpd) = NOxC('South',ELpd)*0.75;
+*NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.3;
+*NOxC('North',Elpd) = NOxC('North',ELpd)*0.9;
+*NOxC('East',Elpd) = NOxC('East',ELpd)*0.9;
+*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.75;
 
 
 parameter alpha0(ELp,f) excess air ratio in combustion chamber
@@ -201,17 +205,17 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
 parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per MWH
          / NoDeSOX 0
            DeSOx  5
-           DeNOx  5 /
+           DeNOx  10 /
 
 
           EMfgcpower(sulf,fgc,fgc) percentage of power supply required for fgc
 
 ;
 
-parameter EMfgccapex(fgc,trun)
+parameter EMfgccapex(fgc,trun) RMB per KW
           EMfgccapexD(fgc,trun);
           EMfgccapex(DeSOx,trun)=1500  ;
-
+          EMfgccapex(DeNOx,trun)=600  ;
 
 parameter  EMfgdeff(fgc) FGD emission control reduction efficiency
                  /DeSOx  0.8/
@@ -235,3 +239,13 @@ parameter  EMfgdeff(fgc) FGD emission control reduction efficiency
 *         EMfgcpower('high',DeSOx,nox) = 0.015;
 
          EMfgcpower(sulf,sox,DeNOx) = 0.01;
+
+
+parameter ELfit(ELp,trun,r);
+
+         ELfit(ELpw,trun,r) = 600;
+         ELfit(ELpw,trun,'CoalC') = 510;
+         ELfit(ELpw,trun,'North') = 540;
+         ELfit(ELpw,trun,'Northeast') = 580;
+         ELfit(ELpw,trun,'West') = 580;
+         ELfit(ELpw,trun,'Xinjiang') = 580;

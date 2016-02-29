@@ -39,8 +39,8 @@ parameter contract;
          ELptariff(ELpcoal,v) = yes;
          ELptariff(ELpCC,v) = yes;
          ELptariff(ELpog,v) = yes;
-         ELptariff('ST',vn) = no;
-         ELptariff(ELphyd,v) = yes;
+         ELptariff('ST',v) = no;
+*         ELptariff(ELphyd,v) = yes;
 *         ELptariff(ELpw,vn) = yes;
 
 $INCLUDE short_run.gms
@@ -50,7 +50,7 @@ $INCLUDE short_run.gms
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-         execute_loadpoint "PowerMCP_p.gdx"
+         execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;
 
 

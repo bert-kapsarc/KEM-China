@@ -258,6 +258,7 @@ Sets
          chp set to identify CHP or dual purpose plants with heat recvoery /chp, no_chp/
 
          ELt High Voltage AC and UHV DC transmission technologies  /HVAC,UHVDC/
+         HVAV(ELt) /HVAC/
 
 *GTtoCC is an intermediate process that represents any retrofitting of existing
 *GT plants into CC plants.
@@ -270,7 +271,7 @@ Sets
 
          ELpgttocc(ELp) GTtoCC convertible capacity
          ELpcom(ELp)
-         ELpbld(ELpd,v) Union set to define bld variable for converting old vintage gt to CCconv
+         ELpbld(ELp,v) Union set to define bld variable for converting old vintage gt to CCconv
 
          ELf(f) /lightcrude,HFO,diesel,methane,u-235,coal,dummyf/
 *        ,biomass,petcoke,msw,LPG,geo/
@@ -297,12 +298,11 @@ Sets
          fgc flue gas control systems /DeSOx, DeNOx, noDeSOx, noDeNOx/
          nofgc(fgc) no fgc /noDeNOx, noDeSOx/
          sox(fgc) /noDeSOx, DeSOx/
-         nox(fgc) /noDeNOx/
-*, DeNOx/
+         nox(fgc) /noDeNOx, DeNOx/
          DeSOx(fgc) /DeSOx/
          DeNOx(fgc) /DeNOx/
-         nosox(sox) /noDeSOx/
-         nonox(nox) /noDeNOx/
+         noDesox(sox) /noDeSOx/
+         noDenox(nox) /noDeNOx/
 
 
          ElpELf(Elp,f,fss,cv,sulf,fgc,fgc) fuel use for different generators
@@ -310,13 +310,13 @@ Sets
 ;
 
 
-         ELpELf(ELpog,ELfog,fss,CVf,'extlow',nosox,nonox) = yes;
+         ELpELf(ELpog,ELfog,fss,CVf,'extlow',noDesox,noDenox) = yes;
 
-         ELpELf(ELpnuc,Elfnuclear,fss0,CVf,'extlow',nosox,nonox) = yes;
-         ELpELf(Elphyd,'dummyf',fss0,CVf,'extlow',nosox,nonox) = yes;
-         ELpELf(Elpw,'dummyf',fss0,CVf,'extlow',nosox,nonox) = yes;
+         ELpELf(ELpnuc,Elfnuclear,fss0,CVf,'extlow',noDesox,noDenox) = yes;
+         ELpELf(Elphyd,'dummyf',fss0,CVf,'extlow',noDesox,noDenox) = yes;
+         ELpELf(Elpw,'dummyf',fss0,CVf,'extlow',noDesox,noDenox) = yes;
 
-         ELpELf(ELpcoal,ELfcoal,fss0,cv_ord,ELsulf,sox,nonox) = yes;
+         ELpELf(ELpcoal,ELfcoal,fss0,cv_ord,ELsulf,sox,nox) = yes;
 
 
 
@@ -431,6 +431,7 @@ ELtariffmax(ELpog,r)$(ELtariffmax(ELpog,r)=0) = smax(rr,ELtariffmax('CC',rr));
 
 sets
 ELptariff(ELp,v) power plants with ongrid electricity tarrif
+ELptariffcoal(v) power plants with ongrid electricity tarrif
 ELpdsub(ELpd) subsidized disp power plant types
 ELpwsub(ELpw) subsidized wind power plant types
 ELpsub(ELp)   subsidized power plants
@@ -530,8 +531,6 @@ positive Variables
 
 *        Dual Variabls Coal Transporation =====================*
 
-         DELprofit(ELp,v,trun,r)
-
          DCOexporttransbal(COf,cv,sulf,trun,rco,rrco) dual on balance coal exports and coal transport
          DCOimportsuplim(COf,ssi,cv,sulf,trun) dual capacity limit on coal import supply steps
          DCOimportlim(Cof,trun,rco) dual capacity limitation on coal imports
@@ -576,20 +575,26 @@ Variables
          DELnucconstraint(ELl,trun,r)
 
 Positive variables
+
+         ELsubsidy(ELp,v,trun,r)
+         ELsubsidywind(ELp,v,trun,r)
+         ELsubsidycoal(Elp,v,trun,r)
+
 *electricity production activities
          ELbld(ELp,v,trun,r) Construction of new conventional power plants in GW
-         ELrsrvbld(ELpd,v,trun,r) Build activity for reserve margin
+         ELrsrvbld(ELp,v,trun,r) Build activity for reserve margin
          ELwindbld(ELp,v,trun,r) Construction of new wind turbine in GW
          ELhydbld(ELp,v,trun,r) Construction of new hydro plants in GW
-         ELexistcs(ELp,v,trun,r) Exisiting cpacity stock in GW
+*         ELexistcs(ELp,v,trun,r) Exisiting cpacity stock in GW
          ELexistcp(ELp,v,trun,r) Existing conventional power capacity used for produciton and upspin in GW
-         ELwindexistcs(ELp,v,trun,r) Existing wind capacity stock in GW
+*         ELwindexistcs(ELp,v,trun,r) Existing wind capacity stock in GW
          ELwindexistcp(ELp,v,trun,r) Existing wind power capacity contracted in GW
-         ELhydexistcs(ELp,v,trun,r) Existing hydro power capacity stock in GW
+*         ELhydexistcs(ELp,v,trun,r) Existing hydro power capacity stock in GW
          ELhydexistcp(ELp,v,trun,r) Existing hydro power capacity contracted in GW
          ELgtconvcc(v,trun,r) GT conversino to CC
 
-         ELop(ELp,v,ELl,f,fss,cv,sulf,sox,nox,trun,r) capacity contracted by the state owned utility
+         ELop(ELp,v,ELl,f,fss,cv,sulf,fgc,fgc,trun,r) capacity contracted by the state owned utility
+         ELupspincap(ELp,v,ELl,f,fss,cv,sulf,fgc,fgc,trun,r)
          ELtop(ELp,v,ELl,ELf,fss,trun,r) take or pary contract to relax natural gas consumption
          ELoploc(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r) Conventional electricity production in TWH
          ELhydop(ELp,v,ELl,trun,r)    operation of hydro capacity in TWh
@@ -597,7 +602,7 @@ Positive variables
          ELwindop(ELp,v,ELl,trun,r)  electricity production of wind power in TWH
          ELwindoplevel(wstep,ELpw,v,trun,r) level of utilization in between wind capacity steps
          ELgttocc(Elp,v,trun,r)
-         ELupspincap(ELp,v,ELl,f,fss,cv,sulf,sox,nox,trun,r)
+
          ELdnspincap(ELpd,v,ELl,trun,r)
 
 *transportation activities
@@ -610,7 +615,7 @@ Positive variables
          ELImports(trun)          Equipment purchased costs in USD (typically imported)
          ELConstruct(trun)        Construction costs in USD
          ELOpandmaint(trun)       Operation and maintenance costs in USD
-         ELfconsump(Elpd,v,f,fss,trun,r) Fuel consumption by power sector
+         ELfconsump(Elp,v,f,fss,trun,r) Fuel consumption by power sector
          ELCOconsump(ELp,v,cv,sulf,sox,nox,trun,r) Fuel consumption by power sector
          ELCOconsump2(ELp,cv,sulf,trun,r)     Fuel consumption by power sector
 
@@ -639,7 +644,9 @@ Positive variables
 
          DELsup(ELl,trun,r)     dual of ELsup
          DELdem(ELl,trun,r)     dual of ELdem
-         DELdemloc(ELl,trun,r)       dual of ELdemloc
+         DELdemloc(trun,r)       dual of ELdemloc
+         DELdemlocbase(ELl,trun,r)       dual of ELdemloc
+
          DELrsrvreq(trun,grid)     dual of ELrsrvreq
 
 *Duals for transportation
@@ -661,6 +668,11 @@ Positive variables
          DELfgccapmax(ELpd,v,fgc,trun,r)
 
          DELCOcvlimit(Elpd,trun,r)
+
+* Duals for profit constraint and wind target
+         DELprofit(ELp,v,trun,r)
+         DELprofitcoal(Elp,v,trun,r)
+         DELwindtarget(trun)
 
 *Duals for electricity
          DEMELsulflim(trun,r) sulfur emssions from the power sector

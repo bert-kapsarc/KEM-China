@@ -47,13 +47,6 @@ parameter contract;
 
          PowerMCP.Optfile=1;
          PowerLP.Optfile=1;
-$ontext
-*        Remove existing capacity stock
-         ELexistcs.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and ord(trun)=1)=    0;
-         ELfgcexistcp.fx(ELpd,v,DeSOx,trun,r)$(ord(trun)=1)=0
-         ELfgcexistcp.fx(ELpd,v,DeNOx,trun,r)$(ord(trun)=1)=0
-;
-$offtext
 
 $INCLUDE short_run.gms
 

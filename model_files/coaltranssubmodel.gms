@@ -510,7 +510,7 @@ COsuplim(COf,cv,sulf,ELs,t,rco)$(not r(rco) and rcodem(rco) and
   -coaluse(COf,cv,sulf,ELs,t,rco)
   +sum(rr$(rco_dem(rco,rr)),
          ( OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
-           +sum((Elpcoal,v,sox,nox),
+           +sum((Elpcoal,v,sox,nox)$ELpELf(ELpcoal,COf,'ss0',cv,sulf,sox,nox),
                  ELCOconsump(Elpcoal,v,cv,sulf,sox,nox,t,rr))$ELfcoal(COf)
          )*Elsnorm(ELs)/num_nodes_reg(rr))
          =g=0;
@@ -520,7 +520,7 @@ COdem(COf,cv,sulf,ELs,t,rr)$COfcv(COf,cv)..
    sum((rco)$rco_dem(rco,rr),coaluse(COf,cv,sulf,Els,t,rco))
   -OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*Elsnorm(ELs)
 
-  -sum((Elpcoal,v,sox,nox),
+  -sum((Elpcoal,v,sox,nox)$ELpELf(ELpcoal,COf,'ss0',cv,sulf,sox,nox),
          ELCOconsump(Elpcoal,v,cv,sulf,sox,nox,t,rr))*Elsnorm(ELs)$ELfcoal(COf)
 
 *         -WAfconsump(COf,t,rr)$WAf(COf)
@@ -652,7 +652,7 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
 
 DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 
-  +RailSurcharge*COtransD(tr,rco,rrco)$(COrailCFS=1 and rail(tr)) =g=
+  +(RailSurcharge*COtransD(tr,rco,rrco))$(COrailCFS=1 and rail(tr)) =g=
 
   +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
 *$(not rimp(rco) and not rexp(rrco))
