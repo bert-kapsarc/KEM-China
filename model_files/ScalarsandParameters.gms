@@ -217,11 +217,7 @@ parameter EMfgccapex(fgc,trun) RMB per KW
           EMfgccapex(DeSOx,trun)=1500  ;
           EMfgccapex(DeNOx,trun)=600  ;
 
-parameter  EMfgdeff(fgc) FGD emission control reduction efficiency
-                 /DeSOx  0.8/
-           EMnoxeff(fgc) efficiency of nox scrubbers
-                 /DeNOx  0.8/
-          EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
+parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
           / noDeSOx 1
             DeSOx 0.2
             noDeNOx 1
@@ -233,13 +229,14 @@ parameter  EMfgdeff(fgc) FGD emission control reduction efficiency
          EMfgcomcst(fgc) = EMfgcomcst(fgc);
 
 * !!!    electricity consumption of fgc system defined as % of thermal eff
-         EMfgcpower('extlow',DeSOx,nox) = 0.01;
-         EMfgcpower('low',DeSOx,nox) = 0.01;
-         EMfgcpower('med',DeSOx,nox) = 0.012;
+         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.01;
+         EMfgcpower('low',DeSOx,noDeNOx) = 0.01;
+         EMfgcpower('med',DeSOx,noDeNOx) = 0.012;
 *         EMfgcpower('high',DeSOx,nox) = 0.015;
 
-         EMfgcpower(sulf,sox,DeNOx) = 0.01;
+         EMfgcpower(sulf,noDeSOx,DeNOx) = 0.01;
 
+         EMfgcpower(sulf,DeSOx,DeNOx) = EMfgcpower(sulf,DeSOx,'noDeNOx')+ EMfgcpower(sulf,'noDeSOx',DeNOx);
 
 parameter ELfit(ELp,trun,r);
 

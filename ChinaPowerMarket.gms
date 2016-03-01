@@ -27,7 +27,7 @@ $INCLUDE scenarios.gms
 
 parameter contract;
 
-*         option savepoint=2;
+         option savepoint=2;
          option MCP=PATH;
 
 $ontext
@@ -52,7 +52,7 @@ $offtext
 
          ELpfit=1;
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *         EL2020=1;
 
          PowerMCP.scaleopt=1;
@@ -63,7 +63,7 @@ $offtext
          ELprofitcoal.scale(ELpd,v,t,r)=1e3;
          DELprofitcoal.scale(ELpd,v,t,r)=1e-3;
 
-         execute_loadpoint "LongRun.gdx"
+         execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;
 
 

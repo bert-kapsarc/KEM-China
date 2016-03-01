@@ -1,3 +1,4 @@
+
 ********************************************************************************
 *                SetsAndVariables
 * This file contains all the sets and variables needed to run the sub-models for
@@ -292,6 +293,10 @@ Sets
          fDiesel(ELf) Diesel only
          fspin(f) Upspin fuels required to backup solar /diesel, methane,coal/
 
+         gtyp Specirfies type of generator for fuel consump variable /reg,spin/
+         reg(gtyp) /reg/
+         spin(gtyp) /spin/
+
          wstep wind capacity steps /w1*w50/
          cc cloud cover /nc,pc,oc,dust/
 
@@ -305,18 +310,24 @@ Sets
          noDenox(nox) /noDeNOx/
 
 
-         ElpELf(Elp,f,fss,cv,sulf,fgc,fgc) fuel use for different generators
+         ELpELf(Elp,f) fuel use for different generators
+         ELpfss(Elp,f,fss) fuel use for different generators
+         ELpfgc(Elp,cv,sulf,fgc,fgc) fuel use for different generators
          ELfCV(f,cv,sulf)
 ;
 
 
-         ELpELf(ELpog,ELfog,fss,CVf,'extlow',noDesox,noDenox) = yes;
+         ELpELf(ELpog,ELfog) = yes;
+         ELpELf(ELpnuc,Elfnuclear) = yes;
+         ELpELf(Elphyd,'dummyf') = yes;
+         ELpELf(Elpw,'dummyf') = yes;
+         ELpELf(ELpcoal,ELfcoal) = yes;
 
-         ELpELf(ELpnuc,Elfnuclear,fss0,CVf,'extlow',noDesox,noDenox) = yes;
-         ELpELf(Elphyd,'dummyf',fss0,CVf,'extlow',noDesox,noDenox) = yes;
-         ELpELf(Elpw,'dummyf',fss0,CVf,'extlow',noDesox,noDenox) = yes;
+         ELpfss(ELpd,ELf,'ss0')$ELpELf(ELpd,ELf) = yes;
+         ELpfss(ELpog,ELfog,fss) = yes;
 
-         ELpELf(ELpcoal,ELfcoal,fss0,cv_ord,ELsulf,sox,nox) = yes;
+
+         ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
 
 
 
@@ -593,10 +604,10 @@ Positive variables
          ELhydexistcp(ELp,v,trun,r) Existing hydro power capacity contracted in GW
          ELgtconvcc(v,trun,r) GT conversino to CC
 
-         ELop(ELp,v,ELl,f,fss,cv,sulf,fgc,fgc,trun,r) capacity contracted by the state owned utility
-         ELupspincap(ELp,v,ELl,f,fss,cv,sulf,fgc,fgc,trun,r)
+         ELop(ELp,v,ELl,f,trun,r) capacity contracted by the state owned utility
+         ELupspincap(ELp,v,ELl,f,trun,r)
          ELtop(ELp,v,ELl,ELf,fss,trun,r) take or pary contract to relax natural gas consumption
-         ELoploc(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r) Conventional electricity production in TWH
+         ELoploc(ELp,v,ELl,ELf,trun,r) Conventional electricity production in TWH
          ELhydop(ELp,v,ELl,trun,r)    operation of hydro capacity in TWh
          ELhydopsto(ELl,v,trun,r) storage of hydro capacity at pumped reservoirs
          ELwindop(ELp,v,ELl,trun,r)  electricity production of wind power in TWH
@@ -616,7 +627,7 @@ Positive variables
          ELConstruct(trun)        Construction costs in USD
          ELOpandmaint(trun)       Operation and maintenance costs in USD
          ELfconsump(Elp,v,f,fss,trun,r) Fuel consumption by power sector
-         ELCOconsump(ELp,v,cv,sulf,sox,nox,trun,r) Fuel consumption by power sector
+         ELCOconsump(ELp,v,gtyp,cv,sulf,fgc,fgc,trun,r) Fuel consumption by power sector
          ELCOconsump2(ELp,cv,sulf,trun,r)     Fuel consumption by power sector
 
 *FGD operation variable
@@ -656,15 +667,15 @@ Positive variables
          DELfavail(ELf,trun,r) dual of ELfavail
 
 
-         DELfcons(ELp,v,ELf,fss,trun,r) dual of fuel supply equation
-         DELCOcons(Elp,v,cv,sulf,sox,nox,trun,r) dual of fuel supply equation
+         DELfcons(ELp,v,ELf,trun,r) dual of fuel supply equation
+         DELCOcons(Elp,v,gtyp,trun,r) dual of fuel supply equation
          DELupspinres(ELl,trun,r)
          DELdnspinres(ELpd,ELl,trun,r)
 
 
 * Duals fro FGD
          DELfgccapbal(ELpd,v,fgc,trun,r)
-         DELfgccaplim(Elpd,v,ELl,fgc,trun,r)
+         DELfgccaplim(Elp,v,ELl,fgc,trun,r)
          DELfgccapmax(ELpd,v,fgc,trun,r)
 
          DELCOcvlimit(Elpd,trun,r)

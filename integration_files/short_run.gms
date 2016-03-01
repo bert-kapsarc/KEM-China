@@ -8,7 +8,7 @@
          ELbld.up(ELpcoal,vn,trun,r)=0;
          ELbld.up(ELpnuc,vn,trun,r)=0;
 
-         ELpurcst('ST',trun,r)=ELpurcst('ST',trun,r);
+         ELpurcst('ST',trun,r)=ELpurcst('ST',trun,r)*100;
          ELpurcst('GT',trun,r)=ELpurcst('GT',trun,r);
 
 

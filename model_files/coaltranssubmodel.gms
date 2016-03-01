@@ -510,8 +510,8 @@ COsuplim(COf,cv,sulf,ELs,t,rco)$(not r(rco) and rcodem(rco) and
   -coaluse(COf,cv,sulf,ELs,t,rco)
   +sum(rr$(rco_dem(rco,rr)),
          ( OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
-           +sum((Elpcoal,v,sox,nox)$ELpELf(ELpcoal,COf,'ss0',cv,sulf,sox,nox),
-                 ELCOconsump(Elpcoal,v,cv,sulf,sox,nox,t,rr))$ELfcoal(COf)
+           +sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
+                 ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$ELfcoal(COf)
          )*Elsnorm(ELs)/num_nodes_reg(rr))
          =g=0;
 
@@ -520,8 +520,8 @@ COdem(COf,cv,sulf,ELs,t,rr)$COfcv(COf,cv)..
    sum((rco)$rco_dem(rco,rr),coaluse(COf,cv,sulf,Els,t,rco))
   -OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*Elsnorm(ELs)
 
-  -sum((Elpcoal,v,sox,nox)$ELpELf(ELpcoal,COf,'ss0',cv,sulf,sox,nox),
-         ELCOconsump(Elpcoal,v,cv,sulf,sox,nox,t,rr))*Elsnorm(ELs)$ELfcoal(COf)
+  -sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
+         ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))*Elsnorm(ELs)
 
 *         -WAfconsump(COf,t,rr)$WAf(COf)
 *        -PCfconsump(COf,t,rr)*fPCconv(COf)$PCm(COf)

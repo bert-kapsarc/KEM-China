@@ -4,22 +4,11 @@
 *
 *         ELtariffmax(Elpw,r) = ELtariffmax('Ultrsc',r);
 
-         loop((ELf,fss,cv,sulf),
-         ELpcost(Elpd,v,sox,nox,trun,r)$ELpELf(Elpd,ELf,fss,cv,sulf,sox,nox)=
-            (ELomcst(ELpd,v,r)+EMfgcomcst(sox)+EMfgcomcst(nox))
-         );
+         ELpcost(Elpd,v,sox,nox,trun,r)=
+            ELomcst(ELpd,v,r)+(EMfgcomcst(sox)+EMfgcomcst(nox))$ELpcoal(ELpd);
 
-
-         DELTA2(Elp,v,trun,r)=
+         DELTA(Elp,v,trun,r)=
          ELtariffmax(Elp,r)*ELparasitic(Elp,v)-ELomcst(Elp,v,r);
-
-
-         loop((ELf,fss,cv),
-         DELTA(Elpd,v,sulf,sox,nox,trun,r)$ELpELf(Elpd,ELf,fss,cv,sulf,sox,nox)=
-         (ELtariffmax(Elpd,r)+ELfgctariff(sox)+ELfgctariff(nox))
-                 *ELpCOparas(Elpd,v,sulf,sox,nox)
-         -ELpcost(Elpd,v,sox,nox,trun,r)
-         );
 
          ELpfixedcost(Elp,v,trun,r)=
          (ELfixedOMcst(ELp)+ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
