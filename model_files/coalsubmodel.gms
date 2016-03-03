@@ -347,7 +347,7 @@ loop(r,
 
 
          COprodStats(COf,mm,ss,trun,rco)=
-         COprodStats(COf,mm,ss,trun,rco)*(1$met(COf) + 0.95$coal(COf));
+         COprodStats(COf,mm,ss,trun,rco)*(1$met(COf) + 0.89$coal(COf));
 
 *        fix production levels to those reported in IHS coal rush data or
 *        China Energy statistics

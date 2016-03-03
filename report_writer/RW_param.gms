@@ -33,6 +33,8 @@
          ELtariffELp Costs by technology
          ELcostsELp Average Tarrif paid by each technology
 
+         ELsalesELp Regional electricity sales by plant type 
+
 
          ELtransTot Regional transmission of electrcity in TWh
 

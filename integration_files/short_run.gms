@@ -12,8 +12,8 @@
          ELpurcst('GT',trun,r)=ELpurcst('GT',trun,r);
 
 
-         ELfgcbld.up(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc))) =0;
-*or DeNOx(fgc)
+         ELfgcbld.up(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and
+                 (DeSOx(fgc) or DeNOx(fgc)))=0;
 
          ELhydbld.up(Elphyd,'new',trun,r)=0;
          ELwindbld.up(Elpw,'new',trun,r)=0;

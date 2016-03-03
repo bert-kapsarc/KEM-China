@@ -43,8 +43,8 @@ P10=ELtariffmax
 Q11=SELECT 't11',r,rr,[TWH 2011] FROM ELtransgrid
 P11=ELtransdata
 
-Q12=SELECT 'HVAC',r,rr,Distance from ELtransgrid Where Connect_AC \
-UNION SELECT 'UHVDC',r,rr,Distance from ELtransgrid Where Connect_DC
+Q12=SELECT 'HVAC',r,rr,Distance from ELtransgrid Where Connect_AC OR [AC]>0 \
+UNION SELECT 'UHVDC',r,rr,Distance from ELtransgrid Where Connect_DC OR [DC]>0
 P12=ELtransD
 
 

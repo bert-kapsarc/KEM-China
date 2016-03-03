@@ -27,33 +27,33 @@ $INCLUDE scenarios.gms
 
 parameter contract;
 
-*         option savepoint=2;
+*         option savepoint=1;
          option MCP=PATH;
 
-$ontext
+*$ontext
 *!!!     Enforce maximum on-grid tariffs
          ELptariff(ELpnuc,v) = yes;
          ELptariff(ELpcoal,v) = yes;
          ELptariff(ELpCC,v) = yes;
          ELptariff(ELpog,v) = yes;
 
-*         ELptariff('ST',vn) = no;
-*         ELptariff('GT',vn) = no;
-*         ELptariff('SubcrSML',v) = no;
-*         ELptariff('SubcrLRG',vn) = no;
-*         ELptariff(ELphyd,v) = yes;
-*         ELptariff(ELpw,v) = yes;
+         ELptariff(ELphyd,v) = yes;
+         ELptariff(ELpw,v) = yes;
          ELptariffcoal(v) = yes;
+*$offtext
 
 *!!!     Turn on railway construction tax
          COrailCFS=1;
-$offtext
+*         ELpfit=1;
+         EL2020=1;
 
-         ELpfit=1;
-*         EL2020=1;
 *$INCLUDE short_run.gms
+*         ELAPf('methane','ss1',time,r) = ELAPf('methane','ss1',time,r)*10;
 
-*$ontext
+
+
+
+$ontext
 * !!!!   Run model long run without capacity stocks aquired since 2000
          ELbld.up(ELpnuc,vn,trun,r)=0;
 
@@ -64,23 +64,17 @@ $offtext
          ELfgcexistcp.fx(ELpd,vn,DeSOx,trun,r)$(ord(trun)=1)=0;
          ELfgcexistcp.fx(ELpd,vn,DeNOx,trun,r)$(ord(trun)=1)=0;
 ;
-*$offtext
+$offtext
 
 $ontext
 *!!!     Run model short run with adjusted capacity stocks
 $INCLUDE short_run.gms
-         execute_loadpoint "LongRunNewStock.gdx" ELbld, ELfgcbld,ELfgcexistcp, ELtransbld, ELtransexistcp, COtransbld, COtransexistcp;
+         execute_loadpoint "LongRunNewStockRegTariff.gdx" ELbld, ELfgcbld, ELtransbld,ELfgcexistcp, ELtransexistcp, COtransbld, COtransexistcp;
 
          ELexistcp.fx(ELpd,v,trun,r)$(not ELpnuc(Elpd) and not ELpcoal(Elpd) and ord(trun)=1)=
                  ELbld.l(ELpd,v,trun,r);
 
          ELexistcp.fx(ELpd,vn,trun,r)$(ELpcoal(Elpd) and ord(trun)=1)=ELbld.l(ELpd,vn,trun,r);;
-
-*         ELexistcp.up("GT",v,trun,r)$(ord(trun)=1)=    0;
-
-*         ELexistcp.up(ELpCCcon,v,trun,r)$(ord(trun)=1)=
-*                 sum(Elppd$ELpbld(Elppd,v),ELcapadd(Elppd,ELpCCcon)*
-*                                 ELbld.l(Elppd,v,trun,r));
 
          ELfgcexistcp.fx(ELpd,v,fgc,trun,r)$(ord(trun)=1 and
                                          (DeSOx(fgc) or DeNOx(fgc)))=
@@ -94,6 +88,7 @@ $INCLUDE short_run.gms
          COtransbld.l(tr,trun,rco,rrco)+COtransexistcp.l(tr,trun,rco,rrco);
 $offtext
 
+
          PowerMCP.scaleopt=1;
 
          ELprofit.scale(ELp,v,t,r)=1e3;
@@ -102,7 +97,7 @@ $offtext
          ELprofitcoal.scale(ELpd,v,t,r)=1e3;
          DELprofitcoal.scale(ELpd,v,t,r)=1e-3;
 
-         execute_loadpoint "LongRun.gdx"
+         execute_loadpoint "LongRunWindReg.gdx"
          Solve PowerMCP using MCP;
 
 

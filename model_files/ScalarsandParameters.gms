@@ -54,12 +54,16 @@ parameter  FuelperMWH(f) quantity of fuel per MWH
 
 parameter COcvSCE(cv) average CV of coal noramlized to 7000 kcal per kg SCE
          /
-         CV30    3000
+*$ontext
+         CV32    3200
          CV38    3800
-         CV46    4600
-         CV54    5400
+         CV44    4400
+         CV50    5000
+         CV56    5600
          CV62    6200
-         CV70    7000
+         CV68    6800
+
+*$offtext
 $ontext
          CV30    3000
          CV35    3500
@@ -75,10 +79,10 @@ $offtext
 
           COboundCV(cv,bound) average calorific value of coal
          /
-         CV30.lo    500
-         CV30.up    3400
-*         CV35.lo    500
-*         CV35.up    4000
+*         CV30.lo    500
+*         CV30.up    3400
+         CV32.lo    500
+         CV32.up    3500
          /;
 
          COcvSCE(cv) = COcvSCE(cv)/7000;
@@ -87,7 +91,7 @@ $offtext
 
 $offorder
          loop(CV_ord,
-         COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+800;
+         COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+600;
 *         COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+1000;
          COboundCV(CV_ord+1,'lo') = COboundCV(CV_ord,'up');
          );
@@ -103,8 +107,8 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
          /
          ExtLow  0.0025
          Low     0.01
-         Med     0.03
-*         High    0.05
+         Med     0.02
+         High    0.05
          /;
 
 
@@ -132,17 +136,24 @@ $ontext
 $offtext
 ;
 * convert to tons per cubic meter
-NOxC(r,ELpcoal) = 552*1e-9;
-NOxC(r,'SubcrSML') = 500*1e-9;
+NOxC(r,ELpcoal) = 600*1e-9;
+*NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-*NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.75;
-*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
-*NOxC('South',Elpd) = NOxC('South',ELpd)*0.75;
-*NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.3;
-*NOxC('North',Elpd) = NOxC('North',ELpd)*0.9;
-*NOxC('East',Elpd) = NOxC('East',ELpd)*0.9;
-*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.75;
+NOxC('North',Elpd) = NOxC('North',ELpd)*1.05;
+NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.05;
+NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.05;
+NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1;
+NOxC('East',Elpd) = NOxC('East',ELpd)*1 ;
+NOxC('West',Elpd) = NOxC('West',ELpd)*1.1 ;
+
+NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.35;
+NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.3;
+NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.1;
+
+NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
+NOxC('South',Elpd) = NOxC('South',ELpd)*1;
+NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.85;
 
 
 parameter alpha0(ELp,f) excess air ratio in combustion chamber
@@ -203,12 +214,11 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
 
 
 parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per MWH
-         / NoDeSOX 0
-           DeSOx  5
-           DeNOx  10 /
+         / DeSOx  17.5
+           DeNOx  12.5 /
 
 
-          EMfgcpower(sulf,fgc,fgc) percentage of power supply required for fgc
+          EMfgcpower(sulf,fgc,fgc) percentage reduciton of thermal efficiency when operating fgc
 
 ;
 
@@ -229,14 +239,16 @@ parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
          EMfgcomcst(fgc) = EMfgcomcst(fgc);
 
 * !!!    electricity consumption of fgc system defined as % of thermal eff
-         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.01;
-         EMfgcpower('low',DeSOx,noDeNOx) = 0.01;
-         EMfgcpower('med',DeSOx,noDeNOx) = 0.012;
-*         EMfgcpower('high',DeSOx,nox) = 0.015;
+         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.015;
+         EMfgcpower('low',DeSOx,noDeNOx) = 0.015;
+         EMfgcpower('med',DeSOx,noDeNOx) = 0.017;
+         EMfgcpower('high',DeSOx,nox) = 0.02;
 
          EMfgcpower(sulf,noDeSOx,DeNOx) = 0.01;
 
-         EMfgcpower(sulf,DeSOx,DeNOx) = EMfgcpower(sulf,DeSOx,'noDeNOx')+ EMfgcpower(sulf,'noDeSOx',DeNOx);
+         EMfgcpower(sulf,DeSOx,DeNOx) =
+                 EMfgcpower(sulf,DeSOx,'noDeNOx')+
+                 EMfgcpower(sulf,'noDeSOx',DeNOx);
 
 parameter ELfit(ELp,trun,r);
 
@@ -246,3 +258,5 @@ parameter ELfit(ELp,trun,r);
          ELfit(ELpw,trun,'Northeast') = 580;
          ELfit(ELpw,trun,'West') = 580;
          ELfit(ELpw,trun,'Xinjiang') = 580;
+
+         ELfit(ELp,trun,r)= 400;

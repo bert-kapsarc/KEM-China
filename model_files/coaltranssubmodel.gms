@@ -175,54 +175,60 @@ $gdxin
 
 
 * replicate distance between nodes
-COtransD(tr,rrco,rco)$(COtransD(tr,rco,rrco)>=COtransD(tr,rrco,rco)) = COtransD(tr,rco,rrco);
+COtransD(tr,rrco,rco)$(COtransD(tr,rco,rrco)>=COtransD(tr,rrco,rco)) =
+                                         COtransD(tr,rco,rrco);
 
-* Set trucking distances equal to rail distances as an estimate
-COtransD('truck',rco,rrco)$(COtransD('truck',rco,rrco)=0) = COtransD('rail',rco,rrco);
+* Set trucking distances equal to rail distances a
+COtransD('truck',rco,rrco)$(COtransD('truck',rco,rrco)=0) =
+                                         COtransD('rail',rco,rrco);
 
 
 *!!!!!!!!!!Port yields
 
-* Create connection between all river and sea ports, where positive river distances exist
-* river ports are only connect to sea ports liying on the river mouth.
+* Create connection between all river and sea ports with positive distance
+* river ports connect to accesible sea ports on river mouth.
 * In the database non-connected river and sea ports are flagged with distance -1
+
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)>0) = 1;
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)<=0) = 0;
 
 
-* allow COtrans to ship coal to exoprt destination
+* allow sea ports to export
 COtransyield(port,rport_sea,rexp)= 1;
 *COtransyield(port,rport_sea,rrport)$rimp(rrport)= 1;
 
-* allow import coutries to supply coal to domestic china market.
+* allow import to domestic market.
 COtransyield(port,rport,rrport_sea)$rimp(rport)= 1;
 
-*Dont allow import basins to exchange coal!
+* Dont allow import and export basins to exchange coal!
 COtransyield(port,rimp,rexp)= 0;
 
 * COtransyield is set to 1 for port self connection
-* This is used in the capacity limit equation for aggregate shipments to/from other ports
-* I.E. Sea and river ports are given limits on the port not the pathways.
+* This is used in the capacity limit equation for incoming outgoing shipments
+* Sea and river ports are given limits on the port not the pathways.
 COtransyield(port,rport,rport)=1;
 
 *!!!!!!!!!!Set transyield on land transport
 COtransyield('rail',rco,rrco)$(COtransD('rail',rco,rrco)>0)=1;
 COtransyield('rail',rimp,rrco)$(COtransexist('rail',rimp,rrco)>0)=1;
 
+COtransyield(land,rco,rco)=0;
 
-COtransyield('rail',rco,rco)=0;
-COtransexist('rail',rco,rco)=0;
-
-* create truck conections between any two rail connected cities.
+* create truck conections where rail connections exist.
 * As an assumption for truck routes when rail is bottlenecked
 COtransyield('truck',rco,rrco)$(COtransyield('rail',rco,rrco)>0)=1;
 
 * prohibit trucked imports
-COtransyield('truck',rimp,rrco)=0;
+*COtransyield('truck',rimp,rrco)=0;
 
 
-COtransyield('rail',rrco,rco)$(COtransyield('rail',rco,rrco)>0) = COtransyield('rail',rco,rrco);
+* Allow shipment in both directions along any transportation arc
+COtransyield(land,rrco,rco)$(COtransyield(land,rco,rrco)>0) =
+                 COtransyield(land,rco,rrco);
 
+
+* Introduce average 1% transporation loss for all modes
+COtransyield(tr,rco,rrco) = COtransyield(tr,rco,rrco)*1;
 
 *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 *        declare and define arc set

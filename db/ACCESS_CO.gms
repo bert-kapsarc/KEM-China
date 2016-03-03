@@ -91,7 +91,7 @@ p5=COwashratio
 
 Q6=SELECT 'ExtLow','t11',Region,ExtLow FROM CBRsulfur \
 UNION SELECT 'Low','t11',Region,Low FROM CBRsulfur \
-UNION SELECT 'Med','t11',Region,Med2 FROM CBRsulfur \
+UNION SELECT 'Med','t11',Region,Med FROM CBRsulfur \
 UNION SELECT 'High','t11',Region,High FROM CBRsulfur
 p6=COsulfur
 

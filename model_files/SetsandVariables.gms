@@ -89,26 +89,24 @@ Sets
 *         cv discrete calorific values 3000 to 7000 kcal per kg /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70,CVmet,CVf/
 *         cv_steam(cv) ordered calorific values for thermal coal /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70/
 
-         cv discrete calorific values 3000 to 7000 kcal per kg /CV30,CV38,CV46,CV54,CV62,CV70,CVmet,CVf/
-         cv_steam(cv) ordered calorific values for thermal coal /CV30,CV38,CV46,CV54,CV62,CV70/
+         cv discrete calorific values 3000 to 7000 kcal per kg /CV32,CV38,CV44,CV50,CV56,CV62,CV68,CVmet,CVf/
+         cv_steam(cv) ordered calorific values for thermal coal /CV32,CV38,CV44,CV50,CV56,CV62,CV68/
 
          cv_met(cv) calorific values assigned to met coal /CVmet/
          CVf(cv) place holder for other fuels /CVf/
          cv_ord(cv) ordered calorific values
 
-         sulf  sulfur content in coal / ExtLow,Low,Med/
-*,High /
+         sulf  sulfur content in coal / ExtLow,Low,Med,High/
+
          sulfmet(sulf) sulfur content for metallurgical coals / ExtLow,low/
-         ELsulf(sulf) /extlow,low,Med/
+         ELsulf(sulf) /extlow,low,Med,High/
          bound /lo,up/
 
          COfcv(f,cv) calorific values assigned to coal types
          COfsulf(COf,sulf) calorific values assigned to coal types
 
          ash percentage ash content in 5 categories 5 15 25 35 and 50 /noash/
-*ash515253545/
          ELash(ash) /noash/
-*         ELash(ash) /ash515/
          tr transportation modes /rail,port,truck/
          port(tr) water based transportation /port/
          rail(tr) rail tranportation /rail/
@@ -297,7 +295,7 @@ Sets
          reg(gtyp) /reg/
          spin(gtyp) /spin/
 
-         wstep wind capacity steps /w1*w50/
+         wstep wind capacity steps /w1*w40/
          cc cloud cover /nc,pc,oc,dust/
 
          fgc flue gas control systems /DeSOx, DeNOx, noDeSOx, noDeNOx/
@@ -675,7 +673,7 @@ Positive variables
 
 * Duals fro FGD
          DELfgccapbal(ELpd,v,fgc,trun,r)
-         DELfgccaplim(Elp,v,ELl,fgc,trun,r)
+         DELfgccaplim(Elp,v,fgc,trun,r)
          DELfgccapmax(ELpd,v,fgc,trun,r)
 
          DELCOcvlimit(Elpd,trun,r)

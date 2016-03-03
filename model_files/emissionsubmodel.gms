@@ -102,7 +102,7 @@ EMELnoxlim(t,r)..
          VrCo(ELpcoal,'coal',cv)
       )*NOxC(r,ELpcoal)
    )
-                 =g= -EMELnoxmax(t,r)*100
+                 =g= -EMELnoxmax(t,r)*1
 ;
 
 
