@@ -251,12 +251,3 @@ parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
                  EMfgcpower(sulf,'noDeSOx',DeNOx);
 
 parameter ELfit(ELp,trun,r);
-
-         ELfit(ELpw,trun,r) = 600;
-         ELfit(ELpw,trun,'CoalC') = 510;
-         ELfit(ELpw,trun,'North') = 540;
-         ELfit(ELpw,trun,'Northeast') = 580;
-         ELfit(ELpw,trun,'West') = 580;
-         ELfit(ELpw,trun,'Xinjiang') = 580;
-
-         ELfit(ELp,trun,r)= 400;

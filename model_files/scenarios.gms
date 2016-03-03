@@ -19,12 +19,10 @@
          +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
          (1$(vn(v) or ELpnuc(ELpd)) + 0$(not ELpnuc(Elpd) and vo(v)))
 ;
-*$ontext
          ELpsunkcost(ELpd,v,trun,r)$ELpsubcr(ELpd)=
           ELfixedOMcst(ELpd)
          +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
          (1$(vn(v)) + 0$(vo(v)))
-*$offtext
 ;
 
 
@@ -44,6 +42,13 @@
          ELptariffcoal(v) = no;
 
 
+* !!!    Set feed-in tariffs
+         ELfit(ELpw,trun,r) = 600;
+         ELfit(ELpw,trun,'CoalC') = 510;
+         ELfit(ELpw,trun,'North') = 540;
+         ELfit(ELpw,trun,'Northeast') = 580;
+         ELfit(ELpw,trun,'West') = 580;
+         ELfit(ELpw,trun,'Xinjiang') = 580;
 
          rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco);
 
