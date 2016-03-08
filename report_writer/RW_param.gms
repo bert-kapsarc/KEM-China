@@ -30,10 +30,12 @@
          ELgenELp Regional net electricity generation by plant in TWh
          ELgenELl Regional net electricity generatio by plant and load segment
 
-         ELtariffELp Costs by technology
-         ELcostsELp Average Tarrif paid by each technology
 
-         ELsalesELp Regional electricity sales by plant type 
+         ELcostsELp Total cost by each technology
+         ELtariffELp  Average Tarrif paid
+         ELsubsidyELp Costs by technology
+
+         ELsalesELp Regional electricity sales by plant type
 
 
          ELtransTot Regional transmission of electrcity in TWh
@@ -101,6 +103,7 @@ Parameters
          COtrsea coal transported by sea
          COtrport coal leaving specific port
          COtranstot total coal transported between nodes by tranport mode
+         COtranstonkm total coal transported between nodes by tranport mode  
          CotransbldD total distance of new rails lines built
          Cotransbldton total rail capacity built
          Cotransbldport total port capacity built

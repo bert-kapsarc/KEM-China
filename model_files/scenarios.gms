@@ -1,5 +1,5 @@
 * !!! cost for operating capacity over ELLmchours
-         ELtariffmax(Elpd,r)$(not ELpnuc(Elpd)) = ELtariffmax(Elpd,r)*1;
+         ELtariffmax(Elpd,r)$(not ELpnuc(Elpd)) = ELtariffmax(Elpd,r)/1.17;
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
 *
 *         ELtariffmax(Elpw,r) = ELtariffmax('Ultrsc',r);
@@ -25,16 +25,11 @@
          (1$(vn(v)) + 0$(vo(v)))
 ;
 
-
          ELpsunkcost(ELp,v,trun,r)$ELphyd(Elp)=
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r))*0;
 
-
          ELpsunkcost(ELp,v,trun,r)$ELpw(Elp)=
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
-
-         COintlprice(coal,ssi,cv_ord,sulf,time,rimp)=
-         COintlprice(coal,ssi,cv_ord,sulf,time,rimp)*1;
 
 
 *        no on-grid electricity tarrifs
@@ -49,6 +44,9 @@
          ELfit(ELpw,trun,'Northeast') = 580;
          ELfit(ELpw,trun,'West') = 580;
          ELfit(ELpw,trun,'Xinjiang') = 580;
+
+
+         ELfitv.fx(Elpw,trun,r) = ELfit(Elpw,trun,r);
 
          rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco);
 

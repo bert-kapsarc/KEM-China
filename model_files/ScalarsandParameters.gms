@@ -136,24 +136,30 @@ $ontext
 $offtext
 ;
 * convert to tons per cubic meter
-NOxC(r,ELpcoal) = 600*1e-9;
+NOxC(r,ELpcoal) = 550*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-NOxC('North',Elpd) = NOxC('North',ELpd)*1.05;
-NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.05;
-NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.05;
-NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1;
-NOxC('East',Elpd) = NOxC('East',ELpd)*1 ;
-NOxC('West',Elpd) = NOxC('West',ELpd)*1.1 ;
+*NOxC('North',Elpd) = NOxC('North',ELpd)*0.75;
+*NOxC('East',Elpd) = NOxC('East',ELpd)*0.9 ;
 
-NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.35;
-NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.3;
-NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.1;
+*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.8;
+*NOxC('South',Elpd) = NOxC('South',ELpd)*0.7;
+*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.75;
 
-NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
-NOxC('South',Elpd) = NOxC('South',ELpd)*1;
-NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.85;
+
+*NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.05;
+*NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.1;
+*NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.1;
+*NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.05;
+*NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.05;
+
+*NOxC('West',Elpd) = NOxC('West',ELpd)*1.01 ;
+
+*NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1;
+
+
+
 
 
 parameter alpha0(ELp,f) excess air ratio in combustion chamber
@@ -205,11 +211,6 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
          VrCo(ELpd,ELf,cv)  =
           a1(ELf)*COcvSCE(cv)+c1(ELf)
          +1.0161*(alpha0(ELpd,ELf)+delta_alpha-1)*(a2(ELf)*COcvSCE(cv)+c2(Elf));
-
-*$ELfCV(Elf,cv,'extlow')
-
-*EMELsulfmax(time,r) = EMELsulfmax(time,r)*0.1;
-*EMELsulfmax(time,r) = EMELsulfmax(time,r)*1e3;
 
 
 

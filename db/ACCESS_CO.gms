@@ -114,10 +114,10 @@ P12 = COconsumpEIA
 Q13=SELECT [t],WCD_QUADS FROM period,[COAL_dem_EIA] WHERE year=[yr]
 P13 = WCD_Quads
 
-Q14=  SELECT 'production','t12',[rdem],Production FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'other consumption','t12',[rdem],Other FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'coking','t12',[rdem],Coking FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'power','t12',[rdem],Thermal FROM [Coal_stats_2012],nodes WHERE [Prov]=Province
+Q14=  SELECT 'Production','t12',[rdem],Production FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Other','t12',[rdem],Other FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Metallurgical','t12',[rdem],Metallurgical FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Power','t12',[rdem],Power FROM [Coal_stats_2012],nodes WHERE [Prov]=Province
 P14=COstatistics
 
 

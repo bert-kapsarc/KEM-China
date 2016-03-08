@@ -71,7 +71,7 @@ Sets
 
          IHSother(IHScoaluse)
 
-         COstats /'production','prod IHS','other consumption','coking','power'/
+         COstats /'Production','coal prod IHS','met prod IHS','Other','Metallurgical','Power'/
 
          COforecast coal price forecast scenarios /max,min,con/
 
@@ -295,7 +295,7 @@ Sets
          reg(gtyp) /reg/
          spin(gtyp) /spin/
 
-         wstep wind capacity steps /w1*w40/
+         wstep wind capacity steps /w1*w100/
          cc cloud cover /nc,pc,oc,dust/
 
          fgc flue gas control systems /DeSOx, DeNOx, noDeSOx, noDeNOx/
@@ -528,7 +528,7 @@ positive Variables
 
 
          DCOcapbal(COf,mm,ss,trun,rco) dual on coal transport balance
-         DCOcaplim(COf,sulf,mm,ss,trun,rco) dual coal transport capcity constraint
+         DCOcaplim(COf,mm,ss,trun,rco) dual coal transport capcity constraint
 
          DCOsulflim(sulf,trun,rco) dual COsulflim
          DCOwashcaplim(COf,mm,ss,trun,rco)
@@ -586,6 +586,7 @@ Variables
 Positive variables
 
          ELsubsidy(ELp,v,trun,r)
+         ELfitv(ELp,trun,r)
          ELsubsidywind(ELp,v,trun,r)
          ELsubsidycoal(Elp,v,trun,r)
 

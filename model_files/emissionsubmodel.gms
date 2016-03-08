@@ -60,6 +60,7 @@ parameter EMELnoxmax(time,r) 2010 regional power sector emission in million tons
          t12.West            0.953
          t12.Xinjiang        0.263
 /
+;
 
 Parameter ELdiscfact(time) discount factors for electricity sector
           EMdiscoef(trun);
@@ -96,13 +97,13 @@ EMsulflim(t,r)$rdem_on(r)..
 
 EMELnoxlim(t,r)..
   -sum((ELpcoal,v,gtyp),
-      sum((cv,sulf),
-         sum((sox,nox)$ELpfgc(ELpcoal,cv,sulf,sox,nox),
-                 ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox))*
+      sum((cv,sulf,sox,nox)$cv_ord(cv),
+         ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
          VrCo(ELpcoal,'coal',cv)
       )*NOxC(r,ELpcoal)
    )
                  =g= -EMELnoxmax(t,r)*1
+;
 ;
 
 

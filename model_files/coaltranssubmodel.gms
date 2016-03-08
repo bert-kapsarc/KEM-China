@@ -129,24 +129,17 @@ OTHERCOconsump(steam,time,rr)=sum((GB,IHSother)$regions(rr,GB),
 $offtext
 
 
-OTHERCOconsump(met,time,rr)=sum((GB,IHSmet)$regions(rr,GB),
-                         OTHERCOconsumpProv(met,IHSmet,time,GB));
-
-OTHERCOconsump(coal,time,rr)=
-                         COstatistics('other consumption',time,rr);
-
-
-
 
 OTHERCOconsump_weight(COf,time,rr)=sum(GB$regions(rr,GB),
          OTHERCOconsumpProv_weight(COf,time,GB));
 
+*OTHERCOconsump(met,time,rr)=sum((GB,IHSmet)$regions(rr,GB),
+*                         OTHERCOconsumpProv(met,IHSmet,time,GB));
 
-parameter COconsumpNDRC;
+OTHERCOconsump('met',time,rr)=COstatistics('Metallurgical',time,rr);
 
-*        rescale exogenous IHS demand projections to values from NDRC 2015 levels
-         COconsumpNDRC(COf,time,r)$(ord(time)>3) =
-         OTHERCOconsump(COf,time,r)*3900/sum((rr,COff),OTHERCOconsump_weight(COff,'t15',rr));
+OTHERCOconsump(coal,time,rr)=COstatistics('Other',time,rr);
+
 
 parameter COconsumpEIA(COf,time) EIA coal demand forecast,
           coalintlpriceEIA(COf,time,rco,rrco) EIA international coal price reference (for china )
@@ -349,6 +342,7 @@ COtranscapex('port',rco,rco) = 100;
          num_nodes_reg(r) = card(rtemp);
          );
 
+         num_nodes_reg('northeast') = 3;
 
          parameter rail_disc discount on rail investments from rail tax CFS;
 

@@ -39,13 +39,9 @@ parameter contract;
 *$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
-
          ELpfit=1;
 *         EL2020=1;
 *         ELfitv.fx(Elpw,trun,r) = 0;
-
-         Elsubsidy.up(ELpog,vn,t,r) =0;
-         Elsubsidy.up(ELpcoal,vn,t,r) =0;
 
          option savepoint=1;
          option MCP=PATH;
@@ -63,7 +59,7 @@ parameter contract;
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-         execute_loadpoint "LongRunReg";
+         execute_loadpoint "LongRunTariff";
          Solve PowerMCP using MCP;
 
 

@@ -25,6 +25,8 @@ COtransfrom(tr,trun,rco) = sum((COf,cv,sulf,rrco,ELs),COtrans.l(COf,cv,sulf,tr,E
 
 COtransimp(COf,cv,trun,rrco) = sum((sulf,rimp,tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
 
+COtranstonkm(tr,trun)=sum((COf,cv,sulf,rco,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco)*COtransD(tr,rco,rrco));
+
 *coalimports.l(Cof,cv,sulf,trun,rimp,rrco) = sum((tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
 
 parameter COtransimp_temp;

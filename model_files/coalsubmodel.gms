@@ -51,6 +51,8 @@ COstatistics(COstats,time,'NM')=COstatistics(COstats,time,'NM')
 COstatistics(COstats,trun,r) = sum((GB)$regions(r,GB),
                                  COstatistics(COstats,trun,GB));
 
+COstatistics(COstats,trun,"China") = sum(r,COstatistics(COstats,trun,r) )
+
 parameter COash(ash) coal ash content
          /noash    0  /
 $ontext
@@ -93,7 +95,7 @@ parameter COpurcst(COf,mm,time,rco)   purchase cost of mining capacity
 
 scalar    COdiscrate  fuel sector discounting rate /0.04/;
 
-                         COpurcst(COf,mm,time,rco) = eps;
+                         COpurcst(COf,mm,time,rco) = 100;
                          COconstcst(COf,mm,ss,time,rco) = 0;
 
 
@@ -160,26 +162,27 @@ elseif ord(time)>25,
 
 
          CoprodIHS(COf,mm,ss,time,rco)$(CoprodIHS(COf,mm,ss,time,rco)<0) = 0;
-         COexist(COf,mm,ss,rco) = COprodIHS(COf,mm,ss,"t11",rco);
-
-
 
 * !!!!!!!!!!!!!!! no cv for met coals, set to -1
-         coalcv(met,mm,ss,'washed',time,rco)$(COprodyield(met,mm,ss,'washed',time,rco)>0) = -1;
+         coalcv(met,mm,ss,'washed',time,rco)$(
+                 COprodyield(met,mm,ss,'washed',time,rco)>0) = -1;
 
 
 *        if there is no secondary washed coal, artificially assign the cv to
 *        that of washed coal. This is done to facilitate a calculation below
 *        that sets the cost of metalurgical secondary washed products
 *        to that of the cost of secondary washed steam coal, adjusting for CV
-         coalcv(coal,mm,ss,'other',time,rco)$(coalcv(coal,mm,ss,'other',time,rco)=0 and coalcv(coal,mm,ss,'washed',time,rco)>0)
-                  = coalcv(coal,mm,ss,'washed',time,rco);
+         coalcv(coal,mm,ss,'other',time,rco)$(
+                 coalcv(coal,mm,ss,'other',time,rco)=0 and
+                 coalcv(coal,mm,ss,'washed',time,rco)>0)
+         = coalcv(coal,mm,ss,'washed',time,rco);
 
 
 
 *        set raw coal yield to one for lignite and steam
 *        metallurgical and hard coking coal are always washed
-         COprodyield(coal,mm,ss,"raw",trun,rco)$(COexist(coal,mm,ss,rco)>0) = 1;
+         COprodyield(coal,mm,ss,"raw",trun,rco)$(
+                 smax(time,CoprodIHS(coal,mm,ss,time,rco))>0) = 1;
 
 $ontext
          COprodyield(COf,mm,ss,rw,time,rco)$(COprodyield(COf,mm,ss,rw,time,rco)=0 and COexist(COf,mm,ss,rco)=0)
@@ -193,19 +196,27 @@ $ontext
 $offtext
 
 
-         COprodyield("met",'under',"South and east coast Met",rw,time,"East")=COprodyield("met",'under',"South and east coast Met",rw,time,"South");
-         COomcst("met",'under',"South and east coast Met",rw,time,"East")= COomcst("met",'under',"South and east coast Met",rw,time,"South");
-         coalcv("met",'under',"South and east coast Met",rw,time,"East")= coalcv("met",'under',"South and east coast Met",rw,time,"South");
+         COprodyield("met",'under',"South and east coast Met",rw,time,"East")=
+         COprodyield("met",'under',"South and east coast Met",rw,time,"South");
 
-         COprodyield("coal",'under',"Central South Met",rw,time,"East")=COprodyield("coal",'under',"Central South Met",rw,time,"South");
-         COomcst("coal",'under',"Central South Met",rw,time,"East")= COomcst("coal",'under',"Central South Met",rw,time,"South");
-         coalcv("coal",'under',"Central South Met",rw,time,"East")= coalcv("coal",'under',"Central South Met",rw,time,"South");
+         COomcst("met",'under',"South and east coast Met",rw,time,"East")=
+         COomcst("met",'under',"South and east coast Met",rw,time,"South");
+
+         coalcv("met",'under',"South and east coast Met",rw,time,"East")=
+         coalcv("met",'under',"South and east coast Met",rw,time,"South");
+
+         COprodyield("coal",'under',"Central South Met",rw,time,"East")=
+         COprodyield("coal",'under',"Central South Met",rw,time,"South");
+
+         COomcst("coal",'under',"Central South Met",rw,time,"East")=
+         COomcst("coal",'under',"Central South Met",rw,time,"South");
+
+         coalcv("coal",'under',"Central South Met",rw,time,"East")=
+         coalcv("coal",'under',"Central South Met",rw,time,"South");
 
 
 
-
-
-         table COrwtable(rw,COf,COff)
+         table COrwtable(rw,COf,COff) Map Other washed coal for met and hardcoke to thermal coal
 
                                  met     hardcoke  coal
 
@@ -217,34 +228,16 @@ $offtext
 
          ;
 
-         table COsulfwash(rw,sulf,sulff)  tables reduce sulfur content of coal post washing
-                                 ExtLow Low    Med
+         table COsulfwash(rw,sulf,sulff)  tables reduce sulfur content of washed coals
+                                 ExtLow Low    Med   High
 
-         (washed,other).ExtLow   1      1      1
-         (washed,other).Low      0      0      0
-         (washed,other).Med      0      0      0
-*         (washed,other).High     0      0      0
+         (washed,other).ExtLow   1      1      1       0
+         (washed,other).Low      0      0      0       1
+         (washed,other).Med      0      0      0       0
+         (washed,other).High     0      0      0       0
 ;
 
-$ontext
-High
-
-0
-1
-0
-0
-
-(washed,other).High     0      0      0
-$offtext
-
          COsulfwash('raw',sulf,sulf)=1;
-
-         table COwother(rw,rww)
-                           other
-         washed               1
-         other                0
-
-
 
          set COmine(COf,mm,ss,rco) coal mine units used in the model equations
              COrw(COf,mm,ss,sulf,rw,rco) coal washing applied to coal mine units
@@ -252,14 +245,15 @@ $offtext
              COcvbins(COf,cv,sulf,mm,ss,rw,trun,rco) calorific values required for each mining region
              COcvrco(COf,cv,sulf,trun,rco)
 ;
-         COmine(COf,mm,ss,rco)$(smax(trun,COprodIHS(COf,mm,ss,trun,rco))>0)  = yes;
+         COmine(COf,mm,ss,rco)$(smax(trun,COprodIHS(COf,mm,ss,trun,rco))>0)=yes;
 
          loop((COf,mm,ss),
             COsulf(sulf,rco)$COmine(COf,mm,ss,rco)= yes;
          );
 
-         COrw(COf,mm,ss,sulf,rw,rco)$(smax(trun,COprodyield(COf,mm,ss,rw,trun,rco))>0)
-                  = yes;
+
+         COrw(COf,mm,ss,sulf,rw,rco)$(
+                 smax(trun,COprodyield(COf,mm,ss,rw,trun,rco))>0)=yes;
 
          loop((sulff,COff),
             COcvbins(COf,cv,sulf,mm,ss,rw,trun,rco)$(
@@ -271,6 +265,7 @@ $offtext
                   (coalcv(COf,mm,ss,rw,trun,rco)=-1 and cv_met(cv))
                  ))= yes ;
          );
+
         loop((mm,ss,rw,sulff),
             COcvrco(COf,cv,sulf,trun,rco)$(
                  COcvbins(COf,cv,sulf,mm,ss,rw,trun,rco) and
@@ -305,12 +300,14 @@ $offtext
          (coalcv(met,"under",ss,rw,time,rco)/coalcv('coal',"under",ss2,rw,time,rco))$rwother(rw))
                  );
 
-         COomcst(met,"under",ss,rw,time,rco)$
-   (COomcst(met,"under",ss,rw,time,rco)<=0 AND COmine(met,'under',ss,rco)   )=
+         COomcst(met,"under",ss,rw,time,rco)$(
+                 COomcst(met,"under",ss,rw,time,rco)<=0 AND
+                 COmine(met,'under',ss,rco)   )=
             smax((ss2),COomcst(met,"under",ss2,rw,time,rco));
 
-         COomcst(met,"under",ss,rw,time,rco)$
-   (COomcst(met,"under",ss,rw,time,rco)<=0 AND COmine(met,'under',ss,rco))=
+         COomcst(met,"under",ss,rw,time,rco)$(
+                 COomcst(met,"under",ss,rw,time,rco)<=0 AND
+                 COmine(met,'under',ss,rco))=
             smax((rrco),COomcst(met,"under",ss,rw,time,rrco));
 
 
@@ -323,49 +320,39 @@ $offtext
 
 set        rco_sup(rco,r) region where each coal supply basin is located
 ;
+         rco_sup(rco,r)$rco_dem(rco,r) = yes;
+*         rco_sup('NMCBHulun','Northeast')=yes;
+*         rco_sup('NMCBXilin','Northeast')=yes;
 
 
-rco_sup(rco,r)$rco_dem(rco,r) = yes;
-rco_sup('NMCBHulun','Northeast')=yes;
-rco_sup('NMCBXilin','Northeast')=yes;
 
+* !!!    uSE ihs estimates for metallurgical coal production levels in 2012
+* !!!    Calibrated to reportes import volumes using 4% reduction of IHS level
+         COprodStats(met,mm,ss,trun,rco)
+          = COprodIHS(met,mm,ss,trun,rco)*0.96;
 
-COstatistics('prod IHS',trun,r) = sum((COf,mm,ss,rco)$rco_sup(rco,r),
-                                         COprodIHS(COf,mm,ss,trun,rco))
-
+COstatistics('coal prod IHS',trun,r) = sum((coal,mm,ss,rco)$rco_sup(rco,r),
+                                         COprodIHS(coal,mm,ss,trun,rco));
+COstatistics('met prod IHS',trun,r) = sum((met,mm,ss,rco)$rco_sup(rco,r),
+                                         COprodStats(met,mm,ss,trun,rco));
 
 loop(r,
-         COprodStats('coal',mm,ss,trun,rco)$(rco_sup(rco,r)
-                 and coalcv('coal',mm,ss,'raw',trun,rco))=
-         COstatistics('production',trun,r)/COstatistics('prod IHS',trun,r)
-         *COprodIHS('coal',mm,ss,trun,rco);
+         COprodStats(coal,mm,ss,trun,rco)$(rco_sup(rco,r)
+                         and COstatistics('coal prod IHS',trun,r)>0)=
+         (COstatistics('Production',trun,r)-COstatistics('met prod IHS',trun,r))
+         *COprodIHS(coal,mm,ss,trun,rco)/COstatistics('coal prod IHS',trun,r);
 );
 
-*        uSE ihs for metallurgical coal production level in 2012
-         COprodStats(met,mm,ss,trun,rco)
-          = COprodIHS(met,mm,ss,trun,rco);
-
-
-         COprodStats(COf,mm,ss,trun,rco)=
-         COprodStats(COf,mm,ss,trun,rco)*(1$met(COf) + 0.89$coal(COf));
+*         COprodStats(COf,mm,ss,trun,rco)=
+*         COprodStats(COf,mm,ss,trun,rco)*(1$met(COf) + 1$coal(COf));
 
 *        fix production levels to those reported in IHS coal rush data or
 *        China Energy statistics
-         COexistcp.fx(COf,mm,ss,trun,rco)$(COmine(COf,mm,ss,rco)
+         COexistcp.up(COf,mm,ss,trun,rco)$(COmine(COf,mm,ss,rco)
                  and ord(trun)=1)=COprodStats(COf,mm,ss,trun,rco);
-
 *         COprodIHS(COf,mm,ss,trun,rco);
 
-
-
-
-*        Dual variables that are not matched in the primal problem
-*         DCOprodfx.fx(COf,sulf,mm,ss,trun,rco)$(
-*                    COprodyield(COf,mm,ss,'washed',trun,rco)<=0
-*                 or COprodyield(COf,mm,ss,'other',trun,rco)<=0)=0;
-
-
-         COomcst(COf,mm,ss,rw,trun,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,trun,rco);
+*         COomcst(COf,mm,ss,rw,trun,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,trun,rco);
 Equations
 * ====================== Primal Relationships =================================*
          COobjective
@@ -375,7 +362,7 @@ Equations
          COopmaintbal(trun) accumulates operations and maintenance costs
 
          COcapbal(COf,mm,ss,trun,rco) coal production balance
-         COcaplim(COf,sulf,mm,ss,trun,rco) coal production capacity constraint
+         COcaplim(COf,mm,ss,trun,rco) coal production capacity constraint
 
          COsulflim(sulf,trun,rco) constraint on coal sulfur content in each region
          COwashcaplim(COf,mm,ss,trun,rco)
@@ -425,11 +412,24 @@ COcapbal(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco)..COexistcp(COf,mm,ss,t,rco)+
          CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
          -COexistcp(COf,mm,ss,t+1,rco)=g=0;
 
-COcaplim(COf,sulf,mm,ss,t,rco)$(COmine(COf,mm,ss,rco) and COsulf(sulf,rco))..
-(COexistcp(COf,mm,ss,t,rco)+CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))*COsulfur(sulf,t,rco)
--sum((rw)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco)),
-         COprod(COf,sulf,mm,ss,rw,t,rco))   =g= 0 ;
+COcaplim(COf,mm,ss,t,rco)$(COmine(COf,mm,ss,rco))..
+*
 
+COexistcp(COf,mm,ss,t,rco)
++CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
+  -sum((sulf,rw)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco) and COsulf(sulf,rco)),
+                 COprod(COf,sulf,mm,ss,rw,t,rco)) =g= 0
+;
+
+
+COsulflim(sulf,t,rco)$COsulf(sulf,rco)  ..
+
+  +COsulfur(sulf,t,rco)*sum((COf,mm,ss)$COmine(COf,mm,ss,rco),
+          COexistcp(COf,mm,ss,t,rco)
+         +CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
+
+  -sum((COf,mm,ss,rw)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco)),
+         COprod(COf,sulf,mm,ss,rw,t,rco))   =g= 0 ;
 
 
 COwashcaplim(COf,mm,ss,t,rco)$(coal(COf) and COmine(COf,mm,ss,rco) and COwashratio(COf,mm,ss,'t11',rco)>0)..
@@ -439,12 +439,6 @@ COwashcaplim(COf,mm,ss,t,rco)$(coal(COf) and COmine(COf,mm,ss,rco) and COwashrat
   -sum((sulf,rw)$(COrw(COf,mm,ss,sulf,rw,rco) and rwashed(rw)),
          COprod(COf,sulf,mm,ss,rw,t,rco))   =g= 0 ;
 
-COsulflim(sulf,t,rco)$COsulf(sulf,rco)  ..
-
-  +COsulfur(sulf,t,rco)*sum((COf,mm,ss)$COmine(COf,mm,ss,rco),
-         COexistcp(COf,mm,ss,t,rco)+CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
-  -sum((COf,mm,ss,rw)$(rwashed(rw) and COrw(COf,mm,ss,sulf,rw,rco)),
-         COprod(COf,sulf,mm,ss,rw,t,rco))   =g= 0 ;
 $ontext
 COashlim(t)..
 COashDist(ash)*sum((COf,mm,ss,rco)$COmine(COf,mm,ss,rco),COexistcp(COf,mm,ss,t,rco)+CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
@@ -500,8 +494,8 @@ Dcoalprod(COf,cv,sulf,t,rco)$(COcvrco(COf,cv,sulf,t,rco)).. 0=g=
 DCOprod(COf,sulf,mm,ss,rw,t,rco)$COrw(COf,mm,ss,sulf,rw,rco)..   0 =g=
 *$(COrw(COf,mm,ss,sulf,rw,rco) )
    COomcst(COf,mm,ss,rw,t,rco)*COprodyield(COf,mm,ss,rw,t,rco)*DCOopmaintbal(t)$COrw(COf,mm,ss,sulf,rw,rco)
-   -DCOcaplim(COf,sulf,mm,ss,t,rco)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco))
-*   +DCOsulflim(sulf,t,rco)$(not rwother(rw) and COsulf(sulf,rco) and COrw(COf,mm,ss,sulf,rw,rco))
+   -DCOcaplim(COf,mm,ss,t,rco)$(not rwother(rw))
+   -DCOsulflim(sulf,t,rco)$(not rwother(rw) and COsulf(sulf,rco))
    -DCOwashcaplim(COf,mm,ss,t,rco)$(coal(COf) and rwashed(rw) and COwashratio(COf,mm,ss,'t11',rco)>0)
 
 
@@ -515,10 +509,10 @@ DCOprod(COf,sulf,mm,ss,rw,t,rco)$COrw(COf,mm,ss,sulf,rw,rco)..   0 =g=
 ;
 
 DCOexistcp(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco).. 0 =g=
-   sum(sulf,DCOcaplim(COf,sulf,mm,ss,t,rco)*COsulfur(sulf,t,rco))
+   DCOcaplim(COf,mm,ss,t,rco)
    +DCOcapbal(COf,mm,ss,t,rco)
    -DCOcapbal(COf,mm,ss,t-1,rco)
-*   -sum(sulf$COsulf(sulf,rco),COsulfur(sulf,t,rco)*DCOsulflim(sulf,t,rco))
+   +sum(sulf$COsulf(sulf,rco),COsulfur(sulf,t,rco)*DCOsulflim(sulf,t,rco))
    +(DCOwashcaplim(COf,mm,ss,t,rco)*
          COwashratio(COf,mm,ss,'t11',rco))$(coal(COf) and COwashratio(COf,mm,ss,'t11',rco)>0)
 
@@ -530,8 +524,8 @@ DCObld(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco) .. 0 =g=
    COpurcst(COf,mm,t,rco)*DCOpurchbal(t)
    +COconstcst(COf,mm,ss,t,rco)*DCOcnstrctbal(t)
    +DCOcapbal(COf,mm,ss,t+COleadtime(COf,mm,rco),rco)
-   +sum(sulf,DCOcaplim(COf,sulf,mm,ss,t+COleadtime(COf,mm,rco),rco)*COsulfur(sulf,t,rco))
-*   -sum(sulf$COsulf(sulf,rco),COsulfur(sulf,t,rco)*DCOsulflim(sulf,t+COleadtime(COf,mm,rco),rco))
+   +DCOcaplim(COf,mm,ss,t+COleadtime(COf,mm,rco),rco)
+   +sum(sulf$COsulf(sulf,rco),COsulfur(sulf,t,rco)*DCOsulflim(sulf,t+COleadtime(COf,mm,rco),rco))
    +(DCOwashcaplim(COf,mm,ss,t+COleadtime(COf,mm,rco),rco)*
          COwashratio(COf,mm,ss,'t11',rco))$(coal(COf) and COwashratio(COf,mm,ss,'t11',rco)>0)
    -DCOprodlim(COf,mm,ss,t+COleadtime(COf,mm,rco),rco)$(coal_cap=1)
