@@ -238,6 +238,15 @@ Sets
                                 Hydrolg,Hydrosto,HydroROR,
                                 Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
                                 Superc,Ultrsc/
+
+         ELc power plant companies
+*/ELog, ELcoal, ELnuc, ELhyd, ELwind/
+                              /ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
+                                Hydrolg,Hydrosto,HydroROR,
+                                Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                Superc,Ultrsc/
+
+*         ELcELp(ELc,ELp) bundle of plants belonging to a given company
          ELpd(ELp) dispatchable technologies /Nuclear,SubcrSML,SubcrLRG,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
          ELps(ELp) solar technologies /PV/
          ELpog(ELp) oil and gas fueled technologies /ST,GT,CC,CCcon/
@@ -327,7 +336,13 @@ Sets
 
          ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
 
-
+$ontext
+         ELcELp('ELcoal',ELpcoal) = yes;
+         ELcELp('ELcoal',ELpog) = yes;
+         ELcELp('ELcoal',ELpw) = yes;
+         ELcELp('ELnuc',ELpnuc) = yes;
+         ELcELp('ELcoal',ELphyd) = yes;
+$offtext
 
          ELpgttocc(ELpd)=no;
          ELpgttocc('GTtoCC')=yes;
@@ -583,12 +598,16 @@ Variables
 
          DELnucconstraint(ELl,trun,r)
 
-Positive variables
 
          ELsubsidy(ELp,v,trun,r)
+
+Positive variables
+
+
+
+         ELtariff(ELp,v,trun,r)
          ELfitv(ELp,trun,r)
          ELsubsidywind(ELp,v,trun,r)
-         ELsubsidycoal(Elp,v,trun,r)
 
 *electricity production activities
          ELbld(ELp,v,trun,r) Construction of new conventional power plants in GW
@@ -681,7 +700,6 @@ Positive variables
 
 * Duals for profit constraint and wind target
          DELprofit(ELp,v,trun,r)
-         DELprofitcoal(Elp,v,trun,r)
          DELwindtarget(trun)
 
 *Duals for electricity

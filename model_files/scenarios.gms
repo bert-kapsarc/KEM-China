@@ -10,20 +10,14 @@
          DELTA(Elp,v,trun,r)=
          ELtariffmax(Elp,r)*ELparasitic(Elp,v)-ELomcst(Elp,v,r);
 
-         ELpfixedcost(Elp,v,trun,r)=
-         (ELfixedOMcst(ELp)+ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
+         ELpfixedcost(Elp,v,trun,r) =
+         ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
 
 
-         ELpsunkcost(ELpd,v,trun,r)=
+         ELpsunkcost(ELpd,v,trun,r) =
           ELfixedOMcst(ELpd)
          +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
-         (1$(vn(v) or ELpnuc(ELpd)) + 0$(not ELpnuc(Elpd) and vo(v)))
-;
-         ELpsunkcost(ELpd,v,trun,r)$ELpsubcr(ELpd)=
-          ELfixedOMcst(ELpd)
-         +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
-         (1$(vn(v)) + 0$(vo(v)))
-;
+         (1$(vn(v)) + 0$(vo(v) and not ELpnuc(ELpd)));
 
          ELpsunkcost(ELp,v,trun,r)$ELphyd(Elp)=
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r))*0;

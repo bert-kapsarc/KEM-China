@@ -239,7 +239,7 @@ parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
 
          EMfgcomcst(fgc) = EMfgcomcst(fgc);
 
-* !!!    electricity consumption of fgc system defined as % of thermal eff
+* !!!    electricity consumption of fgc system defined as % of total
          EMfgcpower('extlow',DeSOx,noDeNOx) = 0.015;
          EMfgcpower('low',DeSOx,noDeNOx) = 0.015;
          EMfgcpower('med',DeSOx,noDeNOx) = 0.017;

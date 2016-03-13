@@ -25,46 +25,42 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
+
+
+$INCLUDE short_run.gms
+*$INCLUDE new_stock.gms
+
 *parameter contract;
 
 *!!!     Turn on max on-grid tariff
 *         ELptariff(ELpd,v) = yes;
 *         ELptariff(ELpw,v) = yes;
 *         ELptariff(ELphyd,v) = yes;
+*         ELcELp(ELc,ELp) = no;
 
 *!!!     Turn on railway construction tax
 *         COrailCFS=1;
 
-
-*$offtext
-*         COrailCFS=1;
-
-         ELpfit=0;
+         ELpfit=1;
 *         EL2020=1;
 *         ELfitv.fx(Elpw,trun,r) = 0;
 
-*         option savepoint=2;
+         option savepoint=2;
          option MCP=PATH;
          PowerMCP.optfile=1;
-
-*
 
 *         execute_loadpoint "LongRunWind2020.gdx" ELwindtarget, Elwindop ;
 *         ELfitv.fx(Elpw,trun,r) =
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
 
-*$INCLUDE short_run.gms
-*$INCLUDE new_stock.gms
-
          PowerMCP.scaleopt=1;
 
          ELprofit.scale(ELp,v,t,r)=1e3;
          DELprofit.scale(ELp,v,t,r)=1e-3;
 
-         execute_loadpoint "LongRunNoFIT.gdx"
+         execute_loadpoint "PowerMCP_p1.gdx"
          Solve PowerMCP using MCP;
-
 
 $INCLUDE RW_EL.gms
 $INCLUDE RW_CO.gms

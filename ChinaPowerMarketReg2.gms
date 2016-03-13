@@ -28,9 +28,9 @@ $INCLUDE scenarios.gms
 parameter contract;
 
 *!!!     Turn on max on-grid tariff
-         ELptariff(ELpd,v) = yes;
-         ELptariff(ELpw,v) = yes;
-         ELptariff(ELphyd,v) = yes;
+*         ELptariff(ELpd,v)$(not ELpgttocc(ELpd)) = yes;
+*         ELptariff(ELpw,v) = yes;
+*         ELptariff(ELphyd,v) = yes;
 
 *!!!     Turn on railway construction tax
          COrailCFS=1;
@@ -39,9 +39,14 @@ parameter contract;
 *$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
-         ELpfit=1;
+
+         ELpfit=0;
 *         EL2020=1;
 *         ELfitv.fx(Elpw,trun,r) = 0;
+
+*         Elsubsidy.up(ELc,t,r) =0;
+*         Elsubsidy.up('ELnuc',t,r) =0;
+
 
          option savepoint=1;
          option MCP=PATH;
@@ -56,10 +61,10 @@ parameter contract;
 
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELp,v,t,r)=1e3;
-         DELprofit.scale(ELp,v,t,r)=1e-3;
+         ELprofit.scale(ELc,t,r)=1e3;
+         DELprofit.scale(ELc,t,r)=1e-3;
 
-         execute_loadpoint "LongRunTariff";
+         execute_loadpoint "LongRunNoFITReg";
          Solve PowerMCP using MCP;
 
 

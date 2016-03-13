@@ -391,6 +391,7 @@ Order=1,3,2
 Decim=7
 PlaneRownr=1
 PlaneFilter1=met
+Sorted=YYY
 
 [GDXDISP: partialdereg Par 0]
 PlaneDim=0
@@ -1282,10 +1283,10 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: COdemOther Equ 3]
-PlaneDim=0
+PlaneDim=1
 RowDim=3
 Squeeze=1
-Order=1,2,3,4
+Order=4,1,2,3
 Decim=7
 PlaneRownr=-1
 SqTrail0=0
@@ -1724,16 +1725,6 @@ Decim=7
 PlaneRownr=-1
 SqTrail0=0
 
-[GDXDISP: ELfuelburn Par 4]
-PlaneDim=1
-RowDim=2
-Squeeze=1
-Order=3,2,4,1
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=u-235
-SqTrail0=0
-
 [GDXDISP: ELtrans Var 4]
 PlaneDim=2
 RowDim=2
@@ -1851,7 +1842,7 @@ RowDim=2
 Squeeze=1
 Order=4,3,1,2
 Decim=7
-PlaneRownr=10
+PlaneRownr=-1
 SqTrail0=0
 Sorted=YYY
 PlaneFilter1=Level
@@ -1891,16 +1882,6 @@ Squeeze=1
 Order=
 Decim=7
 PlaneRownr=-1
-SqTrail0=0
-
-[GDXDISP: ELwindop Var 5]
-PlaneDim=1
-RowDim=3
-Squeeze=1
-Order=6,1,4,5,3,2
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Marginal
 SqTrail0=0
 
 [GDXDISP: ELhydbld Var 4]
@@ -2454,10 +2435,10 @@ PlaneRownr=-1
 SqTrail0=0
 
 [GDXDISP: ELupspincap Var 6]
-PlaneDim=2
+PlaneDim=1
 RowDim=4
 Squeeze=1
-Order=7,1,2,4,5,6,3
+Order=1,2,4,5,6,7,3
 Decim=7
 PlaneRownr=-1
 SqTrail0=0
@@ -2681,7 +2662,7 @@ RowDim=1
 Squeeze=1
 Order=2,3,1
 Decim=7
-PlaneRownr=1
+PlaneRownr=-1
 PlaneFilter1=new
 SqTrail0=0
 
@@ -2740,10 +2721,10 @@ PlaneRownr=-1
 PlaneFilter1=w2
 
 [GDXDISP: ELhydcaplim Equ 5]
-PlaneDim=0
-RowDim=5
+PlaneDim=1
+RowDim=4
 Squeeze=1
-Order=1,2,3,4,5,6
+Order=6,1,3,4,5,2
 Decim=7
 PlaneRownr=-1
 SqTrail0=0
@@ -4447,16 +4428,6 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: coaluse Var 6]
-PlaneDim=2
-RowDim=5
-Squeeze=1
-Order=7,1,2,3,4,5,6
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Level
-PlaneFilter2=lignite
-
 [GDXDISP: COexistcp Var 5]
 PlaneDim=1
 RowDim=4
@@ -4717,9 +4688,9 @@ RowDim=2
 Squeeze=1
 Order=5,4,2,3,1
 Decim=7
-PlaneRownr=-1
+PlaneRownr=1
 PlaneFilter1=Level
-PlaneFilter2=Shandong
+PlaneFilter2=Central
 
 [RP:SOLVE_RECURSIVE]
 1=
@@ -5569,15 +5540,6 @@ Order=4,1,2,3
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: COstatistics Par 3]
-PlaneDim=1
-RowDim=1
-Squeeze=1
-Order=1,2,3
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=production
-
 [GDXDISP: COsup Equ 7]
 PlaneDim=0
 RowDim=7
@@ -6345,8 +6307,8 @@ RowDim=3
 Squeeze=1
 Order=5,1,2,4,6,3
 Decim=7
-PlaneRownr=-1
-PlaneFilter1=Level
+PlaneRownr=9
+PlaneFilter1=CoalC
 PlaneFilter2=East
 
 [RP:CREATE_MCP]
@@ -7657,13 +7619,14 @@ PlaneFilter2=CC
 1=
 
 [GDXDISP: ELgenELp Par 3]
-PlaneDim=1
-RowDim=2
+PlaneDim=2
+RowDim=1
 Squeeze=1
-Order=3,1,2
+Order=3,2,1
 Decim=7
-PlaneRownr=-1
+PlaneRownr=13
 PlaneFilter1=China
+PlaneFilter2=t12
 
 [GDXDISP: rco_dem Set 2]
 PlaneDim=1
@@ -8510,8 +8473,9 @@ RowDim=2
 Squeeze=1
 Order=1,3,4,2
 Decim=7
-PlaneRownr=8
-PlaneFilter1=Hydrosto
+PlaneRownr=9
+PlaneFilter1=Subcr
+Sorted=YYYY
 
 [GDXDISP: ELppd Alias 1]
 PlaneDim=0
@@ -8668,15 +8632,6 @@ Order=1,2
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: ELpsunkcost Par 4]
-PlaneDim=2
-RowDim=1
-Squeeze=1
-Order=4,3,1,2
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Hydrolg
-
 [GDXDISP: ELpcapmod Par 1]
 PlaneDim=0
 RowDim=1
@@ -8700,7 +8655,7 @@ Squeeze=1
 Order=1,2
 Decim=7
 PlaneRownr=-1
-PlaneFilter1=Ultrsc
+PlaneFilter1=GTtoCC
 
 [GDXDISP: ELoploc Var 8]
 PlaneDim=0
@@ -8778,8 +8733,8 @@ RowDim=2
 Squeeze=1
 Order=4,1,3,2
 Decim=7
-PlaneRownr=-1
-PlaneFilter1=China
+PlaneRownr=8
+PlaneFilter1=Henan
 
 [GDXDISP: ELtariffELp Par 6]
 PlaneDim=2
@@ -8895,9 +8850,9 @@ RowDim=3
 Squeeze=1
 Order=6,5,1,2,4,3
 Decim=7
-PlaneRownr=5
+PlaneRownr=-1
 PlaneFilter1=Level
-PlaneFilter2=South
+PlaneFilter2=East
 
 [RP:POWERSUBMODEL_DUAL]
 1=
@@ -8931,9 +8886,9 @@ RowDim=4
 Squeeze=1
 Order=7,3,1,2,5,6,4
 Decim=7
-PlaneRownr=3
+PlaneRownr=2
 PlaneFilter1=Level
-PlaneFilter2=methane
+PlaneFilter2=u-235
 
 [GDXDISP: ELop Var 12]
 PlaneDim=0
@@ -9177,16 +9132,6 @@ Order=
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: ELbld Var 4]
-PlaneDim=2
-RowDim=3
-Squeeze=1
-Order=5,1,2,3,4
-Decim=7
-PlaneRownr=-1
-PlaneFilter1=Level
-PlaneFilter2=Ultrsc
-
 [GDXDISP: ELtrans Var 5]
 PlaneDim=2
 RowDim=3
@@ -9350,9 +9295,6 @@ PlaneRownr=14
 PlaneFilter1=Marginal
 PlaneFilter2=Central
 
-[RP:SCENARIO_FLAGS]
-1=
-
 [GDXDISP: ELpfgc Set 5]
 PlaneDim=1
 RowDim=3
@@ -9499,16 +9441,6 @@ Order=5,1,2,3,4
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: ELbldELp Par 3]
-PlaneDim=2
-RowDim=1
-Squeeze=1
-Order=3,2,1
-Decim=7
-PlaneRownr=8
-PlaneFilter1=China
-PlaneFilter2=t12
-
 [GDXDISP: ELwindtarget Equ 1]
 PlaneDim=0
 RowDim=1
@@ -9551,13 +9483,15 @@ PlaneRownr=-1
 PlaneFilter1=HydroROR
 
 [GDXDISP: ELtransTot Par 3]
-PlaneDim=1
-RowDim=2
+PlaneDim=2
+RowDim=1
 Squeeze=1
 Order=3,1,2
 Decim=7
-PlaneRownr=8
-PlaneFilter1=Henan
+PlaneRownr=6
+PlaneFilter1=out
+Sorted=YYY
+PlaneFilter2=t12
 
 [GDXDISP: COtranstot Par 4]
 PlaneDim=1
@@ -9566,7 +9500,8 @@ Squeeze=1
 Order=4,2,3,1
 Decim=7
 PlaneRownr=-1
-PlaneFilter1=South
+PlaneFilter1=West
+Sorted=YYYY
 
 [GDXDISP: COtransexist Par 3]
 PlaneDim=1
@@ -9592,11 +9527,8 @@ RowDim=1
 Squeeze=1
 Order=1,2
 Decim=7
-PlaneRownr=-1
+PlaneRownr=2
 PlaneFilter1=Revenue
-
-[RP:SETSANDVARIABLES]
-1=
 
 [GDXDISP: ELpsuperc Set 1]
 PlaneDim=0
@@ -9614,9 +9546,6 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[RP:SCENARIOS]
-1=
-
 [GDXDISP: ELprofit Equ 4]
 PlaneDim=0
 RowDim=4
@@ -9628,7 +9557,75 @@ PlaneRownr=-1
 [RP:SHORT_RUN]
 1=
 
-[RP:RW_PARAM]
+[GDXDISP: COtranstonkm Par 2]
+PlaneDim=1
+RowDim=1
+Squeeze=1
+Order=2,1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELTA Par 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELfitv Equ 3]
+PlaneDim=0
+RowDim=3
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELwindop Var 5]
+PlaneDim=1
+RowDim=4
+Squeeze=1
+Order=6,1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+PlaneFilter1=Marginal
+
+[GDXDISP: ELpsunkcost Par 4]
+PlaneDim=1
+RowDim=2
+Squeeze=1
+Order=4,1,3,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DElsubsidy Equ 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DELsubsidycoal Equ 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[RP:SCENARIO_FLAGS]
+1=
+
+[GDXDISP: DELrsrvbld Equ 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[RP:EMISSIONSUBMODEL]
 1=
 
 [RP:COALTRANSSUBMODEL]
@@ -9637,75 +9634,185 @@ PlaneRownr=-1
 3=idir =model_files;db; gdx=Power
 4=
 
-[RP:SCALARSANDPARAMETERS]
+[GDXDISP: COstatistics Par 3]
+Sorted=YYY
+PlaneDim=2
+RowDim=1
+Squeeze=1
+Order=2,1,3
+Decim=7
+PlaneRownr=4
+PlaneFilter1=t12
+PlaneFilter2=Power
+
+[GDXDISP: ELfuelburn Par 4]
+PlaneDim=1
+RowDim=2
+Squeeze=1
+Order=1,3,4,2
+Decim=7
+PlaneRownr=4
+PlaneFilter1=Nuclear
+
+[GDXDISP: ELprofit Var 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELc Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELcELp Set 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: ELtariff Var 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[RP:RW_PARAM]
 1=
+
+[RP:NEW_STOCK]
+1=
+
+[GDXDISP: ELsubsidy Var 3]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=4,1,2,3
+Decim=7
+PlaneRownr=-1
 
 [RP:RW_EL]
 1=
+
+[RP:SCALARSANDPARAMETERS]
+1=
+
+[RP:SCENARIOS]
+1=
+
+[GDXDISP: coaluse Var 6]
+PlaneDim=2
+RowDim=4
+Squeeze=1
+Order=7,6,2,3,4,5,1
+Decim=7
+PlaneRownr=14
+PlaneFilter1=Level
+PlaneFilter2=NMCBXilin
+
+[RP:CHINAPOWERMARKETREG2]
+1=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITRailTax
+2=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITTariff
+3=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITReg
+4=idir =model_files;db;integration_files;report_writer; 
+5=idir =model_files;db;integration_files;report_writer;  gdx=
+6=idir =model_files;db;integration_files;report_writer;  gdx=LongRunNoFITReg
+7=idir =model_files;db;integration_files;report_writer;  
+8=idir =model_files;db;integration_files;report_writer;  gdx=LongRunReg
+9=idir =model_files;db;integration_files;report_writer;  gdx=Reference
+10=idir =model_files;db;integration_files;report_writer;  gdx=LongRunNewStockReg
+11=idir =model_files;db;integration_files;report_writer;  gdx=LongRunReg 
+12=idir =model_files;db;integration_files;report_writer;  gdx=test
+13=idir =model_files;db;integration_files;report_writer;  gdx=LongRunNoFITRailTax
+14=idir =model_files;db;integration_files;report_writer;  gdx=LongRunNoFITTariff
+15=idir =model_files;db;integration_files;report_writer;  gdx=LongRunRailTax
+16=idir =model_files;db;integration_files;report_writer;  gdx=LongRunTariff
+17=idir =model_files;db;integration_files;report_writer;  gdx=LongRunTair
+18=idir =model_files;db;integration_files;report_writer;  gdx=LongRunR3e
+19=idir =model_files;db;integration_files;report_writer;  gdx=LongRunRa
+20=idir =model_files;db;integration_files;report_writer; gdx=LongRunTariff
+
+[RP:CHINAPOWERMARKET]
+1=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFIT
+2=idir =model_files;db;integration_files;report_writer; gdx=LongRun
+3=idir =model_files;db;integration_files;report_writer; gdx=Reference
+4=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStock
+5=idir =model_files;db;integration_files;report_writer; gdx=ShortRun
+6=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITRailTax
+7=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITReg
+8=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITTariff
+9=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoTariffRailTax
+10=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoTariff
+11=idir =model_files;db;integration_files;report_writer; gdx=LongRun2
+12=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020
+13=idir =model_files;db;integration_files;report_writer; gdx=LongRunwind2020
+14=idir =model_files;db;integration_files;report_writer; gdx=NewStock
+15=idir =model_files;db;integration_files;report_writer;
+16=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind
+17=idir =model_files;db;integration_files;report_writer; gdx=LongRunTariff
+18=idir =model_files;db;integration_files;report_writer; gdx=Reference_nofit
+19=
+
+[RP:CHINAPOWERMARKETREG]
+1=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITRailTax
+2=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITTariff
+3=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFITReg
+4=idir =model_files;db;integration_files;report_writer; gdx=LongRunReg
+5=idir =model_files;db;integration_files;report_writer; gdx=Reference
+6=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoFIT
+7=idir =model_files;db;integration_files;report_writer; gdx=LongRunNoTariffRailTax
+8=idir =model_files;db;integration_files;report_writer; gdx=test
+9=idir =model_files;db;integration_files;report_writer;
+10=idir =model_files;db;integration_files;report_writer; 
+11=idir =model_files;db;integration_files;report_writer;  gdx=Reference
+12=idir =model_files;db;integration_files; report_writer; gdx=test
+13=idir =model_files;db;integration_files;report_writer;  gdx=test
+14=idir =model_files;db;integration_files;report_writer;  gdx=LongRunTariff
+15=idir =model_files;db;integration_files;report_writer;  gdx=LongRunWind2020Reg
+16=idir =model_files;db;integration_files;report_writer;  gdx=LongRunNewStockReg
+17=idir =model_files;db;integration_files;report_writer;  gdx=NewStockReg
+18=idir =model_files;db;integration_files;report_writer;  gdx=LongRuNewStockReg
+19=idir =model_files;db;integration_files;report_writer;  gdx=LongRunWind2020RailTax
+20=idir =model_files;db;integration_files;report_writer;  gdx=LongRunWind2020Tariff
+
+[GDXDISP: ELbldELp Par 3]
+PlaneDim=2
+RowDim=1
+Squeeze=1
+Order=3,2,1
+Decim=7
+PlaneRownr=8
+PlaneFilter1=China
+PlaneFilter2=t12
+
+[GDXDISP: ELbld Var 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
 
 [RP:POWERSUBMODEL]
 1=
 2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
 3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
 
-[RP:EMISSIONSUBMODEL]
+[RP:SETSANDVARIABLES]
 1=
 
-[RP:CHINAPOWERMARKETREG2]
-1=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStockRegFGC
-2=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStockReg
-3=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020RailTax
-4=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020Tariff
-5=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020Reg
-6=idir =model_files;db;integration_files;report_writer; gdx=LongRunTariff
-7=idir =model_files;db;integration_files;report_writer; gdx=LongRunReg
-8=idir =model_files;db;integration_files;report_writer; gdx=LongRunRailTax
-9=idir =model_files;db;integration_files;report_writer; gdx=Reference
-10=idir =model_files;db;integration_files;report_writer; gdx=Reference2
-11=
-
-[RP:CHINAPOWERMARKET]
-1=idir =model_files;db;integration_files;report_writer; gdx=NewStock
-2=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStock
-3=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020
-4=idir =model_files;db;integration_files;report_writer; gdx=LongRun
-5=idir =model_files;db;integration_files;report_writer; gdx=ShortRun
-6=idir =model_files;db;integration_files;report_writer;
-7=idir =model_files;db;integration_files;report_writer; gdx=Reference
-8=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind
-9=idir =model_files;db;integration_files;report_writer; gdx=LongRun2
-10=idir =model_files;db;integration_files;report_writer; gdx=LongRunTariff
-11=idir =model_files;db;integration_files;report_writer; gdx=Reference_nofit
-12=
-
-[RP:CHINAPOWERMARKETREG]
-1=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStockReg
-2=idir =model_files;db;integration_files;report_writer; gdx=LongRunWInd2020RailTax
-3=idir =model_files;db;integration_files;report_writer; gdx=LongRunWInd2020Tariff
-4=idir =model_files;db;integration_files;report_writer; gdx=LongRunWInd2020Reg
-5=idir =model_files;db;integration_files;report_writer; gdx=LongRunReg
-6=idir =model_files;db;integration_files;report_writer; gdx=LongRunTariff
-7=idir =model_files;db;integration_files;report_writer; gdx=NewStockReg
-8=idir =model_files;db;integration_files;report_writer; gdx=Reference
-9=idir =model_files;db;integration_files;report_writer; gdx=LongRunRailTax
-10=idir =model_files;db;integration_files;report_writer; gdx=Reference2
-11=idir =model_files;db;integration_files;report_writer; gdx=LonRunReg
-12=idir =model_files;db;integration_files;report_writer; gdx=LonRunRailTax
-13=idir =model_files;db;integration_files;report_writer; gdx=LonRunTariff
-14=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020RailTax
-15=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020Tariff
-16=idir =model_files;db;integration_files;report_writer; gdx=LongRunWind2020Reg
-17=idir =model_files;db;integration_files;report_writer; gdx=LongRunWindReg
-18=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStockRegFGC
-19=idir =model_files;db;integration_files;report_writer; gdx=LongRunNewStockRegfFGC
-20=idir =model_files;db;integration_files;report_writer; gdx=LongRunnewStockReg
-
 [MRUFILES]
-1=C:\Users\willbj0b\OneDrive\KEM_China\LonRunReg.gdx
-2=C:\Users\willbj0b\OneDrive\KEM_China\model_files\coaltranssubmodel.gms
-3=C:\Users\willbj0b\OneDrive\KEM_China\db\power.gdx
-4=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_param.gms
-5=C:\Users\willbj0b\OneDrive\KEM_China\PATH.opt
+1=C:\Users\willbj0b\OneDrive\KEM_China\LongRunTariffRailTax.gdx
+2=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarketReg.gms
 
 [OPENWINDOW_1]
 FILE0=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarket.gms
@@ -9714,23 +9821,28 @@ FILE2=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarketReg.gms
 FILE3=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarketReg.lst
 FILE4=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarketReg2.gms
 FILE5=C:\Users\willbj0b\OneDrive\KEM_China\ChinaPowerMarketReg2.lst
-FILE6=C:\Users\willbj0b\OneDrive\KEM_China\emissionsubmodel.lst
+FILE6=C:\Users\willbj0b\OneDrive\KEM_China\integration_files\new_stock.gms
 FILE7=C:\Users\willbj0b\OneDrive\KEM_China\LongRun.gdx
-FILE8=C:\Users\willbj0b\OneDrive\KEM_China\LongRunRailTax.gdx
-FILE9=C:\Users\willbj0b\OneDrive\KEM_China\LongRunReg.gdx
-FILE10=C:\Users\willbj0b\OneDrive\KEM_China\LongRunTariff.gdx
-FILE11=C:\Users\willbj0b\OneDrive\KEM_China\model_files\emissionsubmodel.gms
-FILE12=C:\Users\willbj0b\OneDrive\KEM_China\model_files\powersubmodel.gms
-FILE13=C:\Users\willbj0b\OneDrive\KEM_China\model_files\ScalarsandParameters.gms
-FILE14=C:\Users\willbj0b\OneDrive\KEM_China\NewStock.gdx
-FILE15=C:\Users\willbj0b\OneDrive\KEM_China\NewStockReg.gdx
-FILE16=C:\Users\willbj0b\OneDrive\KEM_China\Reference.gdx
-FILE17=C:\Users\willbj0b\OneDrive\KEM_China\Reference2.gdx
-FILE18=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_EL.gms
-FILE19=C:\Users\willbj0b\OneDrive\KEM_China\ShortRun.gdx
-FILE20=C:\Users\willbj0b\OneDrive\KEM_China\NewStockReg.gdx
+FILE8=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNewStock.gdx
+FILE9=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNewStockReg.gdx
+FILE10=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNoFIT.gdx
+FILE11=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNoFITRailTax.gdx
+FILE12=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNoFITReg.gdx
+FILE13=C:\Users\willbj0b\OneDrive\KEM_China\LongRunNoFITTariff.gdx
+FILE14=C:\Users\willbj0b\OneDrive\KEM_China\LongRunReg.gdx
+FILE15=C:\Users\willbj0b\OneDrive\KEM_China\model_files\powersubmodel.gms
+FILE16=C:\Users\willbj0b\OneDrive\KEM_China\model_files\ScalarsandParameters.gms
+FILE17=C:\Users\willbj0b\OneDrive\KEM_China\model_files\scenarios.gms
+FILE18=C:\Users\willbj0b\OneDrive\KEM_China\model_files\SetsandVariables.gms
+FILE19=C:\Users\willbj0b\OneDrive\KEM_China\powersubmodel.lst
+FILE20=C:\Users\willbj0b\OneDrive\KEM_China\Reference.gdx
+FILE21=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_EL.gms
+FILE22=C:\Users\willbj0b\OneDrive\KEM_China\report_writer\RW_param.gms
+FILE23=C:\Users\willbj0b\OneDrive\KEM_China\ShortRun.gdx
+FILE24=C:\Users\willbj0b\OneDrive\KEM_China\test.gdx
+FILE25=C:\Users\willbj0b\OneDrive\KEM_China\model_files\powersubmodel.gms
 MAXIM=0
-TOP=52
-LEFT=52
-HEIGHT=630
-WIDTH=1613
+TOP=15
+LEFT=35
+HEIGHT=810
+WIDTH=1690

@@ -179,8 +179,18 @@ ELtariffELp(ELphyd,v,trun,r)$(sum(ELl,ELhydop.l(ELphyd,v,ELl,trun,r))>0)
 ;
 *$offtext
 
-ELsubsidyELp(ELp,v,trun,r)$(sum(ELl,ELsalesELp(ELp,v,ELl,trun,r))>0)
- = Elsubsidy.l(ELp,v,trun,r)/sum(ELl,ELsalesELp(ELp,v,ELl,trun,r))
+ELsubsidyELp(ELp,v,trun,r)
+ =
+  +(  ELwindbld.l(ELp,v,trun,r)$(vn(v) and ELpw(ELp))
+     +ELhydbld.l(ELp,v,trun,r)$(vn(v) and ELphyd(ELp))
+     +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
+         ELbld.l(Elppd,v,trun,r))$ELpd(ELp)
+   )*ELpfixedcost(ELp,v,trun,r)*ELsubsidy.l(ELp,v,trun,r)
+
+  +(  ELwindexistcp.l(ELp,v,trun,r)$(ELpw(ELp))
+     +ELhydexistcp.l(ELp,v,trun,r)$ELphyd(ELp)
+     +Elexistcp.l(ELp,v,trun,r)$ELpd(ELp)
+  )*ELpsunkcost(ELp,v,trun,r)*ELsubsidy.l(ELp,v,trun,r)
 ;
 
 parameter Accounting utilities costs from the original LP's objective value
@@ -264,22 +274,7 @@ sum(trun,ELdiscfact(trun)*(
 
 ))
 
-*+sum((ELp,v,trun,r)$ELptariff(ELp,v),ELcostsELp(ELp,v,trun,r))
-
-  +sum((ELp,v,trun,r)$ELptariff(ELp,v),
-         Elsubsidy.l(ELp,v,trun,r)
-         +sum(ELl,ELtariffmax(Elp,r)*ELparasitic(Elp,v)*
-                 ( sum(Elf,ELop.l(ELp,v,ELl,ELf,trun,r))
-                  +ELwindop.l(ELp,v,ELl,trun,r)
-                  +ELhydop.l(ELp,v,ELl,trun,r) )
-         )
-         -sum((reg,cv,sulf,SOx,NOx),
-                 ELtariffmax(Elp,r)*
-                 ELCOconsump.l(ELp,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
-                 ELpCOparas(Elp,v,sulf,SOx,NOx,r)
-         )
-         -ELprofit.l(ELp,v,trun,r)
-  )
++sum((ELp,v,trun,r)$ELptariff(ELp,v),ELcostsELp(ELp,v,trun,r))
 
 +Accounting('Cost','China Government')
 
