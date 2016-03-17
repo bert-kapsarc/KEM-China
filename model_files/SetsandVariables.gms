@@ -176,6 +176,8 @@ set
          Henan(r) /Henan/
          Shandong(r) /Shandong/
 
+         Xinjiang(r) /Xinjiang/
+
          rdem_on(rco);
 
          Alias(North,N) ;
@@ -203,29 +205,29 @@ land(port) = no;
          rcodem(rco)$rco_dem(rco,r) = yes;
          );
 
-alias (r,rr);
-alias (rr,rrr);
-alias (rco,rrco);
-alias (rport,rrport);
-alias (rimp,rrimp);
-alias (rport_sea,rrport_sea);
-alias (rport_riv,rrport_riv);
+         alias (r,rr);
+         alias (rr,rrr);
+         alias (rco,rrco);
+         alias (rport,rrport);
+         alias (rimp,rrimp);
+         alias (rport_sea,rrport_sea);
+         alias (rport_riv,rrport_riv);
 
 
-alias (mm,mm2);
-alias (ss,ss2);
-alias (sulf,sulff);
+         alias (mm,mm2);
+         alias (ss,ss2);
+         alias (sulf,sulff);
 
 
 
-alias (rw,rww)
-alias (COf,COff);
+         alias (rw,rww)
+         alias (COf,COff);
 
-alias (ssi,ssii);
+         alias (ssi,ssii);
 
-set    ELs /summ/
+         set    ELs /summ/
 *,wint,spfa/
-alias (ELs,ELss)
+         alias (ELs,ELss)
 
 *Sets and variables specific to the submodels:
 
@@ -234,19 +236,20 @@ alias (ELs,ELss)
 Sets
          ELl load segment 1 = peak and 5 = base /LS1*LS5/
 
-         ELp power plant types /ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
-                                Hydrolg,Hydrosto,HydroROR,
-                                Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
-                                Superc,Ultrsc/
+         ELc power plant companies /     ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
+                                         Hydrolg,Hydrosto,HydroROR,
+                                         Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                         Superc,Ultrsc
+                                         ELbig
+                                   /
+         ELp(ELc) power plant types /    ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
+                                         Hydrolg,Hydrosto,HydroROR,
+                                         Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                         Superc,Ultrsc/
 
-         ELc power plant companies
-*/ELog, ELcoal, ELnuc, ELhyd, ELwind/
-                              /ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
-                                Hydrolg,Hydrosto,HydroROR,
-                                Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
-                                Superc,Ultrsc/
+         ELbig(ELc) Full regional market concentration /ELbig/
+         ELnuc(ELc) Nuclear power companies /Nuclear/
 
-*         ELcELp(ELc,ELp) bundle of plants belonging to a given company
          ELpd(ELp) dispatchable technologies /Nuclear,SubcrSML,SubcrLRG,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
          ELps(ELp) solar technologies /PV/
          ELpog(ELp) oil and gas fueled technologies /ST,GT,CC,CCcon/
@@ -259,7 +262,7 @@ Sets
          ELpspin(ELp) upsin plants used as renewable backup /GT,SubcrSML,SubcrLRG,Superc,Ultrsc/
          ELpsingle(Elp) sigle cycle and standalone steam plants (not coal) /GT,ST/
          ELphyd(ELp) hydro technologies /Hydrolg,Hydrosto, HydroROR/
-         ELphydsto(ELphyd) pumped storage hydro /Hydrosto/
+         ELphydsto(ELp) pumped storage hydro /Hydrosto/
          ELpw(ELp) wind technologies /Windon/
          ELpwon(ELpw) wind technologies /Windon/
 *         ELpwoff(ELpw) wind technologies /Windoff/
@@ -315,12 +318,22 @@ Sets
          DeNOx(fgc) /DeNOx/
          noDesox(sox) /noDeSOx/
          noDenox(nox) /noDeNOx/
+;
+         alias (ELp,ELpp);
+         alias (ELpd,ELppd);
+         alias (v,vv);
+         alias (ELphyd,ELpphyd);
+         alias (wstep,wwstep);
+         alias (ELl,ELll);
+         alias(ELl,ELlll);
 
-
+         sets
          ELpELf(Elp,f) fuel use for different generators
          ELpfss(Elp,f,fss) fuel use for different generators
          ELpfgc(Elp,cv,sulf,fgc,fgc) fuel use for different generators
          ELfCV(f,cv,sulf)
+         ELcELp(ELc,vv,ELp,v) bundle of plants belonging to a given company
+         ELctariff(Elc,v)
 ;
 
 
@@ -335,14 +348,6 @@ Sets
 
 
          ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
-
-$ontext
-         ELcELp('ELcoal',ELpcoal) = yes;
-         ELcELp('ELcoal',ELpog) = yes;
-         ELcELp('ELcoal',ELpw) = yes;
-         ELcELp('ELnuc',ELpnuc) = yes;
-         ELcELp('ELcoal',ELphyd) = yes;
-$offtext
 
          ELpgttocc(ELpd)=no;
          ELpgttocc('GTtoCC')=yes;
@@ -360,12 +365,7 @@ $offtext
 *         fDiesel('Diesel')=yes;
 
 
-alias (ELp,ELpp);
-alias (ELpd,ELppd);
-alias (ELphyd,ELpphyd);
-alias (wstep,wwstep);
-alias (ELl,ELll);
-alias(ELl,ELlll);
+
 
 
          Parameter
@@ -438,7 +438,7 @@ $gdxin
          ELfgctariff('DeNOx') = 10;
 
 ELtariffmax(ELpog,r) = ELtariffmax('CC',r) ;
-
+*ELtariffmax(ELphydsto,r) = ELtariffmax('Ultrsc',r) ;
 
 ELtariffmax(ELp,'Henan')$(ELtariffmax(ELp,'Henan')=0) = ELtariffmax(ELp,'Central');
 ELtariffmax(ELp,'CoalC')$(ELtariffmax(ELp,'CoalC')=0) = ELtariffmax(ELp,'North');
@@ -599,11 +599,12 @@ Variables
          DELnucconstraint(ELl,trun,r)
 
 
-         ELsubsidy(ELp,v,trun,r)
-
 Positive variables
 
 
+         ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
+         ELvarsub(ELp,v,ELl,trun,r)  Variable subsidy paid by government to compensate generators
+         ELdeficit(ELc,vv,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
          ELfitv(ELp,trun,r)
@@ -699,7 +700,7 @@ Positive variables
          DELCOcvlimit(Elpd,trun,r)
 
 * Duals for profit constraint and wind target
-         DELprofit(ELp,v,trun,r)
+         DELprofit(ELc,v,trun,r)
          DELwindtarget(trun)
 
 *Duals for electricity

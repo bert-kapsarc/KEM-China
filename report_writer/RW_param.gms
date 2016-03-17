@@ -33,7 +33,8 @@
 
          ELcostsELp Total cost by each technology
          ELtariffELp  Average Tarrif paid
-         ELsubsidyELp Costs by technology
+         ELsubsidyELp Total Subsidy paid by technology
+         ELdeficitELp Generator deficit minimized by technology
 
          ELsalesELp Regional electricity sales by plant type
 
@@ -103,7 +104,7 @@ Parameters
          COtrsea coal transported by sea
          COtrport coal leaving specific port
          COtranstot total coal transported between nodes by tranport mode
-         COtranstonkm total coal transported between nodes by tranport mode  
+         COtranstonkm total coal transported between nodes by tranport mode
          CotransbldD total distance of new rails lines built
          Cotransbldton total rail capacity built
          Cotransbldport total port capacity built

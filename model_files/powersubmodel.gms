@@ -113,7 +113,7 @@ Scalars
          ELreserve scale factor for reserve margin GW /1.1/
          ELwindspin fraction of wind gen defining spinning reserve  /0.2/
          ELusrfuelfrac ELfuelburn fraction for operating up spinning reserve /0.1/
-         ELusomfrac ELfuelburn fraction for operating up spinning reserve /0.1/
+         ELusomfrac cost fraction for operating up spinning reserve /0.1/
 ;
 
 Parameter ELdiscfact(time) discount factors for electricity sector
@@ -172,6 +172,8 @@ parameter
          ELomcst('Nuclear','new',r) =74.6;
 
          ELomcst('Nuclear','new',r) =38;
+
+         ELomcst('windon','new',r) =24; 
 * !!!    Nuclear omcst from Yuan 38
 
 
@@ -197,7 +199,7 @@ parameter
          GTtoCC   115
          CCcon    115
 
-         Windon   220.85
+         Windon   275.85
          Windoff  978.05
 
          SubcrSML    195
@@ -491,7 +493,7 @@ parameter
          Elpeff('SubcrLRG',v)      = 0.37;
          Elpeff('SubcrSML',v)      = 0.32;
          Elpeff('Superc',v)        = 0.41;
-         Elpeff('Ultrsc',v)        = 0.46;
+         Elpeff('Ultrsc',v)        = 0.45;
 
 * !!!    Efficiency penalty for older coal plants
          ELpeff(ELpcoal,vo)         = ELpeff(ELpcoal,'new');
@@ -594,41 +596,13 @@ $gdxin db\LDC.gdx
 $load ELlcgw
 $gdxin
 
-
-*        The parameter below is used to flatten the peak demand in region where
-*        The estimated load cureve exceeds the available capacity and reserve
-*        margin. SUggests either the demand estimation is incorrect or regions
-*        encountered some brown out periods due to insuffiecient capacity
-
-parameter ELlcgwdiff(r,ELl)  flatten load curve peak demand;
-
-         ELlcgwdiff('Xinjiang','LS1') =  0.6;
-         ELlcgwdiff('Northeast','LS1') =  0.41;
-         ELlcgwdiff(r,'LS2') =   ELlcgwdiff(r,'LS1')*.8;
-
-;
-         ELlcgw(r,ELl) = ELlcgw(r,ELl)-ELlcgwdiff(r,ELl);
-
-         loop(ELl$(ord(ELL)>1),
-              ELlcgw(r,ELl) = ELlcgw(r,ELl)+ELlcgwdiff(r,'LS1')*
-                 ELlchours('LS1')/ELlchours(ELl)*(card(Ell)-ord(ELl)+1)/sum(ELll$(ord(ELll)>=ord(ELl)),(ord(Elll)-1))
-         );
-
-         loop(ELl$(ord(ELL)>2),
-              ELlcgw(r,ELl) = ELlcgw(r,ELl)+ELlcgwdiff(r,'LS2')*
-                 ELlchours('LS2')/ELlchours(ELl)*(card(Ell)-ord(ELl)+1)/sum(ELll$(ord(ELll)>=ord(ELl)),(ord(Elll)-2))
-         );
-
-         loop(ELl$(ord(ELL)>3),
-              ELlcgw(r,ELl) = ELlcgw(r,ELl)+ELlcgwdiff(r,'LS3')*
-                 ELlchours('LS3')/ELlchours(ELl)*(card(Ell)-ord(ELl)+1)/sum(ELll$(ord(ELll)>=ord(ELl)),(ord(Elll)-3))
-         );
+*$INCLUDE flatten_peak.gms
 
          ELlcgwsales(r,ELl) = ELlcgw(r,ELl)
                  *4178/sum((rr,ELll),ELlcgw(rr,ELll)*ELlchours(ELll));
 
 
-         ELlcgwonsite(r,ELl)$(sum(ELll,ELlcgw(r,ELll))>0) = 230*
+         ELlcgwonsite(r,ELl)$(sum(ELll,ELlcgw(r,ELll))>0) = 250*
                  1/sum(ELll,ELlchours(ELll))*
                  ELexistonsite('t12',r)/sum(rr,ELexistonsite('t12',rr))
 *                 ELlcgw(r,ELl)/sum((ELll),ELlcgw(r,ELll)*ELlchours(ELll))
@@ -643,10 +617,12 @@ parameter
 * !!!     Fix intial cpaacpity levels.
 
 
-
-alias(v,vv);
          Elexistcp.up(ELpd,v,trun,r)$(ord(trun)=1 and not ELpcoal(Elpd))=
                  sum((chp,size),ELexist(ELpd,v,size,chp,r));
+
+
+         Elexistcp.up(ELpog,v,trun,r)$(ord(trun)=1 and Xinjiang(r))=
+                 sum((chp,size),ELexist(ELpog,v,size,chp,r))*1.6;
 
          Elexistcp.up('SubcrSML',v,trun,r)$(ord(trun)=1)=
                  sum((chp),ELexist('Subcr',v,'small',chp,r));
@@ -687,18 +663,18 @@ alias(v,vv);
                  = ELtransexist(Elt,r,rr);
 
 
-         ELfgcexistcp.fx(Elpcoal,v,DeSOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up(Elpcoal,v,DeSOx,trun,r)$(ord(trun)=1)=
                  sum((chp,size),ELfgdexist(Elpcoal,v,size,chp,r));
-         ELfgcexistcp.fx('SubcrSML',v,DeSOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up('SubcrSML',v,DeSOx,trun,r)$(ord(trun)=1)=
                  sum((chp),ELfgdexist('Subcr',v,'small',chp,r));
-         ELfgcexistcp.fx('SubcrLRG',v,DeSOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up('SubcrLRG',v,DeSOx,trun,r)$(ord(trun)=1)=
                  sum((chp),ELfgdexist('Subcr',v,'large',chp,r));
 
-         ELfgcexistcp.fx(Elpcoal,v,DeNOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up(Elpcoal,v,DeNOx,trun,r)$(ord(trun)=1)=
                  sum((chp,size),ELnoxexist(Elpcoal,v,size,chp,r));
-         ELfgcexistcp.fx('SubcrSML',v,DeNOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up('SubcrSML',v,DeNOx,trun,r)$(ord(trun)=1)=
                  sum((chp),ELnoxexist('Subcr',v,'small',chp,r));
-         ELfgcexistcp.fx('SubcrLRG',v,DeNOx,trun,r)$(ord(trun)=1)=
+         ELfgcexistcp.up('SubcrLRG',v,DeNOx,trun,r)$(ord(trun)=1)=
                  sum((chp),ELnoxexist('Subcr',v,'large',chp,r));
 
 
@@ -762,7 +738,7 @@ Equations
          ELfgccapmax(ELpd,v,fgc,trun,r) maximum installed capacity for fgc
          ELfgccapbal(ELpd,v,fgc,trun,r) FGD capacity balance equation GW
 
-         ELprofit(ELp,v,trun,r) regional Profit constraint on each generator type
+         ELprofit(ELc,v,trun,r) regional Profit constraint on each generator type
 
          ELprofitcoal(Elp,v,trun,r) regional Profit constraint aggregation of all coal power plants
 
@@ -807,11 +783,12 @@ Equations
          DELoploc(ELp,v,ELl,ELf,trun,r) dual on ELoploc
 *         DELtop(ELpd,v,ELf,fss,trun,r)     dual from ELtop
 
-         DElsubsidy(Elp,v,trun,r)
+         DElcapsub(Elp,v,trun,r)
+         DElvarsub(Elp,v,ELl,trun,r)
+         DELdeficit(ELc,vv,trun,r)
 
          DELfitv(ELpw,trun,r)
 ;
-
 
 
 parameter ELpcost(Elp,v,sox,nox,trun,r) Total cost of suppliying capacity for hours in load steps
@@ -1169,22 +1146,22 @@ ELfgccapbal(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
 *$offtext
 
 
-ELprofit(ELp,v,t,r)$ELptariff(ELp,v)..
-*$vn(v)
+ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
-*+sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,ELp)),
+ELdeficit(ELc,vv,t,r)
 
-  +sum((ELl,ELf)$(Elpd(ELp) and ELptariff(ELp,v) and ELpELf(ELp,ELf)),
-         +(ELtariffmax(ELp,r)-ELomcst(ELp,v,r))*
-         ELop(ELp,v,ELl,ELf,t,r)*ELparasitic(ELp,v) )
-*         *(1$()+ELsubsidy(ELp,v,t,r)$() ))
++sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
 
-  +sum(ELl,(ELtariffmax(ELp,r)-ELomcst(ELp,v,r))*
-         ELhydop(ELp,v,ELl,t,r)*ELparasitic(ELp,v))$ELphyd(ELp)
+  +sum((ELl,ELf)$(Elpd(ELp) and ELpELf(ELp,ELf)),
+         +(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+         ELop(ELp,v,ELl,ELf,t,r) )
+
+  +sum(ELl,(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+         ELhydop(ELp,v,ELl,t,r))$ELphyd(ELp)
 
   +sum((ELl),
-         (ELtariffmax(ELp,r)+ELfitv(Elp,t,r)$(ELpfit=1)-ELomcst(ELp,v,r))*
-         ELwindop(ELp,v,ELl,t,r)*ELparasitic(ELp,v))$ELpw(ELp)
+         (ELtariffmax(ELp,r)*ELparasitic(ELp,v)+ELfitv(Elp,t,r)$(ELpfit=1)-ELomcst(ELp,v,r))*
+         ELwindop(ELp,v,ELl,t,r))$ELpw(ELp)
 
 *  Generator tariffs and costs for operating flue gas control systems
   +sum((gtyp,ELfcoal,cv,sulf,sox,nox)$(ELpcoal(ELp) and ELpfgc(ELp,cv,sulf,sox,nox)),
@@ -1202,38 +1179,39 @@ ELprofit(ELp,v,t,r)$ELptariff(ELp,v)..
          ELCOconsump(ELp,v,reg,cv,sulf,SOx,NOx,t,r)*COcvSCE(cv)*
          ELpCOparas(Elp,v,sulf,SOx,NOx,r))
 
-  -sum((ELl,ELf)$(ELpELf(ELp,ELf) and ELpspin(ELp)),
-         ELomcst(ELp,v,r)*ELusomfrac*ELlchours(ELl)*ELupspincap(ELp,v,ELl,ELf,t,r))
-
+  -sum((ELl,ELf)$(ELpELf(ELp,ELf) and ELpspin(ELp)),ELomcst(ELp,v,r)*ELusomfrac*ELlchours(ELl)*
+                 ELupspincap(ELp,v,ELl,ELf,t,r))
+*                 (1-sum(ELl,ELvarsub(ELp,v,ELl,t,r)*ELlcnorm(ELl))$vo(v))
 *$ontext
   -sum((gtyp,cv,sulf,sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
    ( DCOdem('coal',cv,sulf,'summ',t,r)
      -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
        DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r)
+   )*ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r)*
+         (1-sum(ELl,ELvarsub(ELp,v,ELl,t,r)*ELlcnorm(ELl))$vo(v))
   )$ELpcoal(ELp)
 
   -sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
          ELAPf(ELf,fss,t,r)*ELfconsump(ELp,v,ELf,fss,t,r)
-  )
+  )*(1-sum(ELl,ELvarsub(ELp,v,ELl,t,r)*ELlcnorm(ELl))$vo(v))
 
   -(  ELwindbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELpw(ELp))
      +ELhydbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELphyd(ELp))
      +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
          ELbld(Elppd,v,t-ELleadtime(Elppd),r))$ELpd(ELp)
-   )*ELpfixedcost(ELp,v,t,r)*ELsubsidy(ELp,v,t,r)
+   )*ELpfixedcost(ELp,v,t,r)*(1-ELcapsub(ELp,v,t,r))
 
   -(  ELwindexistcp(ELp,v,t,r)$(ELpw(ELp))
      +ELhydexistcp(ELp,v,t,r)$ELphyd(ELp)
      +Elexistcp(ELp,v,t,r)$ELpd(ELp)
-  )*ELpsunkcost(ELp,v,t,r)*ELsubsidy(ELp,v,t,r)
+  )*ELpsunkcost(ELp,v,t,r)*(1-ELcapsub(ELp,v,t,r))
 
   -sum(fgc$((DeSOx(fgc) or DeNOx(fgc)) and ELpcoal(ELp)),
          ( ELfgcexistcp(ELp,v,fgc,t,r)
           +ELfgcbld(ELp,v,fgc,t-ELfgcleadtime(fgc),r))*EMfgccapexD(fgc,t)
   )
 
-*)
+)
          =g= 0
 ;
 
@@ -1254,32 +1232,59 @@ DELConstruct(t).. 1*ELdiscfact(t)=g=-DELcnstrctbal(t);
 DELOpandmaint(t).. 1*ELdiscfact(t)=g=-DELopmaintbal(t);
 
 
-DELsubsidy(ELp,v,t,r)$(ELptariff(ELp,v))..
-*not ELpcoal(Elp) and
-*and not Elpw(ELp)
-         0
-         =g=
-  -(  ELwindbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELpw(ELp))
+DELcapsub(ELp,v,t,r)$(ELptariff(ELp,v))..
+* and ((ELpd(ELp) and vn(v)) or not ELpd(Elp))
+         0=g=
+  +(  ELwindbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELpw(ELp))
      +ELhydbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELphyd(ELp))
      +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
          ELbld(Elppd,v,t-ELleadtime(Elppd),r))$ELpd(ELp)
-   )*ELpfixedcost(ELp,v,t,r)*DELprofit(ELp,v,t,r)
+   )*ELpfixedcost(ELp,v,t,r)*sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
 
-  -(  ELwindexistcp(ELp,v,t,r)$(ELpw(ELp))
+  +(  ELwindexistcp(ELp,v,t,r)$ELpw(ELp)
      +ELhydexistcp(ELp,v,t,r)$ELphyd(ELp)
      +Elexistcp(ELp,v,t,r)$ELpd(ELp)
-  )*ELpsunkcost(ELp,v,t,r)*DELprofit(ELp,v,t,r);
+  )*ELpsunkcost(ELp,v,t,r)*sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
+
+
+;
+
+
+DELvarsub(ELp,v,ELl,t,r)$(ELptariff(ELp,v) and vo(v))..
+         0=g=
+  +sum((gtyp,cv,sulf,sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
+   ( DCOdem('coal',cv,sulf,'summ',t,r)
+     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+       DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
+   )*ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r)*ELlcnorm(ELl)
+  )*sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
+
+  +sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
+         ELAPf(ELf,fss,t,r)*ELfconsump(ELp,v,ELf,fss,t,r)*ELlcnorm(ELl)
+  )*sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
+
+
+*  +sum((ELl,ELf)$(ELpELf(ELp,ELf) and ELpspin(ELp)),ELomcst(ELp,v,r)*ELusomfrac*ELlchours(ELl)*
+*         ELupspincap(ELp,v,ELl,ELf,t,r)*ELlcnorm(ELl)*DELprofit(ELp,v,t,r))
+;
+
+
+DELdeficit(ELc,vv,t,r)$ELctariff(ELc,vv)..
+1 =g=  DELprofit(ELc,vv,t,r)
+;
+
 
 
 
 DELfconsump(ELpd,v,ELf,fss,t,r)$(ELpfss(ELpd,ELf,fss) and not ELpcoal(ELpd))..
    ELAPf(ELf,fss,t,r)*ELdiscfact(t)*(
-         0$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)))
+         0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)))
          +0=g=
 
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))*
+         ELAPf(ELf,fss,t,r)*
+         (1-sum(ELl,ELvarsub(ELpd,v,ELl,t,r)*ELlcnorm(ELl)$vo(v)) )$ELptariff(ELpd,v)
 
-*  -sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))*ELAPf(ELf,fss,t,r)$ELptariff(ELpd,v)
-  -DELprofit(ELpd,v,t,r)*ELAPf(ELf,fss,t,r)$ELptariff(ELpd,v)
   +DELfcons(ELpd,v,ELf,t,r)
   -DELfavail(ELf,t,r)$(ELfog(ELf) and fss0(fss))
 ;
@@ -1291,20 +1296,18 @@ DELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox)
  )*ELdiscfact(t)
          +0=g=
 
-*  -sum(Elc$ELcELp(ELc,ELpcoal),DELprofit(ELc,t,r))*ELtariffmax(Elpcoal,r)*COcvSCE(cv)*
-  -DELprofit(ELpcoal,v,t,r)*ELtariffmax(Elpcoal,r)*COcvSCE(cv)*
-   ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)$((DeSOx(sox) or DeNOx(nox)) and reg(gtyp) and ELptariff(ELpcoal,v))
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*
+         ELtariffmax(Elpcoal,r)*COcvSCE(cv)*ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)$(
+                 (DeSOx(sox) or DeNOx(nox)) and reg(gtyp) and ELptariff(ELpcoal,v))
 
-*  -sum(Elc$ELcELp(ELc,ELpcoal),DELprofit(ELc,t,r))*
-  -DELprofit(ELpcoal,v,t,r)*
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*
    (DCOdem('coal',cv,sulf,'summ',t,r)
          -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
        DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )$ELptariff(ELpcoal,v)
+   )*(1-sum(ELl,ELvarsub(ELpcoal,v,ELl,t,r)*ELlcnorm(ELl))$vo(v))$ELptariff(ELpcoal,v)
 
 
-*  +sum(Elc$ELcELp(ELc,ELpcoal),DELprofit(ELc,t,r))*
-  +(DELprofit(ELpcoal,v,t,r)*
+  +sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r)*
          ( (ELfgctariff(sox)+ELfgctariff(nox))*
            (ELparasitic(Elpcoal,v)-ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)*ELfuelburn(ELpcoal,v,'coal',r))
           -(EMfgcomcst(sox)+EMfgcomcst(nox)) )*
@@ -1334,9 +1337,8 @@ DELexistcp(ELpd,v,t,r)..
   +DELcapbal(ELpd,v,t,r)-DELcapbal(ELpd,v,t-1,r)
   +sum(grid$rgrid(r,grid),DELrsrvreq(t,grid))
 
-*  -sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))*
-  -DELprofit(ELpd,v,t,r)*
-         ELpsunkcost(ELpd,v,t,r)*ELsubsidy(ELpd,v,t,r)$(ELptariff(ELpd,v))
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))*
+         ELpsunkcost(ELpd,v,t,r)*(1-ELcapsub(ELpd,v,t,r))$ELptariff(ELpd,v)
 
   +sum(ELl,DELcaplim(ELpd,v,ELl,t,r)*ELcapfac(ELpd,v)*ELlchours(ELl))
   -DELcapcontr(Elpd,v,t,r)*ELcntrhrs(ELpd,v,t,r)
@@ -1354,9 +1356,8 @@ DELbld(ELpd,v,t,r)$ELpbld(ELpd,v)..
    +DELopmaintbal(t+ELleadtime(ELpd))*ELfixedOMcst(ELpd)
 
   -sum(ELppd$(ELptariff(Elppd,v)),ELcapadd(Elpd,ELppd)*
-*         sum(Elc$ELcELp(ELc,ELppd),DELprofit(ELc,t+ELleadtime(ELpd),r))*
-         DELprofit(ELppd,v,t+ELleadtime(ELpd),r)*
-         ELsubsidy(ELppd,v,t,r)*ELpfixedcost(ELppd,v,t,r))
+         sum((Elc,vv)$ELcELp(ELc,vv,ELppd,v),DELprofit(ELc,vv,t+ELleadtime(ELpd),r))*
+         (1-ELcapsub(ELppd,v,t,r))*ELpfixedcost(ELppd,v,t,r))
 
   +sum(Elppd,DELcapbal(Elppd,v,t+ELleadtime(ELpd),r)*ELcapadd(ELpd,Elppd))
 *  -DELgtconvlim(ELpd,v,t,r)$(ELpgttocc(ELpd) and vo(v))
@@ -1376,9 +1377,8 @@ DELop(ELpd,v,ELl,ELf,t,r)$ELpELf(ELpd,ELf)..
 
   +ELomcst(Elpd,v,r)*DELopmaintbal(t)
 
-  +(ELtariffmax(ELpd,r)-ELomcst(ELpd,v,r))*ELparasitic(ELpd,v)*
-*         sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))$(ELptariff(ELpd,v))
-         DELprofit(ELpd,v,t,r)$(ELptariff(ELpd,v))
+  +(ELtariffmax(ELpd,r)*ELparasitic(ELpd,v)-ELomcst(ELpd,v,r))*
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpd,v)
 
   +DELcapcontr(ELpd,v,t,r)$vo(v)
 
@@ -1394,9 +1394,9 @@ DELop(ELpd,v,ELl,ELf,t,r)$ELpELf(ELpd,ELf)..
 
 DELupspincap(Elpd,v,ELl,ELf,t,r)$(Elpspin(Elpd) and ELpELf(ELpd,ELf)).. 0 =g=
 
-*  -sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))*
-   -DELprofit(ELpd,v,t,r)*
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))*
          ELomcst(ELpd,v,r)*ELusomfrac*ELlchours(ELl)$ELptariff(ELpd,v)
+*        (1-sum(ELl,ELvarsub(ELpcoal,v,ELl,t,r)*ELlcnorm(ELl))$vo(v))$ELptariff(ELpd,v)
 
   +ELomcst(Elpd,v,r)*DELopmaintbal(t)*ELusomfrac*ELlchours(ELl)
 
@@ -1404,6 +1404,7 @@ DELupspincap(Elpd,v,ELl,ELf,t,r)$(Elpspin(Elpd) and ELpELf(ELpd,ELf)).. 0 =g=
          DELfcons(ELpd,v,ELf,t,r)$(not ELpcoal(ELpd))
   -sum(gtyp$spin(gtyp),ELfuelburn(ELpd,v,ELf,r)*ELusrfuelfrac*ELlchours(ELl)*
          DELCOcons(ELpd,v,gtyp,t,r))$ELpcoal(Elpd)
+
   -DELcaplim(ELpd,v,ELl,t,r)*ELlchours(ELl)
 
   +DELupspinres(ELl,t,r)*ELparasitic(Elpd,v)
@@ -1414,8 +1415,7 @@ DELoploc(ELpd,v,ELl,ELf,t,r)$(not ELpnuc(ELpd) and ELpELf(ELpd,ELf))..
          0 =g=
   +ELlchours(ELl)*ELomcst(Elpd,v,r)*DELopmaintbal(t)
   +ELpsunkcost(ELpd,v,t,r)*
-*         sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))$(ELptariff(ELpd,v))
-         DELprofit(ELpd,v,t,r)$(ELptariff(ELpd,v))
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))$(ELptariff(ELpd,v))
 
   -ELlchours(ELl)*ELfuelburn(ELpd,v,ELf,r)*DELfcons(ELpd,v,ELf,t,r)$(not ELpcoal(ELpd))
 
@@ -1452,9 +1452,8 @@ DELtransexistcp(ELt,t,r,rr)..
 
 DELwindbld(ELpw,v,t,r)$vn(v).. 0=g=
 
-*  -sum(Elc$ELcELp(ELc,ELpw),DELprofit(ELc,t+ELleadtime(ELpw),r))*
-  -DELprofit(ELpw,v,t+ELleadtime(ELpw),r)*
-         ELpfixedcost(ELpw,v,t,r)*ELsubsidy(ELpw,v,t,r)$ELptariff(ELpw,v)
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t+ELleadtime(ELpw),r))*
+         ELpfixedcost(ELpw,v,t,r)*(1-ELcapsub(ELpw,v,t,r))$ELptariff(ELpw,v)
 
   +DELpurchbal(t)*ELpurcst(Elpw,t,r)
   +DELcnstrctbal(t)*ELconstcst(ELpw,t,r)
@@ -1470,8 +1469,8 @@ DELwindexistcp(ELpw,v,t,r).. 0=g=
 
   +DELwindcapbal(ELpw,v,t,r)-DELwindcapbal(ELpw,v,t-1,r)
   +DELwindcaplim(ELpw,v,t,r)
-*  -sum(Elc$ELcELp(ELc,ELpw),DELprofit(ELc,t,r)*ELpsunkcost(ELpw,v,t,r))$(ELptariff(ELpw,v))
-  -DELprofit(ELpw,v,t,r)*ELpsunkcost(ELpw,v,t,r)*ELsubsidy(ELpw,v,t,r)$(ELptariff(ELpw,v))
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r))*
+         ELpsunkcost(ELpw,v,t,r)*(1-ELcapsub(ELpw,v,t,r))$ELptariff(ELpw,v)
   +DELwindtarget(t)
 ;
 
@@ -1480,9 +1479,8 @@ DELwindop(ELpw,v,ELl,t,r)..
    -ELfitv(ELpw,t,r)*ELparasitic(ELpw,v)$(ELpfit=1)
        +0=g=
 
-  +(ELtariffmax(ELpw,r)+ELfitv(Elpw,t,r)$(ELpfit=1)-ELomcst(ELpw,v,r))*
-         ELparasitic(ELpw,v)*DELprofit(ELpw,v,t,r)$ELptariff(ELpw,v)
-*sum(Elc$ELcELp(ELc,ELpw),DELprofit(ELc,t,r))$ELptariff(ELpw,v)
+  +(ELtariffmax(ELpw,r)*ELparasitic(ELpw,v)+ELfitv(Elpw,t,r)$(ELpfit=1)-ELomcst(ELpw,v,r))*
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpw,v)
 
   +DELsup(ELl,t,r)*ELparasitic(Elpw,v)
   +DELopmaintbal(t)*ELomcst(ELpw,v,r)
@@ -1497,8 +1495,7 @@ DELfitv(ELpw,t,r)$(ELpfit=1)..
                  +0=g=
 
   sum((v,ELl)$ELptariff(ELpw,v),ELwindop(ELpw,v,ELl,t,r)*
-         ELparasitic(ELpw,v)*DELprofit(ELpw,v,t,r))
-*sum(Elc$ELcELp(ELc,ELpw),DELprofit(ELc,t,r)) )
+         ELparasitic(ELpw,v)*sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r)) )
 ;
 
 
@@ -1516,9 +1513,8 @@ DELhydexistcp(ELphyd,v,t,r).. 0=g=
   +sum(grid$rgrid(r,grid),DELrsrvreq(t,grid))
   +sum(ELl,DELhydcaplim(ELphyd,ELl,v,t,r)*ELcapfac(Elphyd,v)*ELlchours(ELl))
   +DELhydutil(ELphyd,v,t,r)*ELhydhrs(r)*ELcapfac(Elphyd,v)$(not ELphydsto(ELphyd))
-*  -sum(Elc$ELcELp(ELc,ELphyd),DELprofit(ELc,t,r))*
-  -DELprofit(ELphyd,v,t,r)*
-         ELpsunkcost(ELphyd,v,t,r)*ELsubsidy(ELphyd,v,t,r)$ELptariff(ELphyd,v)
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELphyd,v),DELprofit(ELc,vv,t,r))*
+         ELpsunkcost(ELphyd,v,t,r)*(1-ELcapsub(ELphyd,v,t,r))$ELptariff(ELphyd,v)
 ;
 
 DELhydbld(ELphyd,v,t,r)$vn(v)..  0=g=
@@ -1527,9 +1523,8 @@ DELhydbld(ELphyd,v,t,r)$vn(v)..  0=g=
   +DELcnstrctbal(t)*ELconstcst(ELphyd,t,r)
   +DELopmaintbal(t+ELleadtime(ELphyd))*ELfixedOMcst(ELphyd)
 
-*  -sum(Elc$ELcELp(ELc,ELphyd),DELprofit(ELc,t+ELleadtime(ELphyd),r))*
-  -DELprofit(ELphyd,v,t+ELleadtime(ELphyd),r)*
-         ELpfixedcost(ELphyd,v,t,r)*ELsubsidy(ELphyd,v,t,r)$ELptariff(ELphyd,v)
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELphyd,v),DELprofit(ELc,vv,t+ELleadtime(ELphyd),r))*
+         ELpfixedcost(ELphyd,v,t,r)*(1-ELcapsub(ELphyd,v,t,r))$ELptariff(ELphyd,v)
 
   +DELhydcapbal(ELphyd,v,t+ELleadtime(ELphyd),r)
   +sum(ELl,DELhydcaplim(ELphyd,ELl,v,t+ELleadtime(ELphyd),r)*ELcapfac(Elphyd,v)*ELlchours(ELl))
@@ -1541,9 +1536,8 @@ DELhydop(ELphyd,v,ELl,t,r)..
 
                0  =g=
 
-  +(ELtariffmax(ELphyd,r)-ELomcst(ELphyd,v,r))*ELparasitic(ELphyd,v)*
-         DELprofit(ELphyd,v,t,r)$ELptariff(ELphyd,v)
-*         sum(Elc$ELcELp(ELc,ELphyd),DELprofit(ELc,t,r))$ELptariff(ELphyd,v)
+  +(ELtariffmax(ELphyd,r)*ELparasitic(ELphyd,v)-ELomcst(ELphyd,v,r))*
+         sum((Elc,vv)$ELcELp(ELc,vv,ELphyd,v),DELprofit(ELc,vv,t,r))$ELptariff(ELphyd,v)
 
   +DELsup(ELl,t,r)*ELparasitic(Elphyd,v)
   +DELopmaintbal(t)*ELomcst(ELphyd,v,r)
@@ -1563,8 +1557,7 @@ DELhydopsto(ELl,v,t,r)..  0=g=
 DELfgcexistcp(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
       +0 =g=
   -EMfgccapexD(fgc,t)*
-*         sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t,r))$ELptariff(ELpd,v)
-         DELprofit(ELpd,v,t,r)$ELptariff(ELpd,v)
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpd,v)
 
   +DELfgccapbal(ELpd,v,fgc,t,r)-DELfgccapbal(ELpd,v,fgc,t-1,r)
   +sum(ELl,DELfgccaplim(ELpd,v,fgc,t,r)*
@@ -1576,8 +1569,7 @@ DELfgcbld(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
    +0
          =g=
   -EMfgccapexD(fgc,t)*
-*         sum(Elc$ELcELp(ELc,ELpd),DELprofit(ELc,t+ELfgcleadtime(fgc),r))$ELptariff(ELpd,v)
-         DELprofit(ELpd,v,t,r)$ELptariff(ELpd,v)
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t+ELfgcleadtime(fgc),r))$ELptariff(ELpd,v)
 
   +DELpurchbal(t)*EMfgccapexD(fgc,t)
   +DELfgccapbal(ELpd,v,fgc,t+ELfgcleadtime(fgc),r)
@@ -1668,7 +1660,7 @@ DELhydopsto.ELhydopsto,
 DELfgcexistcp.ELfgcexistcp,
 DELfgcbld.ELfgcbld,
 
-DElsubsidy.Elsubsidy,
+DELcapsub.Elcapsub,DELvarsub.ELvarsub,DELdeficit.ELdeficit,
 DELfitv.ELfitv,
 *DELsubsidycoal.ELsubsidycoal,
 

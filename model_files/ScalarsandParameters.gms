@@ -136,16 +136,15 @@ $ontext
 $offtext
 ;
 * convert to tons per cubic meter
-NOxC(r,ELpcoal) = 550*1e-9;
+NOxC(r,ELpcoal) = 580*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-*NOxC('North',Elpd) = NOxC('North',ELpd)*0.75;
-*NOxC('East',Elpd) = NOxC('East',ELpd)*0.9 ;
-
-*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.8;
-*NOxC('South',Elpd) = NOxC('South',ELpd)*0.7;
-*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.75;
+*NOxC('North',Elpd) = NOxC('North',ELpd)*0.9;
+*NOxC('East',Elpd) = NOxC('East',ELpd) ;
+*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.9;
+*NOxC('South',Elpd) = NOxC('South',ELpd)*0.9;
+*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.9;
 
 
 *NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.05;

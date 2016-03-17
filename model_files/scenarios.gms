@@ -15,8 +15,7 @@
 
 
          ELpsunkcost(ELpd,v,trun,r) =
-          ELfixedOMcst(ELpd)
-         +(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
+          ELfixedOMcst(ELpd)+(ELpurcst(ELpd,trun,r)+ELconstcst(ELpd,trun,r))*
          (1$(vn(v)) + 0$(vo(v) and not ELpnuc(ELpd)));
 
          ELpsunkcost(ELp,v,trun,r)$ELphyd(Elp)=
@@ -28,7 +27,6 @@
 
 *        no on-grid electricity tarrifs
          ELptariff(ELpd,v) = no;
-         ELptariffcoal(v) = no;
 
 
 * !!!    Set feed-in tariffs

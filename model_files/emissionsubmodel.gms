@@ -62,6 +62,9 @@ parameter EMELnoxmax(time,r) 2010 regional power sector emission in million tons
 /
 ;
 
+
+         EMELnoxmax(time,Shandong) = EMELnoxmax(time,Shandong)*1.1;
+
 Parameter ELdiscfact(time) discount factors for electricity sector
           EMdiscoef(trun);
 

@@ -25,7 +25,7 @@ ELgenELl(Elp,ELl,trun,r) =  (
 *  +sum((v,ELf,fss,cv,sulf,sox,nox),
 *         ELoploc.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r)*ELlchours(ELl))$Elpd(Elp)
   +sum((v),ELwindop.l(ELp,v,ELl,trun,r))$Elpw(Elp)
-  +sum((v),ELhydop.l(ELp,v,ELl,trun,r))$Elphyd(Elp)
+  +sum((v),ELhydop.l(ELp,v,ELl,trun,r))$(Elphyd(Elp))
 *ELparasitic(Elp,v)
 )
 ;
@@ -40,7 +40,7 @@ ELgenELl(ELp,ELl,trun,"China") = sum(r, ELgenELl(ELp,ELl,trun,r));
 ELgenELp(ELp,trun,r) = sum(ELl, ELgenELl(ELp,ELl,trun,r));
 
 ELgenELp(ELp,trun,"China") = sum(r, ELgenELp(ELp,trun,r));
-ELgenELp('Total',trun,"China") = sum(Elp, ELgenELp(ELp,trun,"China"));
+ELgenELp('Total',trun,"China") = sum(Elp$(not ELphydsto(ELp)), ELgenELp(ELp,trun,"China"));
 
 ELcapELp(ELpd,trun,r) = sum(v,ELexistcp.l(ELpd,v,trun,r));
 ELcapELp(ELphyd,trun,r) = sum(v,ELhydexistcp.l(ELphyd,v,trun,r));
@@ -179,19 +179,52 @@ ELtariffELp(ELphyd,v,trun,r)$(sum(ELl,ELhydop.l(ELphyd,v,ELl,trun,r))>0)
 ;
 *$offtext
 
-ELsubsidyELp(ELp,v,trun,r)
+ELsubsidyELp(ELc,vv,trun,r)$ELctariff(ELc,vv)
  =
+
++sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
   +(  ELwindbld.l(ELp,v,trun,r)$(vn(v) and ELpw(ELp))
      +ELhydbld.l(ELp,v,trun,r)$(vn(v) and ELphyd(ELp))
      +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
          ELbld.l(Elppd,v,trun,r))$ELpd(ELp)
-   )*ELpfixedcost(ELp,v,trun,r)*ELsubsidy.l(ELp,v,trun,r)
+   )*ELpfixedcost(ELp,v,trun,r)*ELcapsub.l(ELp,v,trun,r)
 
   +(  ELwindexistcp.l(ELp,v,trun,r)$(ELpw(ELp))
      +ELhydexistcp.l(ELp,v,trun,r)$ELphyd(ELp)
      +Elexistcp.l(ELp,v,trun,r)$ELpd(ELp)
-  )*ELpsunkcost(ELp,v,trun,r)*ELsubsidy.l(ELp,v,trun,r)
+  )*ELpsunkcost(ELp,v,trun,r)*ELcapsub.l(ELp,v,trun,r)
+
+  +sum((gtyp,cv,sulf,sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
+   ( DCOdem.l('coal',cv,sulf,'summ',trun,r)
+     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+       DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
+   )*ELCOconsump.l(ELp,v,gtyp,cv,sulf,sox,nox,trun,r)*
+         (sum(ELl,ELvarsub.l(ELp,v,ELl,trun,r)*ELlcnorm(ELl))$vo(v))
+  )$ELpcoal(ELp)
+
+  +sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
+         ELAPf(ELf,fss,trun,r)*ELfconsump.l(ELp,v,ELf,fss,trun,r)
+  )*(sum(ELl,ELvarsub.l(ELp,v,ELl,trun,r)*ELlcnorm(ELl))$vo(v))
+)
+-ELprofit.l(ELc,vv,trun,r);
+
 ;
+
+*$ontext
+ELsubsidyELp('All',v,trun,r) =  sum(ELc$(ELsubsidyELp(ELc,v,trun,r)>0),
+                                         ELsubsidyELp(ELc,v,trun,r))       ;
+
+ELsubsidyELp(ELc,v,trun,'China') =  sum(r$(ELsubsidyELp(ELc,v,trun,r)>0),
+                                         ELsubsidyELp(ELc,v,trun,r))       ;
+
+ELsubsidyELp('All',v,trun,'China') =  sum((ELc,r)$(ELsubsidyELp(ELc,v,trun,r)>0),
+                                       ELsubsidyELp(ELc,v,trun,r))       ;
+
+ELdeficitELp(ELc,v,trun,r)$ELctariff(ELc,v) = ELdeficit.l(ELc,v,trun,r);
+ELdeficitELp('All',v,trun,r) = sum(ELc,ELdeficitELp(ELc,v,trun,r));
+ELdeficitELp(ELc,v,trun,'China') = sum(r,ELdeficitELp(ELc,v,trun,r));
+ELdeficitELp('All',v,trun,'China') = sum((ELc,r),ELdeficitELp(ELc,v,trun,r));
+*$offtext
 
 parameter Accounting utilities costs from the original LP's objective value
 ;

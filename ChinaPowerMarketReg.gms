@@ -25,6 +25,14 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
+*$INCLUDE short_run.gms
+*$INCLUDE new_stock.gms
+
+
+         ELpfit=0;
+*         EL2020=1;
+*         ELfitv.fx(Elpw,trun,r) = 0;
+
 parameter contract;
 
 *!!!     Turn on max on-grid tariff
@@ -36,17 +44,26 @@ parameter contract;
          COrailCFS=1;
 
 
-$INCLUDE short_run.gms
-*$INCLUDE new_stock.gms
+* !!!!   ELcELp subset defines plants operated by regional power companies
+* !!!!   Elctariff defines companies that are evaluated in the revenue contraints
+*$ontext
+         ELctariff(ELbig,vn)=yes;
+         ELctariff(ELnuc,v)=yes;
+
+         ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
+         ELcELp(ELnuc,v,ELpnuc,v)= yes;
+*$offtext
+
+*         ELcELp(ELp,v,ELp,v)= yes;
+*         ELctariff(ELp,v)=yes;
 
 
-         ELpfit=1;
-*         EL2020=1;
-*         ELfitv.fx(Elpw,trun,r) = 0;
 
-*         Elsubsidy.up(ELc,t,r) =0;
-*         Elsubsidy.up('ELnuc',t,r) =0;
-*         Elsubsidy.up(Elc,t,r) =inf;
+         Elcapsub.up(Elp,vo,trun,r)=0;
+         Elcapsub.up(Elp,vn,trun,r)=0;
+         Elvarsub.fx(Elp,v,ELl,trun,r)=0;
+         Elvarsub.fx(Elpog,vo,ELl,trun,r)=1$(ord(ELl)<=0);
+         Elvarsub.fx(Elpcoal,vo,ELl,trun,r)=1$(ord(ELl)<=0);
 
 
          option savepoint=1;
@@ -62,10 +79,35 @@ $INCLUDE short_run.gms
 
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELp,v,t,r)=1e3;
-         DELprofit.scale(ELp,v,t,r)=1e-3;
+         ELprofit.scale(ELc,v,trun,r)=1e3;
+         DELprofit.scale(ELc,v,trun,r)=1e-3;
 
-         execute_loadpoint "PowerMCP_p";
+*         DELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e2;
+*         ELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e-2;
+
+*         DElcapsub.scale(ELp,v,trun,r)=1e-1;
+*         Elcapsub.scale(ELp,v,trun,r)=1e1;
+
+*         DElvarsub.scale(ELp,v,ELl,trun,r)=1e-3;
+*         Elvarsub.scale(ELp,v,ELl,trun,r)=1e3;
+
+*          Elexistcp.scale(ELp,v,trun,r)=1e2;
+*          DElexistcp.scale(ELp,v,trun,r)=1e-2;
+
+*          ELCOconsump.scale(ELpcoal,v,reg,cv,sulf,SOx,NOx,trun,r)=1e2;
+*          DELCOconsump.scale(ELpcoal,v,reg,cv,sulf,SOx,NOx,trun,r)=1e-2;
+
+*          ELfgcexistcp.scale(ELpd,v,fgc,trun,r)=1e2;
+*          DELfgcexistcp.scale(ELpd,v,fgc,trun,r)=1e-2;
+
+*          ELop.scale(ELpd,v,ELl,ELf,trun,r)=1e2;
+*          DELop.scale(ELpd,v,ELl,ELf,trun,r)=1e-2;
+
+*          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e2;
+*          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e-2;
+
+
+         execute_loadpoint "PowerMCP_p.gdx";
          Solve PowerMCP using MCP;
 
 
