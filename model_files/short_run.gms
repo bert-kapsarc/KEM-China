@@ -1,5 +1,5 @@
 
-         CObld.up(COf,mm,ss,trun,rco)=0;
+         CObld.up(COf,mm,ss,trun,rco)$COmine(COf,mm,ss,rco)=0;
 
          COtransbld.up('rail',trun,rco,rrco)$arc('rail',rco,rrco) = 0;
          COtransbld.up('truck',trun,rco,rrco)$arc('truck',rco,rrco) = 0;
@@ -24,6 +24,5 @@
 * !!!    No transmission investments
          ELtransbld.up(Elt,trun,r,rr)= 0;
 
-
 *        Inflate methane price to prevent consumption above contracted ss0 price
-         ELAPf('methane','ss1',time,r) = ELAPf('methane','ss1',time,r)*10;
+         ELAPf(ELfog,'ss1',time,r) = ELAPf(ELfog,'ss1',time,r)*10;

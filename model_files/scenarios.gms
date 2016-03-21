@@ -1,14 +1,6 @@
 * !!! cost for operating capacity over ELLmchours
          ELtariffmax(Elpd,r)$(not ELpnuc(Elpd)) = ELtariffmax(Elpd,r)/1.17;
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
-*
-*         ELtariffmax(Elpw,r) = ELtariffmax('Ultrsc',r);
-
-         ELpcost(Elpd,v,sox,nox,trun,r)=
-            ELomcst(ELpd,v,r)+(EMfgcomcst(sox)+EMfgcomcst(nox))$ELpcoal(ELpd);
-
-         DELTA(Elp,v,trun,r)=
-         ELtariffmax(Elp,r)*ELparasitic(Elp,v)-ELomcst(Elp,v,r);
 
          ELpfixedcost(Elp,v,trun,r) =
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));

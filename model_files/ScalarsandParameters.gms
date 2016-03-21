@@ -114,7 +114,7 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
 
 
 *       mg per cubic meter
-parameter NOxC(r,ELp) concentration of nox in flu gas ton per cubic meter
+parameter NOxC(r,ELp) concentration of nox in flu gas mg per cubic meter
 $ontext
                          Subcr           Superc          ultrsc
          South           650             625             600
@@ -136,26 +136,26 @@ $ontext
 $offtext
 ;
 * convert to tons per cubic meter
-NOxC(r,ELpcoal) = 580*1e-9;
+NOxC(r,ELpcoal) = 550*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-*NOxC('North',Elpd) = NOxC('North',ELpd)*0.9;
-*NOxC('East',Elpd) = NOxC('East',ELpd) ;
-*NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.9;
-*NOxC('South',Elpd) = NOxC('South',ELpd)*0.9;
-*NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.9;
+NOxC('North',Elpd) = NOxC('North',ELpd)*0.85;
+NOxC('East',Elpd) = NOxC('East',ELpd) ;
+NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd);
+NOxC('South',Elpd) = NOxC('South',ELpd)*0.9;
+NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*1.1;
 
 
-*NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.05;
-*NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.1;
-*NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.1;
-*NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.05;
-*NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.05;
+NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.2;
+NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.2;
+NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.5;
+NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.4;
+NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.3;
 
-*NOxC('West',Elpd) = NOxC('West',ELpd)*1.01 ;
+NOxC('West',Elpd) = NOxC('West',ELpd)*1.3 ;
 
-*NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1;
+NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.2;
 
 
 
@@ -178,9 +178,8 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
          rho('hfo') = 1.075  ;
          rho('methane') = 1.075  ;
 
-         alpha0(ELpSubcr,Elfcoal) = 1.35;
-         alpha0(ELpSuperc,Elfcoal) = 1.2;
-         alpha0('ultrsc',Elfcoal) = 1.25;
+         alpha0(ELpcoal,Elfcoal) = 1.25;
+         alpha0(ELpsubcr,Elfcoal) = 1.3;
          alpha0(Elpog,Elfmethane) = 1.075;
          alpha0(Elpog,Elfliquid) = 1.175;
 
@@ -214,18 +213,25 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
 
 
 parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per MWH
-         / DeSOx  17.5
-           DeNOx  12.5 /
+         / DeSOx  10
+           DeNOx  6 /
+
+          EMfgcfixedOMcst(fgc) operation and maintenance cost for fgd system RMB per MWH
+         / DeSOx  00 /
 
 
           EMfgcpower(sulf,fgc,fgc) percentage reduciton of thermal efficiency when operating fgc
 
+          EMfgccapex(fgc,trun) RMB per KW
+          EMfgccapexD(fgc,trun) Annualized capital cost of flue gas control systems
 ;
 
-parameter EMfgccapex(fgc,trun) RMB per KW
-          EMfgccapexD(fgc,trun);
-          EMfgccapex(DeSOx,trun)=1500  ;
-          EMfgccapex(DeNOx,trun)=600  ;
+* Estimates from CURRENT CAPITAL COST AND COST-EFFECTIVENESS
+* OF POWER PLANT EMISSIONS CONTROL TECHNOLOGIES
+* Prepared by
+* J. Edward Cichanowicz
+          EMfgccapex(DeSOx,trun)=1750 ;
+          EMfgccapex(DeNOx,trun)=1500  ;
 
 parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
           / noDeSOx 1
@@ -239,12 +245,12 @@ parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
          EMfgcomcst(fgc) = EMfgcomcst(fgc);
 
 * !!!    electricity consumption of fgc system defined as % of total
-         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.015;
-         EMfgcpower('low',DeSOx,noDeNOx) = 0.015;
-         EMfgcpower('med',DeSOx,noDeNOx) = 0.017;
-         EMfgcpower('high',DeSOx,nox) = 0.02;
+         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.011;
+         EMfgcpower('low',DeSOx,noDeNOx) = 0.011;
+         EMfgcpower('med',DeSOx,noDeNOx) = 0.012;
+         EMfgcpower('high',DeSOx,nox) = 0.015;
 
-         EMfgcpower(sulf,noDeSOx,DeNOx) = 0.01;
+         EMfgcpower(sulf,noDeSOx,DeNOx) = 0.022;
 
          EMfgcpower(sulf,DeSOx,DeNOx) =
                  EMfgcpower(sulf,DeSOx,'noDeNOx')+

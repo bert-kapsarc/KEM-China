@@ -61,6 +61,7 @@ parameter EMELnoxmax(time,r) 2010 regional power sector emission in million tons
          t12.Xinjiang        0.263
 /
 ;
+         EMELnoxmax('t12','Sichuan')=0.233;
 
 
          EMELnoxmax(time,Shandong) = EMELnoxmax(time,Shandong)*1.1;
@@ -95,7 +96,7 @@ EMsulflim(t,r)$rdem_on(r)..
     +sum((coal)$(COfcv(coal,cv)),OTHERCOconsumpsulf(coal,cv,sulf,t,r))
    )*COsulfDW(sulf)*1.6)
          =g=
-   -EMsulfmax(t,r)*1;
+   -EMsulfmax(t,r)*1
 ;
 
 EMELnoxlim(t,r)..
@@ -105,7 +106,7 @@ EMELnoxlim(t,r)..
          VrCo(ELpcoal,'coal',cv)
       )*NOxC(r,ELpcoal)
    )
-                 =g= -EMELnoxmax(t,r)*1
+                 =g= -EMELnoxmax(t,r)
 ;
 ;
 

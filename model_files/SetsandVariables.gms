@@ -447,11 +447,13 @@ ELtariffmax(ELp,'Xinjiang')$(ELtariffmax(ELp,'Xinjiang')=0) = ELtariffmax(ELp,'W
 ELtariffmax(ELp,'Tibet')$(ELtariffmax(ELp,'Tibet')=0) = ELtariffmax(ELp,'West');
 
 ELtariffmax(ELpcoal,r)$(ELtariffmax(ELpcoal,r)=0) = ELtariffmax('Ultrsc',r);
-ELtariffmax(ELphyd,r)$(ELtariffmax(ELphyd,r)=0) = ELtariffmax('Hydrolg',r);
-ELtariffmax(ELpw,r)$(ELtariffmax(ELpw,r)=0) = ELtariffmax('Windon',r);
 ELtariffmax(ELpog,r)$(ELtariffmax(ELpog,r)=0) = smax(rr,ELtariffmax('CC',rr));
 
-*ELtariffmax(ELpcoal,r) = ELtariffmax(ELpcoal,r);
+ELtariffmax(ELphyd,r)$(ELtariffmax(ELphyd,r)=0) = ELtariffmax('Hydrolg',r);
+ELtariffmax(ELphydsto,r) = ELtariffmax('CC',r);
+
+ELtariffmax(ELpw,r)$(ELtariffmax(ELpw,r)=0) = ELtariffmax('Windon',r);
+
 
 sets
 ELptariff(ELp,v) power plants with ongrid electricity tarrif
@@ -459,9 +461,12 @@ ELptariffcoal(v) power plants with ongrid electricity tarrif
 ELpdsub(ELpd) subsidized disp power plant types
 ELpwsub(ELpw) subsidized wind power plant types
 ELpsub(ELp)   subsidized power plants
+
+ELrtariff(r)
 ;
 
 *        intialize subsidy grid sets for non susbsidized runs
+ELrtariff(r)   =no;
 ELpdsub(Elpd) = no;
 ELpwsub(Elpw) = no;
 
@@ -603,8 +608,8 @@ Positive variables
 
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
-         ELvarsub(ELp,v,ELl,trun,r)  Variable subsidy paid by government to compensate generators
-         ELdeficit(ELc,vv,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELfuelsub(ELp,v,ELl,ELf,trun,r)  Variable subsidy paid by government to compensate generators
+         ELdeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
          ELfitv(ELp,trun,r)
@@ -625,7 +630,6 @@ Positive variables
 
          ELop(ELp,v,ELl,f,trun,r) capacity contracted by the state owned utility
          ELupspincap(ELp,v,ELl,f,trun,r)
-         ELtop(ELp,v,ELl,ELf,fss,trun,r) take or pary contract to relax natural gas consumption
          ELoploc(ELp,v,ELl,ELf,trun,r) Conventional electricity production in TWH
          ELhydop(ELp,v,ELl,trun,r)    operation of hydro capacity in TWh
          ELhydopsto(ELl,v,trun,r) storage of hydro capacity at pumped reservoirs
@@ -702,6 +706,7 @@ Positive variables
 * Duals for profit constraint and wind target
          DELprofit(ELc,v,trun,r)
          DELwindtarget(trun)
+         DELfuelsublim(r,ELl,trun)
 
 *Duals for electricity
          DEMELsulflim(trun,r) sulfur emssions from the power sector

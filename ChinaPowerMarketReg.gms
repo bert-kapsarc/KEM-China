@@ -25,13 +25,13 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 
-         ELpfit=0;
+         ELpfit=1;
 *         EL2020=1;
-*         ELfitv.fx(Elpw,trun,r) = 0;
+*         ELfitv.fx(Elpw,trun,r) = 280;
 
 parameter contract;
 
@@ -45,26 +45,23 @@ parameter contract;
 
 
 * !!!!   ELcELp subset defines plants operated by regional power companies
-* !!!!   Elctariff defines companies that are evaluated in the revenue contraints
+* !!!!   Elctariff defines companies evaluated in the revenue contraints
 *$ontext
          ELctariff(ELbig,vn)=yes;
          ELctariff(ELnuc,v)=yes;
 
          ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
          ELcELp(ELnuc,v,ELpnuc,v)= yes;
+
+         ELrtariff(r) = yes;
 *$offtext
 
 *         ELcELp(ELp,v,ELp,v)= yes;
 *         ELctariff(ELp,v)=yes;
 
 
-
          Elcapsub.up(Elp,vo,trun,r)=0;
          Elcapsub.up(Elp,vn,trun,r)=0;
-         Elvarsub.fx(Elp,v,ELl,trun,r)=0;
-         Elvarsub.fx(Elpog,vo,ELl,trun,r)=1$(ord(ELl)<=0);
-         Elvarsub.fx(Elpcoal,vo,ELl,trun,r)=1$(ord(ELl)<=0);
-
 
          option savepoint=1;
          option MCP=PATH;
@@ -77,19 +74,23 @@ parameter contract;
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
 
+         execute_loadpoint "PowerMCP_p.gdx";
+
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELc,v,trun,r)=1e3;
-         DELprofit.scale(ELc,v,trun,r)=1e-3;
+         ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e2;
+         DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-2;
 
-*         DELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e2;
-*         ELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e-2;
+*         COopmaintbal.scale(trun)=1e1;
+*         DCOopmaintbal.scale(trun)=1e-1;
+*         DELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e-2;
+*         ELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e2;
 
-*         DElcapsub.scale(ELp,v,trun,r)=1e-1;
-*         Elcapsub.scale(ELp,v,trun,r)=1e1;
+*         DElcapsub.scale(ELp,v,trun,r)=1e-2;
+*         Elcapsub.scale(ELp,v,trun,r)=1e2;
 
-*         DElvarsub.scale(ELp,v,ELl,trun,r)=1e-3;
-*         Elvarsub.scale(ELp,v,ELl,trun,r)=1e3;
+*         DElfuelsub.scale(ELp,v,ELl,ELf,trun,r)=1e1;
+*         ELfuelsub.scale(ELp,v,ELl,ELf,trun,r)=1e-1;
 
 *          Elexistcp.scale(ELp,v,trun,r)=1e2;
 *          DElexistcp.scale(ELp,v,trun,r)=1e-2;
@@ -106,8 +107,6 @@ parameter contract;
 *          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e2;
 *          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e-2;
 
-
-         execute_loadpoint "PowerMCP_p.gdx";
          Solve PowerMCP using MCP;
 
 

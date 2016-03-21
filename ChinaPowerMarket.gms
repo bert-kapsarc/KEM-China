@@ -25,7 +25,7 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 *parameter contract;
@@ -40,7 +40,7 @@ $INCLUDE scenarios.gms
 *!!!     Turn on railway construction tax
 *         COrailCFS=1;
 
-         ELpfit=0;
+         ELpfit=1;
 *         EL2020=1;
 *         ELfitv.fx(Elpw,trun,r) = 0;
 
@@ -55,7 +55,7 @@ $INCLUDE scenarios.gms
 
          PowerMCP.scaleopt=1;
 
-         execute_loadpoint "PowerMCP_p1.gdx"
+         execute_loadpoint "ShortRun.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms
