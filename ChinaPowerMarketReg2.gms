@@ -25,46 +25,91 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
-parameter contract;
-
-*!!!     Turn on max on-grid tariff
-*         ELptariff(ELpd,v)$(not ELpgttocc(ELpd)) = yes;
-*         ELptariff(ELpw,v) = yes;
-*         ELptariff(ELphyd,v) = yes;
-
-*!!!     Turn on railway construction tax
-         COrailCFS=1;
-
-
 *$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 
          ELpfit=0;
 *         EL2020=1;
-*         ELfitv.fx(Elpw,trun,r) = 0;
+         sox_std=0;
+*         ELfitv.fx(Elpw,trun,r) = 100;
 
-*         Elsubsidy.up(ELc,t,r) =0;
-*         Elsubsidy.up('ELnuc',t,r) =0;
+parameter contract;
+
+*!!!     Turn on max on-grid tariff
+         ELptariff(ELpd,v)$(not ELpgttocc(ELpd)) = yes;
+         ELptariff(ELpw,v) = yes;
+         ELptariff(ELphyd,v) = yes;
+
+*!!!     Turn on railway construction tax
+*         COrailCFS=1;
+
+
+* !!!!   ELcELp subset defines plants operated by regional power companies
+* !!!!   Elctariff defines companies evaluated in the revenue contraints
+$ontext
+         ELctariff(ELbig,vn)=yes;
+         ELctariff(ELnuc,v)=yes;
+
+         ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
+         ELcELp(ELnuc,v,ELpnuc,v)= yes;
+
+$offtext
+
+         ELcELp(ELp,v,ELp,v)= yes;
+         ELctariff(ELp,v)=yes;
+
+         ELrtariff(r) = yes;
+
+         Elcapsub.up(Elp,vo,trun,r)=0;
+         Elcapsub.up(Elp,vn,trun,r)=0;
+
+         ELfuelsub.up(Elpd,v,ELl,ELf,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
 
 
          option savepoint=1;
          option MCP=PATH;
          PowerMCP.optfile=1;
 
-*
-
-*         execute_loadpoint "LongRunWind2020Reg.gdx" ELwindtarget, Elwindop ;
-*         ELfitv.fx(Elpw,trun,r) =
-*                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
-*                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
+         execute_loadpoint "LongRunReg.gdx";
 
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELc,t,r)=1e3;
-         DELprofit.scale(ELc,t,r)=1e-3;
+         ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e2;
+         DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-2;
 
-         execute_loadpoint "LongRunNoFITReg";
+         EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
+         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
+
+         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
+         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
+
+*         COopmaintbal.scale(trun)=1e1;
+*         DCOopmaintbal.scale(trun)=1e-1;
+*         DELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e-2;
+*         ELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e2;
+
+*         DElcapsub.scale(ELp,v,trun,r)=1e-2;
+*         Elcapsub.scale(ELp,v,trun,r)=1e2;
+
+         DElfuelsub.scale(ELp,v,ELl,ELf,trun,r)=1e-1;
+*         ELfuelsub.scale(ELp,v,ELl,ELf,trun,r)=1e-1;
+
+*          Elexistcp.scale(ELp,v,trun,r)=1e2;
+*          DElexistcp.scale(ELp,v,trun,r)=1e-2;
+
+*          ELCOconsump.scale(ELpcoal,v,reg,cv,sulf,SOx,NOx,trun,r)=1e2;
+*          DELCOconsump.scale(ELpcoal,v,reg,cv,sulf,SOx,NOx,trun,r)=1e-2;
+
+*          ELfgcexistcp.scale(ELpd,v,fgc,trun,r)=1e2;
+*          DELfgcexistcp.scale(ELpd,v,fgc,trun,r)=1e-2;
+
+*          ELop.scale(ELpd,v,ELl,ELf,trun,r)=1e2;
+*          DELop.scale(ELpd,v,ELl,ELf,trun,r)=1e-2;
+
+*          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e2;
+*          ELupspincap.scale(ELp,v,ELl,ELf,t,r)=1e-2;
+
          Solve PowerMCP using MCP;
 
 

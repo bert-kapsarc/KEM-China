@@ -25,7 +25,7 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
-$INCLUDE short_run.gms
+*$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 *parameter contract;
@@ -40,9 +40,10 @@ $INCLUDE short_run.gms
 *!!!     Turn on railway construction tax
 *         COrailCFS=1;
 
-         ELpfit=1;
-*         EL2020=1;
-*         ELfitv.fx(Elpw,trun,r) = 0;
+         ELpfit=0;
+         EL2020=0;
+         sox_std=1;
+*         ELfitv.fx(Elpw,trun,r) = 100;
 
          option savepoint=2;
          option MCP=PATH;
@@ -55,7 +56,10 @@ $INCLUDE short_run.gms
 
          PowerMCP.scaleopt=1;
 
-         execute_loadpoint "ShortRun.gdx"
+         EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
+         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
+
+         execute_loadpoint "LongRunSOxstd.gdx"
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms

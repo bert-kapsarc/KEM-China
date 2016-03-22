@@ -110,8 +110,15 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
          Med     0.02
          High    0.05
          /;
+parameter ELpsoxstd(ELp,v,trun,r), ELpnoxstd(ELp,v,trun,r);
+         ELpsoxstd(ELpcoal,v,trun,r)=200;
+         ELpsoxstd(ELpcoal,v,trun,'Southwest')=400;
+         ELpsoxstd(ELpcoal,v,trun,'Sichuan')=400;
+         ELpnoxstd(ELpcoal,v,trun,r)=100;
+         ELpnoxstd(ELpcoal,vo,trun,r)=200;
 
-
+         ELpsoxstd(ELpcoal,v,trun,r)=ELpsoxstd(ELpcoal,v,trun,r)/1e9;
+         ELpnoxstd(ELpcoal,v,trun,r)=ELpnoxstd(ELpcoal,v,trun,r)/1e9;
 
 *       mg per cubic meter
 parameter NOxC(r,ELp) concentration of nox in flu gas mg per cubic meter
@@ -140,11 +147,11 @@ NOxC(r,ELpcoal) = 550*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-NOxC('North',Elpd) = NOxC('North',ELpd)*0.85;
+NOxC('North',Elpd) = NOxC('North',ELpd)*0.8;
 NOxC('East',Elpd) = NOxC('East',ELpd) ;
 NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd);
 NOxC('South',Elpd) = NOxC('South',ELpd)*0.9;
-NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*1.1;
+NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.8;
 
 
 NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.2;
@@ -217,7 +224,7 @@ parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per 
            DeNOx  6 /
 
           EMfgcfixedOMcst(fgc) operation and maintenance cost for fgd system RMB per MWH
-         / DeSOx  00 /
+         / DeSOx  100 /
 
 
           EMfgcpower(sulf,fgc,fgc) percentage reduciton of thermal efficiency when operating fgc

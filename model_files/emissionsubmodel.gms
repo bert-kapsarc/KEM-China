@@ -80,6 +80,11 @@ EMsulflim(trun,r) power sector sulfur emission constraint
 
 EMELnoxlim(trun,r) power sector nox emission constraint
 
+EMfgbal(ELp,v,trun,r) flue gas balance for different plants
+
+EMELsulfstd(ELpcoal,v,trun,r) flue  emmission standard for power plants ton per Nm3
+
+DEMELfluegas(ELpcoal,v,trun,r)
 ;
 
 * We assume an 80% combustion efficiency for sulfur in coal,
@@ -96,19 +101,40 @@ EMsulflim(t,r)$rdem_on(r)..
     +sum((coal)$(COfcv(coal,cv)),OTHERCOconsumpsulf(coal,cv,sulf,t,r))
    )*COsulfDW(sulf)*1.6)
          =g=
-   -EMsulfmax(t,r)*1
+   -EMsulfmax(t,r);
 ;
+
 
 EMELnoxlim(t,r)..
-  -sum((ELpcoal,v,gtyp),
-      sum((cv,sulf,sox,nox)$cv_ord(cv),
+  -sum((ELpcoal,v,gtyp,cv,sulf,sox,nox)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
-         VrCo(ELpcoal,'coal',cv)
-      )*NOxC(r,ELpcoal)
+         VrCo(ELpcoal,'coal',cv)*NOxC(r,ELpcoal)
    )
-                 =g= -EMELnoxmax(t,r)
+         =g= -EMELnoxmax(t,r)*1.2
 ;
+
+EMfgbal(ELpcoal,v,t,r)..
+   sum((gtyp,cv,sulf,sox,nox)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
+         ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*
+         VrCo(ELpcoal,'coal',cv)
+   )
+          -EMELfluegas(ELpcoal,v,t,r)
+                 =e= 0
+;
+
+EMELsulfstd(ELpcoal,v,t,r)$(sox_std=1)..
+  -sum((cv,sulf,gtyp,sox,nox)$ELpfgc(ELpcoal,cv,sulf,sox,nox),
+         ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(sox)*
+         COsulfDW(sulf)*1.6
+  )
+
+   +EMELfluegas(ELpcoal,v,t,r)*ELpsoxstd(ELpcoal,v,t,r)
+                 =g= 0
 ;
 
 
-
+DEMELfluegas(ELpcoal,v,t,r)..
+  0 =g=
+  -DEMfgbal(ELpcoal,v,t,r)
+  +DEMELsulfstd(ELpcoal,v,t,r)*ELpsoxstd(ELpcoal,v,t,r)$(sox_std=1)
+  ;

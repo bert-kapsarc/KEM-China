@@ -184,26 +184,9 @@ ELsubsidyELp(ELc,vv,trun,r)$ELctariff(ELc,vv)
  =
 
 +sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
-  +(  ELwindbld.l(ELp,v,trun,r)$(vn(v) and ELpw(ELp))
-     +ELhydbld.l(ELp,v,trun,r)$(vn(v) and ELphyd(ELp))
-     +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
-         ELbld.l(Elppd,v,trun,r))$ELpd(ELp)
-   )*ELpfixedcost(ELp,v,trun,r)*ELcapsub.l(ELp,v,trun,r)
-
-  +(  ELwindexistcp.l(ELp,v,trun,r)$(ELpw(ELp))
-     +ELhydexistcp.l(ELp,v,trun,r)$ELphyd(ELp)
-     +Elexistcp.l(ELp,v,trun,r)$ELpd(ELp)
-  )*ELpsunkcost(ELp,v,trun,r)*ELcapsub.l(ELp,v,trun,r)
-
-  +sum((cv,sulf),
-    DCOdem.l('coal',cv,sulf,'summ',trun,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*sum(ELl,ELfuelsub.l(ELp,v,ELl,'coal',trun,r))$ELpcoal(ELp)
-
-  +sum((ELl,ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
-         ELAPf(ELf,fss,trun,r)*ELfuelsub.l(ELp,v,ELl,ELf,trun,r))
+ELcapsub.l(ELp,v,trun,r)
 )
+
 -ELprofit.l(ELc,vv,trun,r);
 
 ;
@@ -238,7 +221,7 @@ Accounting('Cost','China Government')=
 +sum((trun),ELwindtarget.l(trun)*
          ELwindtarget.m(trun))$(EL2020=1)
 
-*         +sum((ELp,v,trun,r),Elsubsidy.l(ELp,v,trun,r))
++sum((vv,trun),ELsubsidyELp('All',vv,trun,'China'))
 ;
 
 

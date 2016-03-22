@@ -499,7 +499,8 @@ parameter
          Elpeff('Ultrsc',v)        = 0.45;
 
 * !!!    Efficiency penalty for older coal plants
-         ELpeff(ELpcoal,vo)         = ELpeff(ELpcoal,'new');
+*        Assume 1.5% heat rate degredation on old vintage plants
+         ELpeff(ELpcoal,vo)         = ELpeff(ELpcoal,'new')*(1-0.015);
 
 *        using 3.412 mmbtu/MWh and WEIO efficiencies for China
          ELfuelburn('ST',v,'methane',r)          = 8.949;
@@ -791,7 +792,7 @@ Equations
 
          DElcapsub(Elp,v,trun,r)
          DELfuelsub(Elp,v,ELl,ELf,trun,r)
-         DELdeficit(ELp,v,trun,r)
+         DELdeficit(ELc,v,trun,r)
 
          DELfitv(ELpw,trun,r)
 ;
@@ -1155,10 +1156,10 @@ ELfgccapbal(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
 ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
 
-
++ELdeficit(ELc,vv,t,r)
 +sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
 
-+ELdeficit(ELp,v,t,r)
+
 
 
   +sum((ELl,ELf)$(Elpd(ELp) and ELpELf(ELp,ELf)),
@@ -1201,7 +1202,8 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
   -sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
          ELAPf(ELf,fss,t,r)*(
-         ELfconsump(ELp,v,ELf,fss,t,r)-sum(ELl,ELfuelsub(ELp,v,ELl,ELf,t,r))$vo(v)) )
+         ELfconsump(ELp,v,ELf,fss,t,r)-sum(ELl,ELfuelsub(ELp,v,ELl,ELf,t,r))$(not ELpnuc(Elp) and vo(v)) )
+  )
 
   -(  ELwindbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELpw(ELp))
      +ELhydbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELphyd(ELp))
@@ -1220,7 +1222,7 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
   -sum(fgc$((DeSOx(fgc) or DeNOx(fgc)) and ELpcoal(ELp)),
          (
-*           ELfgcexistcp(ELp,v,fgc,t,r)
+           ELfgcexistcp(ELp,v,fgc,t,r)
           +ELfgcbld(ELp,v,fgc,t-ELfgcleadtime(fgc),r))*(EMfgccapexD(fgc,t)+EMfgcfixedOMcst(fgc))
   )
 
@@ -1237,7 +1239,7 @@ ELwindtarget(t)..
 ;
 
 ELfuelsublim(r,ELl,t)$ELrtariff(r)..
-         -sum((ELpd,v,ELf)$(ELpELf(Elpd,ELf) and ELptariff(Elpd,v) and vo(v)),
+         -sum((ELpd,v,ELf)$(ELpELf(Elpd,ELf) and ELptariff(Elpd,v) and vo(v) and not ELpnuc(ELpd)),
                  ELfuelsub(Elpd,v,ELl,ELf,t,r)/ELfuelburn(ELpd,v,ELf,r)) =g=
                  -(ELlcgw(r,ELl)-Ellcgw(r,ELl+1))*ELlchours(ELl)$(ord(ELl)<=1);
 
@@ -1270,7 +1272,7 @@ sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
 
 ;
 
-DELfuelsub(ELp,v,ELl,ELf,t,r)$(ELptariff(ELp,v) and vo(v) and ELpELf(Elp,ELf))..
+DELfuelsub(ELp,v,ELl,ELf,t,r)$(ELptariff(ELp,v) and vo(v) and ELpELf(Elp,ELf) and not ELpnuc(ELp) and ELpd(Elp))..
          0=g=
   +sum((cv,sulf)$(ELfcoal(ELf) and cv_ord(cv)),
      DCOdem('coal',cv,sulf,'summ',t,r)
@@ -1290,10 +1292,12 @@ DELfuelsub(ELp,v,ELl,ELf,t,r)$(ELptariff(ELp,v) and vo(v) and ELpELf(Elp,ELf))..
 ;
 
 
-DELdeficit(ELp,v,t,r)$(ELptariff(ELp,v))..
-*ELctariff(ELc,vv)..
-1 =g=  sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
+*DELdeficit(ELp,v,t,r)$(ELtariff(ELp,v))..
+*1 =g=  sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
+DELdeficit(ELc,vv,t,r)$(ELctariff(ELc,vv))..
+1 =g= DELprofit(ELc,vv,t,r)
 ;
+
 
 
 
@@ -1347,6 +1351,8 @@ DELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox)
   -(DELfgccaplim(ELpcoal,v,nox,t,r)/ELfuelburn(ELpcoal,v,'coal',r))$(DeNOx(nox))
 
   -DEMsulflim(t,r)*EMfgc(sox)*COsulfDW(sulf)*1.6$rdem_on(r)
+  -DEMELsulfstd(ELpcoal,v,t,r)*EMfgc(sox)*COsulfDW(sulf)*1.6$(sox_std=1)
+  +DEMfgbal(ELpcoal,v,t,r)*VrCo(ELpcoal,'coal',cv)
   -DEMELnoxlim(t,r)*EMfgc(nox)*VrCo(ELpcoal,'coal',cv)*NOxC(r,ELpcoal)
 
 ;
@@ -1584,8 +1590,8 @@ DELhydopsto(ELl,v,t,r)..  0=g=
 
 DELfgcexistcp(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
       +0 =g=
-*  -(EMfgccapexD(fgc,t)+EMfgcfixedOMcst(fgc))*
-*         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpd,v)
+  -(EMfgccapexD(fgc,t)+EMfgcfixedOMcst(fgc))*
+         sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpd,v)
 
   +DELfgccapbal(ELpd,v,fgc,t,r)-DELfgccapbal(ELpd,v,fgc,t-1,r)
   +sum(ELl,DELfgccaplim(ELpd,v,fgc,t,r)*
@@ -1690,8 +1696,11 @@ DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,
 DELfitv.ELfitv,
 *DELsubsidycoal.ELsubsidycoal,
 
+DEMELfluegas.EMELfluegas,
 EMsulflim.DEMsulflim,
-EMELnoxlim.DEMELnoxlim
+EMELnoxlim.DEMELnoxlim,
+EMfgbal.DEMfgbal,EMELsulfstd.DEMELsulfstd,
+
 
 *$ontext
 

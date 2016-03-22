@@ -435,7 +435,7 @@ $load ELtariffmax
 $gdxin
 
          ELfgctariff('DeSOx') = 15;
-         ELfgctariff('DeNOx') = 10;
+         ELfgctariff('DeNOx') = 100;
 
 ELtariffmax(ELpog,r) = ELtariffmax('CC',r) ;
 *ELtariffmax(ELphydsto,r) = ELtariffmax('Ultrsc',r) ;
@@ -603,13 +603,15 @@ Variables
 
          DELnucconstraint(ELl,trun,r)
 
+         DEMfgbal(ELp,v,trun,r)
+
 
 Positive variables
 
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
          ELfuelsub(ELp,v,ELl,ELf,trun,r)  Variable subsidy paid by government to compensate generators
-         ELdeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELdeficit(ELc,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
          ELfitv(ELp,trun,r)
@@ -713,8 +715,9 @@ Positive variables
          DEMsulflim(trun,r) dual on sulfur emission constraint
          DEMELnoxlim(trun,r) dual on power sector nox emission constraint
 
+         DEMELsulfstd(ELpcoal,v,trun,r)
 
-         EMsulf(trun,r)
+         EMELfluegas(ELp,v,trun,r)
 
 
 

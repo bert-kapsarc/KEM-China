@@ -7,4 +7,5 @@ db/*.xlsx
 /ValidationData
 **/*.log
 **/225*/
+**/old gdx/*
 **/*.par
