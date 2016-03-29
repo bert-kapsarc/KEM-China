@@ -31,7 +31,7 @@ $INCLUDE scenarios.gms
 
          ELpfit=0;
          EL2020=0;
-         sox_std=0;
+         SO2_std=0;
 *         ELfitv.fx(Elpw,trun,r) = 100;
 
 parameter contract;
@@ -42,7 +42,7 @@ parameter contract;
          ELptariff(ELphyd,v) = yes;
 
 *!!!     Turn on railway construction tax
-*         COrailCFS=1;
+         COrailCFS=1;
 
 
 * !!!!   ELcELp subset defines plants operated by regional power companies
@@ -50,10 +50,10 @@ parameter contract;
 $ontext
          ELctariff(ELbig,vn)=yes;
          ELctariff(ELnuc,v)=yes;
+         ELctariff(ELc,v)=no;
 
          ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
-         ELcELp(ELnuc,v,ELpnuc,v)= yes;
-
+         ELcELp(ELnuc,v,ELpnuc,v)$Elctariff(Elnuc,v)= yes;
 $offtext
 
          ELcELp(ELp,v,ELp,v)= yes;
@@ -64,14 +64,14 @@ $offtext
          Elcapsub.up(Elp,vo,trun,r)=0;
          Elcapsub.up(Elp,vn,trun,r)=0;
 
-         ELfuelsub.up(Elpd,v,ELl,ELf,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
+         ELfuelsub.up(Elpd,v,ELl,ELf,cv,sulf,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
 
-*         option savepoint=1;
+         option savepoint=1;
          option MCP=PATH;
          PowerMCP.optfile=1;
 
 
-         execute_loadpoint "test.gdx";
+         execute_loadpoint "LongRunRegNoMC.gdx";
 
          PowerMCP.scaleopt=1;
 
@@ -81,8 +81,8 @@ $offtext
          EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
          DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
 
-         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
-         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
+*         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
+*         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
 
 *         COopmaintbal.scale(trun)=1e1;
 *         DCOopmaintbal.scale(trun)=1e-1;

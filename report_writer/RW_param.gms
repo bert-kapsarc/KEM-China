@@ -32,6 +32,7 @@
 
 
          ELcostsELp Total cost by each technology
+         ELtranscosts Total transmission costs
          ELtariffELp  Average Tarrif paid
          ELsubsidyELp Total Subsidy paid by technology
          ELdeficitELp Generator deficit minimized by technology
@@ -94,6 +95,7 @@ Parameters
          COprodNet net coal produced raw and washed by mining region
          COprodPUnet net coal produced raw and washed by production unit
          CObldrco coal mine expansino by region and mine type
+         COuser coal use by mining region
          Cotransin coal entereing node
          Cotransout coal exiting node
          COtransfrom coal exiting produciton node

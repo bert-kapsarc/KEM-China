@@ -110,18 +110,22 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
          Med     0.02
          High    0.05
          /;
-parameter ELpsoxstd(ELp,v,trun,r), ELpnoxstd(ELp,v,trun,r);
-         ELpsoxstd(ELpcoal,v,trun,r)=200;
-         ELpsoxstd(ELpcoal,v,trun,'Southwest')=400;
-         ELpsoxstd(ELpcoal,v,trun,'Sichuan')=400;
-         ELpnoxstd(ELpcoal,v,trun,r)=100;
-         ELpnoxstd(ELpcoal,vo,trun,r)=200;
+parameter ELpSO2std(ELp,v,trun,r), ELpNO2std(ELp,v,trun,r);
 
-         ELpsoxstd(ELpcoal,v,trun,r)=ELpsoxstd(ELpcoal,v,trun,r)/1e9;
-         ELpnoxstd(ELpcoal,v,trun,r)=ELpnoxstd(ELpcoal,v,trun,r)/1e9;
+         ELpSO2std(ELpcoal,v,trun,r)=200;
+         ELpSO2std(ELpcoal,v,trun,'Southwest')=400;
+         ELpSO2std(ELpcoal,v,trun,'Sichuan')=400;
+
+         ELpNO2std(ELpcoal,v,trun,r)=200;
+         ELpNO2std(ELpcoal,vo,trun,r)=200;
+
+         ELpSO2std(ELpcoal,v,trun,r)=ELpSO2std(ELpcoal,v,trun,r)/1e9;
+         ELpNO2std(ELpcoal,v,trun,r)=ELpNO2std(ELpcoal,v,trun,r)/1e9;
 
 *       mg per cubic meter
-parameter NOxC(r,ELp) concentration of nox in flu gas mg per cubic meter
+parameter NOxC(r,ELp) concentration of nox in flu gas mg per normal cubic meter
+
+          NO2C(r,ELp) concentration of no2 in flu gas mg per normal cubic meter
 $ontext
                          Subcr           Superc          ultrsc
          South           650             625             600
@@ -143,26 +147,29 @@ $ontext
 $offtext
 ;
 * convert to tons per cubic meter
-NOxC(r,ELpcoal) = 550*1e-9;
+NOxC(r,ELpcoal) = 650*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-NOxC('North',Elpd) = NOxC('North',ELpd)*0.8;
-NOxC('East',Elpd) = NOxC('East',ELpd) ;
-NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd);
-NOxC('South',Elpd) = NOxC('South',ELpd)*0.9;
-NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.8;
+NOxC('North',Elpd) = NOxC('North',ELpd)*0.7;
+NOxC('East',Elpd) = NOxC('East',ELpd)*0.8 ;
+NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
+NOxC('South',Elpd) = NOxC('South',ELpd)*0.75;
+NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.95;
 
 
-NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*1.2;
-NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*1.2;
-NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.5;
-NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.4;
-NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.3;
+NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.9;
+NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*0.975;
+NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.3;
+NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1;
+NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.1;
 
-NOxC('West',Elpd) = NOxC('West',ELpd)*1.3 ;
+NOxC('West',Elpd) = NOxC('West',ELpd)*1.2 ;
 
-NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.2;
+NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.4;
+
+
+NO2C(r,ELp) = 850*1e-9;
 
 
 
@@ -223,8 +230,8 @@ parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per 
          / DeSOx  10
            DeNOx  6 /
 
-          EMfgcfixedOMcst(fgc) operation and maintenance cost for fgd system RMB per MWH
-         / DeSOx  100 /
+          EMfgcfixedOMcst(fgc) operation and maintenance cost for fgd system RMB per KW
+         / DeSOx  0 /
 
 
           EMfgcpower(sulf,fgc,fgc) percentage reduciton of thermal efficiency when operating fgc
@@ -233,12 +240,10 @@ parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per 
           EMfgccapexD(fgc,trun) Annualized capital cost of flue gas control systems
 ;
 
-* Estimates from CURRENT CAPITAL COST AND COST-EFFECTIVENESS
-* OF POWER PLANT EMISSIONS CONTROL TECHNOLOGIES
-* Prepared by
-* J. Edward Cichanowicz
-          EMfgccapex(DeSOx,trun)=1750 ;
-          EMfgccapex(DeNOx,trun)=1500  ;
+*        DeSOx YU ZF (2006) Development and Application of Clean Coal Technology in Mainland China. In: Zhang ZX, Bor Y (Eds), Energy Econcomics and Policy in mainland China and taiwan. China Environmental Scienece Press, Beijing, pp. 67-88.
+*        DeNOx estimated from, ZhongXiang Zhang (2014) Nota Di Lavoro, Energy Prices, Subsides and Resources Tax reform in China.
+          EMfgccapex(DeSOx,trun)=200 ;
+          EMfgccapex(DeNOx,trun)=350  ;
 
 parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
           / noDeSOx 1

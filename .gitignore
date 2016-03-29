@@ -4,6 +4,7 @@
 **/*.lxi
 **/*.accdb
 db/*.xlsx
+**/*.xlsx
 /ValidationData
 **/*.log
 **/225*/

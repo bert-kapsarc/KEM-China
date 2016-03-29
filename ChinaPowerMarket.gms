@@ -25,7 +25,7 @@ $INCLUDE discounting.gms
 
 $INCLUDE scenarios.gms
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 *parameter contract;
@@ -38,11 +38,11 @@ $INCLUDE scenarios.gms
          ELcELp(ELp,v,ELp,v)= no;
 
 *!!!     Turn on railway construction tax
-*         COrailCFS=1;
+         COrailCFS=1;
 
-         ELpfit=0;
+         ELpfit=1;
          EL2020=0;
-         sox_std=1;
+         SO2_std=0;
 *         ELfitv.fx(Elpw,trun,r) = 100;
 
          option savepoint=2;
@@ -54,12 +54,18 @@ $INCLUDE scenarios.gms
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
 
+         execute_loadpoint "ShortRun.gdx" ;
+
+
          PowerMCP.scaleopt=1;
 
          EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
          DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
 
-         execute_loadpoint "LongRunSOxstd.gdx"
+         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
+         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
+
+
          Solve PowerMCP using MCP;
 
 $INCLUDE RW_EL.gms

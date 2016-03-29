@@ -307,7 +307,7 @@ Sets
          reg(gtyp) /reg/
          spin(gtyp) /spin/
 
-         wstep wind capacity steps /w1*w100/
+         wstep wind capacity steps /w1*w50/
          cc cloud cover /nc,pc,oc,dust/
 
          fgc flue gas control systems /DeSOx, DeNOx, noDeSOx, noDeNOx/
@@ -358,8 +358,8 @@ Sets
                          (vo(v) and ELpgttocc(ELpd)))  = yes ;
 
          ELfCV(ELfcoal,cv_ord,sulf) = yes;
-         ELfCV(ELfnuclear,CVf,'extLow') = yes;
-         ELfCV(ELfog,CVf,'extLow') = yes;
+         ELfCV(ELfnuclear,CVf,'ExtLow') = yes;
+         ELfCV(ELfog,CVf,'ExtLow') = yes;
 
 *         fDiesel(ELf)=no;
 *         fDiesel('Diesel')=yes;
@@ -435,7 +435,7 @@ $load ELtariffmax
 $gdxin
 
          ELfgctariff('DeSOx') = 15;
-         ELfgctariff('DeNOx') = 100;
+         ELfgctariff('DeNOx') = 10;
 
 ELtariffmax(ELpog,r) = ELtariffmax('CC',r) ;
 *ELtariffmax(ELphydsto,r) = ELtariffmax('Ultrsc',r) ;
@@ -610,7 +610,7 @@ Positive variables
 
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
-         ELfuelsub(ELp,v,ELl,ELf,trun,r)  Variable subsidy paid by government to compensate generators
+         ELfuelsub(ELp,v,ELl,ELf,cv,sulf,trun,r)  Variable subsidy paid by government to compensate generators
          ELdeficit(ELc,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
@@ -715,7 +715,8 @@ Positive variables
          DEMsulflim(trun,r) dual on sulfur emission constraint
          DEMELnoxlim(trun,r) dual on power sector nox emission constraint
 
-         DEMELsulfstd(ELpcoal,v,trun,r)
+         DEMELSO2std(ELpcoal,v,trun,r)
+         DEMELNO2std(ELpcoal,v,trun,r)
 
          EMELfluegas(ELp,v,trun,r)
 

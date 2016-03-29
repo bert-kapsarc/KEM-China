@@ -12,6 +12,7 @@ COprodNet(COf,rw,trun,rco) = sum((mm,ss,sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rc
 COprodPUnet(COf,mm,ss,rw,trun,rco) = sum((sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
 CObldrco(Cof,trun,rco) = sum((mm,ss),CObld.l(COf,mm,ss,trun,rco));
 
+COuser(COf,rco)      =sum((cv,sulf,ELs,trun),coaluse.l(COf,cv,sulf,ELs,trun,rco)*COcvSCE(cv));
 
 Cotranstot(tr,trun,rco,rrco) = sum((COf,cv,sulf,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
 

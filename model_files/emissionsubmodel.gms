@@ -61,10 +61,10 @@ parameter EMELnoxmax(time,r) 2010 regional power sector emission in million tons
          t12.Xinjiang        0.263
 /
 ;
-         EMELnoxmax('t12','Sichuan')=0.233;
+*         EMELnoxmax('t12','Sichuan')=0.233;
 
 
-         EMELnoxmax(time,Shandong) = EMELnoxmax(time,Shandong)*1.1;
+*         EMELnoxmax(time,Shandong) = EMELnoxmax(time,Shandong)*1.1;
 
 Parameter ELdiscfact(time) discount factors for electricity sector
           EMdiscoef(trun);
@@ -82,7 +82,9 @@ EMELnoxlim(trun,r) power sector nox emission constraint
 
 EMfgbal(ELp,v,trun,r) flue gas balance for different plants
 
-EMELsulfstd(ELpcoal,v,trun,r) flue  emmission standard for power plants ton per Nm3
+EMELSO2std(ELpcoal,v,trun,r) so2 flue gas  emmission standard for power plants ton per Nm3
+
+EMELNO2std(ELpcoal,v,trun,r) no2 flue gas emmission standard for power plants ton per Nm3
 
 DEMELfluegas(ELpcoal,v,trun,r)
 ;
@@ -110,7 +112,7 @@ EMELnoxlim(t,r)..
          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
          VrCo(ELpcoal,'coal',cv)*NOxC(r,ELpcoal)
    )
-         =g= -EMELnoxmax(t,r)*1.2
+         =g= -EMELnoxmax(t,r)*1
 ;
 
 EMfgbal(ELpcoal,v,t,r)..
@@ -122,19 +124,32 @@ EMfgbal(ELpcoal,v,t,r)..
                  =e= 0
 ;
 
-EMELsulfstd(ELpcoal,v,t,r)$(sox_std=1)..
+EMELSO2std(ELpcoal,v,t,r)$(SO2_std=1)..
   -sum((cv,sulf,gtyp,sox,nox)$ELpfgc(ELpcoal,cv,sulf,sox,nox),
          ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(sox)*
          COsulfDW(sulf)*1.6
   )
 
-   +EMELfluegas(ELpcoal,v,t,r)*ELpsoxstd(ELpcoal,v,t,r)
+   +EMELfluegas(ELpcoal,v,t,r)*ELpSO2std(ELpcoal,v,t,r)
                  =g= 0
 ;
+
+
+EMELNO2std(ELpcoal,v,t,r)$(SO2_std=1)..
+  -sum((gtyp,cv,sulf,sox,nox)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
+         ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
+         VrCo(ELpcoal,'coal',cv)*NO2C(r,ELpcoal)
+   )
+
+   +EMELfluegas(ELpcoal,v,t,r)*ELpNO2std(ELpcoal,v,t,r)
+                 =g= 0
+;
+
 
 
 DEMELfluegas(ELpcoal,v,t,r)..
   0 =g=
   -DEMfgbal(ELpcoal,v,t,r)
-  +DEMELsulfstd(ELpcoal,v,t,r)*ELpsoxstd(ELpcoal,v,t,r)$(sox_std=1)
+  +DEMELSO2std(ELpcoal,v,t,r)*ELpSO2std(ELpcoal,v,t,r)$(SO2_std=1)
+  +DEMELNO2std(ELpcoal,v,t,r)*ELpNO2std(ELpcoal,v,t,r)$(SO2_std=1)
   ;
