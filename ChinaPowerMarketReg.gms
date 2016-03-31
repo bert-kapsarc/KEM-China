@@ -22,17 +22,15 @@ $INCLUDE imports.gms
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
+         ELpfit=1;
+         EL2020=0;
+         SO2_std=0;
 
 $INCLUDE scenarios.gms
 
 *$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
-
-         ELpfit=0;
-         EL2020=0;
-         SO2_std=0;
-*         ELfitv.fx(Elpw,trun,r) = 100;
 
 parameter contract;
 
@@ -50,16 +48,18 @@ parameter contract;
 $ontext
          ELctariff(ELbig,vn)=yes;
          ELctariff(ELnuc,v)=yes;
-         ELctariff(ELc,v)=no;
+*         ELctariff(ELc,v)=no;
 
          ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
          ELcELp(ELnuc,v,ELpnuc,v)$Elctariff(Elnuc,v)= yes;
 $offtext
 
-         ELcELp(ELp,v,ELp,v)= yes;
-         ELctariff(ELp,v)=yes;
+         ELcELp(ELp,v,ELp,v)$ELptariff(ELp,v)= yes;
+         ELctariff(ELp,v)$ELptariff(ELp,v)=yes;
 
          ELrtariff(r) = yes;
+
+
 
          Elcapsub.up(Elp,vo,trun,r)=0;
          Elcapsub.up(Elp,vn,trun,r)=0;
@@ -71,21 +71,24 @@ $offtext
          PowerMCP.optfile=1;
 
 
-         execute_loadpoint "LongRunRegNoMC.gdx";
+         execute_loadpoint "LongRunReg.gdx";
 
          PowerMCP.scaleopt=1;
 
          ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e2;
          DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-2;
 
-         EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
-         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
+         COtransCnstrctbal.scale(trun)=1e-1;
+         COtransbld.scale(tr,trun,rco,rrco)=1e2;
+
+*         EMfgbal.scale(ELpcoal,v,trun,r)=1e2;
+*         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-2;
 
 *         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
 *         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
 
-*         COopmaintbal.scale(trun)=1e1;
-*         DCOopmaintbal.scale(trun)=1e-1;
+*         COopmaintbal.scale(trun)=1e2;
+*         DCOopmaintbal.scale(trun)=1e-2;
 *         DELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e-2;
 *         ELfconsump.up(ELpd,v,ELf,fss,trun,r)=1e2;
 

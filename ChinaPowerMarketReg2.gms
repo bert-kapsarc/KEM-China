@@ -22,17 +22,14 @@ $INCLUDE imports.gms
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
+         ELpfit=0;
+         EL2020=1;
+         SO2_std=0;
 
 $INCLUDE scenarios.gms
 
-$INCLUDE short_run.gms
+*$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
-
-
-         ELpfit=1;
-         EL2020=0;
-         SO2_std=0;
-*         ELfitv.fx(Elpw,trun,r) = 100;
 
 parameter contract;
 
@@ -60,27 +57,30 @@ parameter contract;
 *         ELctariff(ELp,v)=yes;
 
          Elcapsub.up(Elp,vo,trun,r)=0;
-         Elcapsub.up(Elp,vn,trun,r)=0;
+         Elcapsub.up(Elp,vn,trun,r)=100;
 
          ELfuelsub.up(Elpd,v,ELl,ELf,cv,sulf,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
 
-*         option savepoint=1;
+         option savepoint=1;
          option MCP=PATH;
          PowerMCP.optfile=1;
 
 
-         execute_loadpoint "Reference.gdx";
+         execute_loadpoint "LongRunRegWind.gdx";
 
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e3;
-         DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-3;
+         ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e2;
+         DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-2;
 
          EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
          DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
 
-         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
-         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
+         COtransCnstrctbal.scale(trun)=1e-1;
+         COtransbld.scale(tr,trun,rco,rrco)=1e2;
+
+*         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
+*         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
 
 *         COopmaintbal.scale(trun)=1e1;
 *         DCOopmaintbal.scale(trun)=1e-1;

@@ -611,10 +611,11 @@ Positive variables
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
          ELfuelsub(ELp,v,ELl,ELf,cv,sulf,trun,r)  Variable subsidy paid by government to compensate generators
-         ELdeficit(ELc,v,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELdeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELwinddeficit(ELpw,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
-         ELfitv(ELp,trun,r)
+         ELwindsub(ELp,v,trun,r)
          ELsubsidywind(ELp,v,trun,r)
 
 *electricity production activities
@@ -708,6 +709,7 @@ Positive variables
 * Duals for profit constraint and wind target
          DELprofit(ELc,v,trun,r)
          DELwindtarget(trun)
+         DELfitcap(ELp,v,trun,r)
          DELfuelsublim(r,ELl,trun)
 
 *Duals for electricity

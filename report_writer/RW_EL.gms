@@ -230,10 +230,10 @@ ELsubsidyELp(ELc,v,trun,'China') =  sum(r$(ELsubsidyELp(ELc,v,trun,r)>0),
 ELsubsidyELp('All',v,trun,'China') =  sum((ELc,r)$(ELsubsidyELp(ELc,v,trun,r)>0),
                                        ELsubsidyELp(ELc,v,trun,r))       ;
 
-ELdeficitELp(ELc,v,trun,r)$ELctariff(ELc,v) = ELdeficit.l(ELc,v,trun,r);
-ELdeficitELp('All',v,trun,r) = sum(ELc,ELdeficitELp(ELc,v,trun,r));
-ELdeficitELp(ELc,v,trun,'China') = sum(r,ELdeficitELp(ELc,v,trun,r));
-ELdeficitELp('All',v,trun,'China') = sum((ELc,r),ELdeficitELp(ELc,v,trun,r));
+ELdeficitELp(Elp,v,trun,r) = ELdeficit.l(Elp,v,trun,r);
+ELdeficitELp('All',v,trun,r) = sum(Elp,ELdeficitELp(Elp,v,trun,r));
+ELdeficitELp(Elp,v,trun,'China') = sum(r,ELdeficitELp(Elp,v,trun,r));
+ELdeficitELp('All',v,trun,'China') = sum((Elp,r),ELdeficitELp(Elp,v,trun,r));
 *$offtext
 
 parameter Accounting utilities costs from the original LP's objective value
@@ -243,14 +243,34 @@ parameter Accounting utilities costs from the original LP's objective value
 Accounting('Cost','China Government')=
 
 
-+sum((Elpw,v,ELl,trun,r)$(ELpfit=1),ELwindop.l(ELpw,v,ELl,trun,r)*
-         ELparasitic(ELpw,v)*ELfit(ELpw,trun,r))$(EL2020<>1)
+*sum((Elpw,v,trun,r),
+*  -sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*(ELomcst(ELpw,v,r)-ELtariffmax(Elpw,r))
+*  -ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
+*  -ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
+*)
+
+*+sum((Elpw,v,trun,r),ELwindsub.l(Elpw,v,trun,r)-ELdeficit.l(Elpw,v,trun,r))$(ELpfit=1)
+
++sum((Elpw,v,ELl,trun,r),
+         ELwindop.l(ELpw,v,ELl,trun,r)*(ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r)))$(ELpfit=1)
+
+
++sum((Elpw,v,trun,r)$(
+  sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*ELomcst(ELpw,v,r)
+  +ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
+  +ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
+  <ELtariffmax('Ultrsc',r)*sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))
+  ),     ELtariffmax('Ultrsc',r)
+         -sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*ELomcst(ELpw,v,r)
+         -ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
+         -ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
+)$(ELpfit=1) 
 
 
 +sum((trun),ELwindtarget.l(trun)*
          ELwindtarget.m(trun))$(EL2020=1)
 
-+sum((vv,trun),ELsubsidyELp('All',vv,trun,'China'))
++sum((v,trun),ELsubsidyELp('All',v,trun,'China'))
 ;
 
 

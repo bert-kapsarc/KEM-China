@@ -199,8 +199,8 @@ parameter
          GTtoCC   115
          CCcon    115
 
-         Windon   275.85
-         Windoff  978.05
+         Windon   220
+         Windoff  978
 
          SubcrSML    195
          SubcrLRG    130
@@ -291,7 +291,7 @@ parameter ELcapital(ELp,r) Capital cost of equipment RMB per KW (2012);
          ELcapital('Ultrsc',r)      =5048  ;
 
 *         ELcapital('Windon',r)   =7500  ;
-         ELcapital('Windon',r)   =8200  ;
+         ELcapital('Windon',r)   =8000  ;
          ELcapital('Windoff',r)  =28016.4  ;
 
          ELcapital('Hydrolg',r)  = 10727 ;
@@ -607,7 +607,7 @@ $gdxin
                  *4178/sum((rr,ELll),ELlcgw(rr,ELll)*ELlchours(ELll));
 
 
-         ELlcgwonsite(r,ELl)$(sum(ELll,ELlcgw(r,ELll))>0) = (ELlcgw(r,ELl) - ELlcgwsales(r,ELl)/0.9)
+         ELlcgwonsite(r,ELl)$(sum(ELll,ELlcgw(r,ELll))>0) = (ELlcgw(r,ELl) - ELlcgwsales(r,ELl)/0.905)
 
 *         375*
 *                 1/sum(ELll,ELlchours(ELll))*
@@ -724,6 +724,8 @@ Equations
          ELwindcapsum(wstep,trun,r)      makes sure total wind capacity is within the steps
          ELwindcapsum2(wstep,trun,r)
 
+         ELfitcap(Elpw,v,trun,r)
+
 
 
 * SPINNING RESERVES
@@ -792,9 +794,9 @@ Equations
 
          DElcapsub(Elp,v,trun,r)
          DELfuelsub(Elp,v,ELl,ELf,cv,sulf,trun,r)
-         DELdeficit(ELc,v,trun,r)
-
-         DELfitv(ELpw,trun,r)
+         DELdeficit(ELp,v,trun,r)
+         DELwinddeficit(ELp,v,trun,r)
+         DELwindsub(ELpw,v,trun,r)
 ;
 
 
@@ -1156,10 +1158,10 @@ ELfgccapbal(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
 ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
 
-+ELdeficit(ELc,vv,t,r)
+
 +sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
 
-
+  +ELdeficit(ELp,v,t,r)
 
 
   +sum((ELl,ELf)$(Elpd(ELp) and ELpELf(ELp,ELf)),
@@ -1170,7 +1172,7 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
          ELhydop(ELp,v,ELl,t,r))$ELphyd(ELp)
 
   +sum((ELl),
-         (ELtariffmax(ELp,r)*ELparasitic(ELp,v)+ELfitv(Elp,t,r)$(ELpfit=1)-ELomcst(ELp,v,r))*
+         (ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
          ELwindop(ELp,v,ELl,t,r))$ELpw(ELp)
 
 *  Generator tariffs and costs for operating flue gas control systems
@@ -1233,6 +1235,17 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 ;
 
 
+ELfitcap(ELpw,v,t,r)$(ELpfit=1)..
+
+*  -sum((ELl),ELwindop(ELpw,v,ELl,t,r))*(ELomcst(ELpw,v,r)+ELwindsub(Elpw,v,t,r)-ELtariffmax(Elpw,r))
+  -sum((ELl),ELwindop(ELpw,v,ELl,t,r))*(ELomcst(ELpw,v,r)-ELtariffmax(Elpw,r))
+  -ELwindsub(Elpw,v,t,r)
+  -ELwindbld(ELpw,v,t-ELleadtime(Elpw),r)*ELpfixedcost(ELpw,v,t,r)$vn(v)
+  -ELwindexistcp(ELpw,v,t,r)*ELpsunkcost(ELpw,v,t,r)
+
+  +ELwinddeficit(ELpw,v,t,r)
+         =g= 0
+;
 ELwindtarget(t)..
 
    sum((ELpw,v,r),ELwindbld(ELpw,v,t,r)$vn(v)
@@ -1269,9 +1282,7 @@ DELcapsub(ELp,v,t,r)$(ELptariff(ELp,v))..
 *     +Elexistcp(ELp,v,t,r)$ELpd(ELp)
 *  )*ELpsunkcost(ELp,v,t,r)*
 
-sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
-
-
+sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))$(ELptariff(ELp,v))
 ;
 
 DELfuelsub(ELp,v,ELl,ELf,cv,sulf,t,r)$(ELptariff(ELp,v) and vo(v) and ELfCV(Elf,cv,sulf) and ELpELf(Elp,ELf) and not ELpnuc(ELp) and ELpd(Elp))..
@@ -1296,12 +1307,17 @@ DELfuelsub(ELp,v,ELl,ELf,cv,sulf,t,r)$(ELptariff(ELp,v) and vo(v) and ELfCV(Elf,
 ;
 
 
-*DELdeficit(ELp,v,t,r)$(ELtariff(ELp,v))..
-*1 =g=  sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))
-DELdeficit(ELc,vv,t,r)$(ELctariff(ELc,vv))..
-1 =g= DELprofit(ELc,vv,t,r)
+DELdeficit(ELp,v,t,r)$(ELptariff(ELp,v) or (ELpfit=1 and ELpw(Elp)) )..
+1 =g=  sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))$(ELptariff(ELp,v))
+*+DELfitcap(ELp,v,t,r)$(ELpfit=1 and ELpw(Elp))
+
+*DELdeficit(ELc,vv,t,r)$(ELctariff(ELc,vv))..
+*1 =g= DELprofit(ELc,vv,t,r)
 ;
 
+DELwinddeficit(ELpw,v,t,r)$(ELpfit=1)..
+1 =g= DELfitcap(ELpw,v,t,r)
+;
 
 
 
@@ -1323,7 +1339,7 @@ DELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox)
   -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
     DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
  )*ELdiscfact(t)
-* +1000$noDesox(sox) + 1000$noDeNOX(nox)
+
          +0=g=
 
   -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*
@@ -1490,8 +1506,7 @@ DELwindbld(ELpw,v,t,r)$vn(v).. 0=g=
 
   -sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t+ELleadtime(ELpw),r))*
          ELpfixedcost(ELpw,v,t,r)$ELptariff(ELpw,v)
-*(1-ELcapsub(ELpw,v,t,r))
-
+  -DELfitcap(ELpw,v,t+ELleadtime(Elpw),r)*ELpfixedcost(ELpw,v,t,r)$(ELpfit=1)
   +DELpurchbal(t)*ELpurcst(Elpw,t,r)
   +DELcnstrctbal(t)*ELconstcst(ELpw,t,r)
   +DELopmaintbal(t+ELleadtime(ELpw))*ELfixedOMcst(ELpw)
@@ -1508,17 +1523,19 @@ DELwindexistcp(ELpw,v,t,r).. 0=g=
   +DELwindcaplim(ELpw,v,t,r)
   -sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r))*
          ELpsunkcost(ELpw,v,t,r)$ELptariff(ELpw,v)
-*(1-ELcapsub(ELpw,v,t,r))
+
+  -DELfitcap(ELpw,v,t,r)*ELpsunkcost(ELpw,v,t,r)$(ELpfit=1)
 
   +DELwindtarget(t)
 ;
 
 DELwindop(ELpw,v,ELl,t,r)..
 
-   -ELfitv(ELpw,t,r)*ELparasitic(ELpw,v)$(ELpfit=1)
-       +0=g=
-
-  +(ELtariffmax(ELpw,r)*ELparasitic(ELpw,v)+ELfitv(Elpw,t,r)$(ELpfit=1)-ELomcst(ELpw,v,r))*
+*  -ELwindsub(ELpw,v,t,r)=g=
+   0=g=
+*  -DELfitcap(ELpw,v,t,r)*(ELomcst(ELpw,v,r)+ELwindsub(ELpw,v,t,r)-ELtariffmax(Elpw,r))$(ELpfit=1)
+  -DELfitcap(ELpw,v,t,r)*(ELomcst(ELpw,v,r)-ELtariffmax(Elpw,r))$(ELpfit=1)
+  +(ELtariffmax(ELpw,r)*ELparasitic(ELpw,v)-ELomcst(ELpw,v,r))*
          sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r))$ELptariff(ELpw,v)
 
   +DELsup(ELl,t,r)*ELparasitic(Elpw,v)
@@ -1526,15 +1543,10 @@ DELwindop(ELpw,v,ELl,t,r)..
   -DELwindutil(ELpw,ELl,v,t,r)
 ;
 
-DELfitv(ELpw,t,r)$(ELpfit=1)..
+DELwindsub(ELpw,v,t,r)$(ELpfit=1)..
 
-  -sum((v,ELl),ELwindop(ELpw,v,ELl,t,r)*
-         ELparasitic(ELpw,v))$(EL2020<>1)
-
-                 +0=g=
-
-  sum((v,ELl)$ELptariff(ELpw,v),ELwindop(ELpw,v,ELl,t,r)*
-         ELparasitic(ELpw,v)*sum((Elc,vv)$ELcELp(ELc,vv,ELpw,v),DELprofit(ELc,vv,t,r)) )
+  -1=g=
+  -DELfitcap(Elpw,v,t,r)
 ;
 
 
@@ -1658,7 +1670,7 @@ model PowerLP /
 *$ontext
 model PowerMCP /
 
-ELProfit.DELprofit,ELwindtarget.DELwindtarget,ELfuelsublim.DELfuelsublim,
+ELProfit.DELprofit,ELwindtarget.DELwindtarget,ELfuelsublim.DELfuelsublim,ELfitcap.DELfitcap,
 ELpurchbal.DELpurchbal,ELcnstrctbal.DELcnstrctbal,ELopmaintbal.DELopmaintbal,
 ELfcons.DELfcons,ELCOcons.DELCOcons,
 *ELfconsspin.DELfcons
@@ -1700,8 +1712,8 @@ DELhydopsto.ELhydopsto,
 DELfgcexistcp.ELfgcexistcp,
 DELfgcbld.ELfgcbld,
 
-DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,
-DELfitv.ELfitv,
+DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,DELwinddeficit.ELwinddeficit,
+DELwindsub.ELwindsub,
 *DELsubsidycoal.ELsubsidycoal,
 
 DEMELfluegas.EMELfluegas,

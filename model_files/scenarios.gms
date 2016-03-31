@@ -1,6 +1,7 @@
 * !!! cost for operating capacity over ELLmchours
-         ELtariffmax(Elpd,r) = ELtariffmax(Elpd,r)/1.17;
-         ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx');
+         ELtariffmax(Elp,r)$(not Elpw(ELp)) = ELtariffmax(Elp,r)/1.17;
+*$(not ELphyd(Elp)) and not Elpw(Elp) and not ELpnuc(ELp)
+         ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = (ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx'));
 
          ELpfixedcost(Elp,v,trun,r) =
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
@@ -29,10 +30,11 @@
          ELfit(ELpw,trun,'West') = 580;
          ELfit(ELpw,trun,'Xinjiang') = 580;
 
+         ELfit(ELpw,trun,r) = ELtariffmax(Elpw,r);
+         ELtariffmax(Elpw,r) = ELtariffmax('ultrsc',r)$(ELpfit<>1)+ELtariffmax(ELpw,r)$(ELpfit=1);
+*         ELwindsub.up(Elpw,v,trun,r) = ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r);
 
-         ELfitv.fx(Elpw,trun,r) = ELfit(Elpw,trun,r);
-
-         rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco);
+         rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco)*0.9999;
 
 
 if( scen('calib'),

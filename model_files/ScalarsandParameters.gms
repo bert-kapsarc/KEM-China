@@ -151,22 +151,22 @@ NOxC(r,ELpcoal) = 650*1e-9;
 *NOxC(r,'SubcrSML') = 600*1e-9;
 
 
-NOxC('North',Elpd) = NOxC('North',ELpd)*0.7;
+NOxC('North',Elpd) = NOxC('North',ELpd)*0.8;
 NOxC('East',Elpd) = NOxC('East',ELpd)*0.8 ;
-NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.75;
-NOxC('South',Elpd) = NOxC('South',ELpd)*0.75;
-NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd)*0.95;
+NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.8;
+NOxC('South',Elpd) = NOxC('South',ELpd)*0.8;
+NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd);
 
 
 NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.9;
-NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*0.975;
+NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*0.95;
 NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.3;
-NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1;
+NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.15;
 NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.1;
 
-NOxC('West',Elpd) = NOxC('West',ELpd)*1.2 ;
+NOxC('West',Elpd) = NOxC('West',ELpd)*1.1 ;
 
-NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.4;
+NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.5;
 
 
 NO2C(r,ELp) = 850*1e-9;

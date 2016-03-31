@@ -112,7 +112,7 @@ EMELnoxlim(t,r)..
          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
          VrCo(ELpcoal,'coal',cv)*NOxC(r,ELpcoal)
    )
-         =g= -EMELnoxmax(t,r)*1
+         =g= -EMELnoxmax(t,r);
 ;
 
 EMfgbal(ELpcoal,v,t,r)..
