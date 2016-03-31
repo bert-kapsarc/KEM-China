@@ -63,6 +63,9 @@ $INCLUDE scenarios.gms
          DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
          EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
 
+         COtransCnstrctbal.scale(trun)=1e-1;
+         COtransbld.scale(tr,trun,rco,rrco)=1e2;
+
 *         DElwindsub.scale(ELpw,v,trun,r)=1e-2;
 *         Elwindsub.scale(ELpw,v,trun,r)=1e2;
 

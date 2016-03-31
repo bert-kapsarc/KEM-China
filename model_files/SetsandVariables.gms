@@ -249,6 +249,7 @@ Sets
 
          ELbig(ELc) Full regional market concentration /ELbig/
          ELnuc(ELc) Nuclear power companies /Nuclear/
+         ELwind(Elc) /windon/
 
          ELpd(ELp) dispatchable technologies /Nuclear,SubcrSML,SubcrLRG,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
          ELps(ELp) solar technologies /PV/
@@ -316,8 +317,8 @@ Sets
          nox(fgc) /noDeNOx, DeNOx/
          DeSOx(fgc) /DeSOx/
          DeNOx(fgc) /DeNOx/
-         noDesox(sox) /noDeSOx/
-         noDenox(nox) /noDeNOx/
+         noDesox(fgc) /noDeSOx/
+         noDenox(fgc) /noDeNOx/
 ;
          alias (ELp,ELpp);
          alias (ELpd,ELppd);

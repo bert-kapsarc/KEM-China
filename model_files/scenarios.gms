@@ -1,5 +1,5 @@
 * !!! cost for operating capacity over ELLmchours
-         ELtariffmax(Elp,r)$(not Elpw(ELp)) = ELtariffmax(Elp,r)/1.17;
+         ELtariffmax(Elp,r)= ELtariffmax(Elp,r)/1.25;
 *$(not ELphyd(Elp)) and not Elpw(Elp) and not ELpnuc(ELp)
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = (ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx'));
 
@@ -31,7 +31,7 @@
          ELfit(ELpw,trun,'Xinjiang') = 580;
 
          ELfit(ELpw,trun,r) = ELtariffmax(Elpw,r);
-         ELtariffmax(Elpw,r) = ELtariffmax('ultrsc',r)$(ELpfit<>1)+ELtariffmax(ELpw,r)$(ELpfit=1);
+         ELtariffmax(Elpw,r) = ELtariffmax('ultrsc',r)$(ELpfit<>1)+ELtariffmax(ELpw,r)*1.25$(ELpfit=1);
 *         ELwindsub.up(Elpw,v,trun,r) = ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r);
 
          rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco)*0.9999;

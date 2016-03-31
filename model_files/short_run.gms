@@ -5,13 +5,13 @@
          COtransbld.up('truck',trun,rco,rrco)$arc('truck',rco,rrco) = 0;
          COtransbld.up(port,trun,rco,rrco)$arc(port,rco,rrco) = 0;
 
-         ELbld.up('GTtoCC',vo,trun,r)=0;
+*         ELbld.up('GTtoCC',vo,trun,r)=0;
          ELbld.up('CC',vn,trun,r)=0;
-         ELbld.up('GT',vn,trun,r)=0;
+*         ELbld.up('GT',vn,trun,r)=0;
          ELbld.up(ELpcoal,vn,trun,r)=0;
          ELbld.up(ELpnuc,vn,trun,r)=0;
 
-         ELpurcst('ST',trun,r)=ELpurcst('ST',trun,r)*100;
+         ELpurcst('ST',trun,r)=ELpurcst('ST',trun,r);
          ELpurcst('GT',trun,r)=ELpurcst('GT',trun,r);
 
 
