@@ -110,6 +110,7 @@ parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content ca
          Med     0.02
          High    0.05
          /;
+
 parameter ELpSO2std(ELp,v,trun,r), ELpNO2std(ELp,v,trun,r);
 
          ELpSO2std(ELpcoal,v,trun,r)=200;
@@ -240,10 +241,14 @@ parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per 
           EMfgccapexD(fgc,trun) Annualized capital cost of flue gas control systems
 ;
 
+
+          EMfgcomcst(fgc)=EMfgcomcst(fgc)*1.1;
 *        DeSOx YU ZF (2006) Development and Application of Clean Coal Technology in Mainland China. In: Zhang ZX, Bor Y (Eds), Energy Econcomics and Policy in mainland China and taiwan. China Environmental Scienece Press, Beijing, pp. 67-88.
 *        DeNOx estimated from, ZhongXiang Zhang (2014) Nota Di Lavoro, Energy Prices, Subsides and Resources Tax reform in China.
           EMfgccapex(DeSOx,trun)=200 ;
           EMfgccapex(DeNOx,trun)=350  ;
+
+          EMfgccapex(fgc,trun)=EMfgccapex(fgc,trun)*1.1;
 
 parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
           / noDeSOx 1
@@ -257,10 +262,10 @@ parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
          EMfgcomcst(fgc) = EMfgcomcst(fgc);
 
 * !!!    electricity consumption of fgc system defined as % of total
-         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.011;
-         EMfgcpower('low',DeSOx,noDeNOx) = 0.011;
-         EMfgcpower('med',DeSOx,noDeNOx) = 0.012;
-         EMfgcpower('high',DeSOx,nox) = 0.015;
+         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.010;
+         EMfgcpower('low',DeSOx,noDeNOx) = 0.012;
+         EMfgcpower('med',DeSOx,noDeNOx) = 0.015;
+         EMfgcpower('high',DeSOx,nox) = 0.02;
 
          EMfgcpower(sulf,noDeSOx,DeNOx) = 0.022;
 

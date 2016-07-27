@@ -22,13 +22,26 @@ fconsump("EL",COf,trun,r) = fconsump("EL",COf,trun,r)/ProvAvgCV(COf,trun,r);
 
 ELgenELl(Elp,ELl,trun,r) =  (
    sum((v,ELf),ELop.l(ELp,v,ELl,ELf,trun,r))$Elpd(Elp)
+*ELparasitic(Elp,v)
 *  +sum((v,ELf,fss,cv,sulf,sox,nox),
 *         ELoploc.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r)*ELlchours(ELl))$Elpd(Elp)
   +sum((v),ELwindop.l(ELp,v,ELl,trun,r))$Elpw(Elp)
+*ELparasitic(Elp,v)
   +sum((v),ELhydop.l(ELp,v,ELl,trun,r))$(Elphyd(Elp))
 *ELparasitic(Elp,v)
+*  -sum((v,reg,cv,sulf,SOx,NOx)$(ELpfgc(Elp,cv,sulf,SOx,NOx) and ELpcoal(Elp) and
+*                 (DeSOx(sox) or DeNOx(nox))),
+*         ELCOconsump.l(ELp,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
+*         ELpCOparas(Elp,v,sulf,SOx,NOx,r))*ELlcnorm(ELl)
 )
 ;
+parameter   ELemc;
+ELemc(Elpcoal,ELl,trun,r) =
+  -sum((v,reg,cv,sulf,SOx,NOx)$(ELpfgc(Elpcoal,cv,sulf,SOx,NOx) and
+                 (DeSOx(sox) or DeNOx(nox))),
+         ELCOconsump.l(ELpcoal,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
+         ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r));
+
 
 ELgenELl("Trade",ELl,trun,rr) = sum((ELt,ELll,r)$(ord(r)<>ord(rr)),Eltransyield(ELt,r,rr)*
   ELtranscoef(ELll,ELl,r,rr)*ELtrans.l(ELt,ELll,trun,r,rr))
@@ -61,6 +74,8 @@ ELbldELp(ELp,trun,"China") = sum(r, ELbldELp(ELp,trun,r));
 *Transmission Capacity
 ELtransTot(trun,r,rr) = sum((ELl,ELll,ELt),ELtrans.l(ELt,ELll,trun,r,rr)*
          ELtranscoef(ELll,ELl,r,rr));
+
+ELtransTot("TWh-loss",r,rr) = sum((ELll,ELt),ELtrans.l(ELt,ELll,"t12",r,rr)*(1-Eltransyield(ELt,r,rr)));
 
 ELtransTot(trun,r,'out') = sum(rr$(ord(rr)<>ord(r)),ELtransTot(trun,r,rr));
 
@@ -157,6 +172,7 @@ ELdiscfact(trun)*(
 
 ELcostsELp('Total','All',trun,r) = sum((ELp,v),ELcostsELp(ELp,v,trun,r));
 
+ELcostsELp(Elp,'All',trun,"China") = sum((v,r),ELcostsELp(ELp,v,trun,r));
 
 ELtranscosts(ELt,trun,r) =
 ELdiscfact(trun)*(
@@ -193,42 +209,6 @@ ELtariffELp(ELphyd,v,trun,r)$(sum(ELl,ELhydop.l(ELphyd,v,ELl,trun,r))>0)
 ;
 *$offtext
 
-ELsubsidyELp(ELc,vv,trun,r)$ELctariff(ELc,vv)
- =
-
-+sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
-ELcapsub.l(ELp,v,trun,r)
-
-
-  +sum((cv,sulf)$ELfCV('coal',cv,sulf),
-   ( DCOdem.l('coal',cv,sulf,'summ',trun,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*
-     sum(ELl,ELfuelsub.l(ELp,v,ELl,'coal',cv,sulf,trun,r))$vo(v)
-  )$ELpcoal(ELp)
-
-  +sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
-         ELAPf(ELf,fss,trun,r)*
-                 sum((ELl,cv,sulf)$ELfCV(ELf,cv,sulf),
-                         ELfuelsub.l(ELp,v,ELl,ELf,cv,sulf,trun,r))$(not ELpnuc(Elp) and vo(v))
-  )
-
-)
-
--ELprofit.l(ELc,vv,trun,r);
-
-;
-
-*$ontext
-ELsubsidyELp('All',v,trun,r) =  sum(ELc$(ELsubsidyELp(ELc,v,trun,r)>0),
-                                         ELsubsidyELp(ELc,v,trun,r))       ;
-
-ELsubsidyELp(ELc,v,trun,'China') =  sum(r$(ELsubsidyELp(ELc,v,trun,r)>0),
-                                         ELsubsidyELp(ELc,v,trun,r))       ;
-
-ELsubsidyELp('All',v,trun,'China') =  sum((ELc,r)$(ELsubsidyELp(ELc,v,trun,r)>0),
-                                       ELsubsidyELp(ELc,v,trun,r))       ;
 
 ELdeficitELp(Elp,v,trun,r) = ELdeficit.l(Elp,v,trun,r);
 ELdeficitELp('All',v,trun,r) = sum(Elp,ELdeficitELp(Elp,v,trun,r));
@@ -239,8 +219,16 @@ ELdeficitELp('All',v,trun,'China') = sum((Elp,r),ELdeficitELp(Elp,v,trun,r));
 parameter Accounting utilities costs from the original LP's objective value
 ;
 
+parameter windsubsidy_res(Elpw,v,trun,r);
+windsubsidy_res(Elpw,v,trun,r)=
+(
+         +sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*(ELtariffmax('Subcr',r)-ELomcst(ELpw,v,r))
+         -ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
+         -ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
+)$(ELpfit=1)  ;
 
-Accounting('Cost','China Government')=
+
+Accounting('Costs','Government')=
 
 
 *sum((Elpw,v,trun,r),
@@ -254,23 +242,13 @@ Accounting('Cost','China Government')=
 +sum((Elpw,v,ELl,trun,r),
          ELwindop.l(ELpw,v,ELl,trun,r)*(ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r)))$(ELpfit=1)
 
-
-+sum((Elpw,v,trun,r)$(
-  sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*ELomcst(ELpw,v,r)
-  +ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
-  +ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
-  <ELtariffmax('Ultrsc',r)*sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))
-  ),     ELtariffmax('Ultrsc',r)
-         -sum(ELl,ELwindop.l(ELpw,v,ELl,trun,r))*ELomcst(ELpw,v,r)
-         -ELwindbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
-         -ELwindexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
-)$(ELpfit=1) 
++sum((Elpw,v,ELl,trun,r)$(windsubsidy_res(Elpw,v,trun,r) >0),
+         windsubsidy_res(Elpw,v,trun,r) )
 
 
 +sum((trun),ELwindtarget.l(trun)*
-         ELwindtarget.m(trun))$(EL2020=1)
+         ELwindtarget.m(trun))$(ELwtarget=1)
 
-+sum((v,trun),ELsubsidyELp('All',v,trun,'China'))
 ;
 
 
@@ -342,7 +320,7 @@ $offtext
 
 +sum((ELp,v,trun,r),ELcostsELp(ELp,v,trun,r))
 
-+Accounting('Cost','China Government')
++Accounting('Costs','Government')
 
 ;
 
@@ -365,7 +343,7 @@ $offtext
 ;
 
 
-Accounting('Cost','Power')=
+Accounting('Costs','Power')=
 +sum(trun,
    sum((ELpd,v,r)$ELpbld(ELpd,v),ELpurcst(ELpd,trun,r)*ELbld.l(ELpd,v,trun,r))
   +sum((ELpw,v,r)$vn(v), ELPurcst(ELpw,trun,r)*ELwindbld.l(ELpw,v,trun,r))
@@ -419,7 +397,7 @@ Accounting('Cost','Power')=
 
 ;
 
-Accounting('Cost','Coal')=
+Accounting('Costs','Coal')=
 
   +sum(trun,(COpurchase.l(trun)+COConstruct.l(trun)+COOpandmaint.l(trun))*
          COdiscfact(trun))
@@ -434,7 +412,7 @@ Accounting('Cost','Coal')=
 ;
 
 
-Accounting('Cost','State Owned Utility')=
+Accounting('Costs','State Owned Utility')=
          Accounting('Revenue','Power')
   +sum(trun,ELdiscfact(trun)*(
 
@@ -446,9 +424,9 @@ Accounting('Cost','State Owned Utility')=
 ;
 
 
-Accounting('Cost','Total')=
+Accounting('Costs','Total')=
 
-*Accounting('Cost','China Government')
+*Accounting('Costs','Government')
 
   +sum(trun,(COpurchase.l(trun)+COConstruct.l(trun)+COOpandmaint.l(trun))*COdiscfact(trun))
 
@@ -468,7 +446,10 @@ Accounting('Cost','Total')=
 
 
 
-Accounting('Rents','Power')= Accounting('Revenue','Power') - Accounting('Cost','Power')  ;
+Accounting('Rents','Power')= Accounting('Revenue','Power') - Accounting('Costs','Power')  ;
+
+Accounting('Costs','Losses')=  sum((v,trun),ELdeficitELp('All',v,trun,'China') );
+
 
 $ontext
 *        Calculations for sectors

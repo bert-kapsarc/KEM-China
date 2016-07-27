@@ -327,32 +327,34 @@ set        rco_sup(rco,r) region where each coal supply basin is located
 
 
 * !!!    uSE ihs estimates for metallurgical coal production levels in 2012
-* !!!    Calibrated to reportes import volumes using 4% reduction of IHS level
-         COprodStats(met,mm,ss,trun,rco)
-          = COprodIHS(met,mm,ss,trun,rco)*0.96;
+* !!!    Calibrated to reported import volumes using 4% reduction of IHS level
+         COprodStats(met,mm,ss,time,rco)
+          = COprodIHS(met,mm,ss,time,rco)*0.96;
 
-COstatistics('coal prod IHS',trun,r) = sum((coal,mm,ss,rco)$rco_sup(rco,r),
-                                         COprodIHS(coal,mm,ss,trun,rco));
-COstatistics('met prod IHS',trun,r) = sum((met,mm,ss,rco)$rco_sup(rco,r),
-                                         COprodStats(met,mm,ss,trun,rco));
+COstatistics('coal prod IHS',time,r) = sum((coal,mm,ss,rco)$rco_sup(rco,r),
+                                         COprodIHS(coal,mm,ss,time,rco));
+COstatistics('met prod IHS',time,r) = sum((met,mm,ss,rco)$rco_sup(rco,r),
+                                         COprodStats(met,mm,ss,time,rco));
 
 loop(r,
          COprodStats(coal,mm,ss,trun,rco)$(rco_sup(rco,r)
                          and COstatistics('coal prod IHS',trun,r)>0)=
          (COstatistics('Production',trun,r)-COstatistics('met prod IHS',trun,r))
-         *COprodIHS(coal,mm,ss,trun,rco)/COstatistics('coal prod IHS',trun,r);
+         *COprodIHS(coal,mm,ss,trun,rco)/COstatistics('coal prod IHS',trun,r)*1.03;
 );
 
-*         COprodStats(COf,mm,ss,trun,rco)=
-*         COprodStats(COf,mm,ss,trun,rco)*(1$met(COf) + 1$coal(COf));
+COprodStats(COf,mm,ss,time,rco)$(ord(time)>2) = COprodIHS(COf,mm,ss,time,rco);
+
+*         COprodStats(COf,mm,ss,time,rco)=
+*         COprodStats(COf,mm,ss,time,rco)*(1$met(COf) + 1$coal(COf));
 
 *        fix production levels to those reported in IHS coal rush data or
 *        China Energy statistics
          COexistcp.up(COf,mm,ss,trun,rco)$(COmine(COf,mm,ss,rco)
                  and ord(trun)=1)=COprodStats(COf,mm,ss,trun,rco);
-*         COprodIHS(COf,mm,ss,trun,rco);
+*         COprodIHS(COf,mm,ss,time,rco);
 
-*         COomcst(COf,mm,ss,rw,trun,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,trun,rco);
+*         COomcst(COf,mm,ss,rw,time,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,time,rco);
 Equations
 * ====================== Primal Relationships =================================*
          COobjective

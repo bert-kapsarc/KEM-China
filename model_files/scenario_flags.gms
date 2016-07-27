@@ -11,7 +11,9 @@ scalars  import_cap set to 1 to enforce the import constraint /0/
          rail_cap   set to 1 to cap mixed freight rail lines /1/
          COrailCFS  set to 1 to apply railway surcharges to railway costs /1/
          ELdereg    set to 1 to switch on deregulated power supply market /1/
-         EL2020     set to 1 switch on 2020 strategic targets /0/
+
+         ELdefcap place cap on generator deficits /0/
+         ELwtarget     set to 1 switch on strategic wind targets /0/
          ELpfit      set to 1 switch on fit for renewables /1/
          SO2_std   apply regioanl sulfur standards /0/
          nox_std   apply regioanl sulfur standards /0/

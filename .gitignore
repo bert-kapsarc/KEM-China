@@ -1,12 +1,15 @@
 **/*.~gm
-/*.gdx
+**/*.gdx
+*.gdx
 **/*.lst
-**/*.lxi
+**/*.lsi
 **/*.accdb
 db/*.xlsx
 **/*.xlsx
 /ValidationData
 **/*.log
 **/225*/
-**/old gdx/*
 **/*.par
+**/*.twb
+/GDX
+/model_run

@@ -20,7 +20,7 @@
 *
          ELhydbld.up(Elphyd,'new',trun,r)=0;
          ELwindbld.up(Elpw,'new',trun,r)=0;
-
+*         ELwindbld.up(Elpw,'new',trun,'north')=1e-3;
 * !!!    No transmission investments
          ELtransbld.up(Elt,trun,r,rr)= 0;
 

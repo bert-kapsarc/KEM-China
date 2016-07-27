@@ -121,7 +121,23 @@ coalprod_shift_rel(rco,trun,mag)$(sum((COf,cv,sulf),coalprod_calib(COf,cv,sulf,t
 parameter coal_price(*,COf,trun);
 
 
-coal_price('Other',COf,trun) = sum((cv,r,sulf)$(COdem.m(COf,cv,sulf,'summ',trun,r)>0),COdem.m(COf,cv,sulf,'summ',trun,r)*OTHERcoconsump(COf,trun,r)/sum(rr,OTHERCOconsump(COf,trun,rr)));
+coal_price('All',COf,trun) =
+   sum((cv,sulf,Els,r),
+   ( DCOdem.l(COf,cv,sulf,ELs,trun,r)
+     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+       DCOsuplim.l('coal',cv,sulf,ELs,trun,rco)*Elsnorm(ELs)/num_nodes_reg(r))
+   )*sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco))
+   )/sum((cv,sulf,rco,rr,ELs)$rco_dem(rco,rr),coaluse.l(COf,cv,sulf,Els,trun,rco)*COcvSCE(cv))
+;
+
+coal_price(r,COf,trun) =
+   sum((cv,sulf,Els),
+   ( DCOdem.l(COf,cv,sulf,ELs,trun,r)
+     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+       DCOsuplim.l('coal',cv,sulf,ELs,trun,rco)*Elsnorm(ELs)/num_nodes_reg(r))
+   )*sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco))
+   )/sum((cv,sulf,rco,ELs)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco)*COcvSCE(cv))
+;
 
 coal_price('Qinghuangdao',COf,trun) = smax(ELs,COsup.m(COf,'CV62','LOW',ELs,trun,'North'));
 
@@ -134,7 +150,7 @@ parameter coal_imp_SCE(COf,trun);
 
 parameter EIA(*,COF,trun);
 
-EIA('China weighted average marginal cost',COf,trun) = coal_price('Other',COf,trun) ;
+EIA('China weighted average marginal cost',COf,trun) = coal_price('All',COf,trun) ;
 EIA('Qinghuangdao',COf,trun) = coal_price('Qinghuangdao',COf,trun);
 EIA('Imports 7000 kcal/kg', COf, trun) = coal_imp_SCE(COf,trun);
 EIA('Production 7000 kcal/kg', COf, trun) = coal_prod_SCE(COf,trun);

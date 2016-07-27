@@ -11,6 +11,9 @@ $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
 
+         scalar ELwindtotal total amount of wind;
+         scalar ELdeficitmax maximum deficit permite ;
+
 *!!!     Turn on demand in all regions
          rdem_on(r) = yes;
 
@@ -18,17 +21,22 @@ $INCLUDE powersubmodel.gms
 
 $INCLUDE imports.gms
 
-
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
-         ELpfit=0;
-         EL2020=0;
+         ELdefcap=1;
+         ELpfit=1;
+         ELwtarget=0;
          SO2_std=0;
+
+         ELwindtot=sum((ELpw,v,r),ELwindexistcp.l(ELpw,v,"t12",r));
+         ELdeficitmax = 115.8e3;
+
+
 
 $INCLUDE scenarios.gms
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 
@@ -38,50 +46,56 @@ parameter contract;
          ELptariff(ELpd,v)$(not ELpgttocc(ELpd)) = yes;
          ELptariff(ELpw,v) = yes;
          ELptariff(ELphyd,v) = yes;
+         ELrtariff(r) = yes;
 
 *!!!     Turn on railway construction tax
          COrailCFS=1;
 
-
 * !!!!   ELcELp subset defines plants operated by regional power companies
 * !!!!   Elctariff defines companies evaluated in the revenue contraints
-$ontext
+*$ontext
          ELctariff(ELbig,vn)=yes;
          ELctariff(ELnuc,v)=yes;
 *         ELctariff(ELwind,v)=yes;
-
+*
          ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;
-* and not ELpw(Elp)
          ELcELp(ELnuc,v,ELpnuc,v)$Elctariff(Elnuc,v)= yes;
 *         ELcELp(ELwind,v,ELpw,v)$Elctariff(Elwind,v)= yes;
-$offtext
+*
+*$offtext
 
-         ELcELp(ELp,v,ELp,v)$ELptariff(ELp,v)= yes;
-         ELctariff(ELp,v)$ELptariff(ELp,v)=yes;
-
-         ELrtariff(r) = yes;
-
+*         ELcELp(ELp,v,ELp,v)$ELptariff(ELp,v)= yes;
+*         ELctariff(ELp,v)$ELptariff(ELp,v)=yes;
 
 
          Elcapsub.up(Elp,vo,trun,r)=0;
          Elcapsub.up(Elp,vn,trun,r)=0;
 
-         ELfuelsub.up(Elpd,v,ELl,ELf,cv,sulf,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
+         ELfuelsub.up(Elpd,v,ELl,ELf,gtyp,trun,r)$(vo(v) and ELpELf(Elpd,ELf))=0;
 
          option savepoint=1;
          option MCP=PATH;
          PowerMCP.optfile=1;
 
 
-         execute_loadpoint "LongRunRegNofit.gdx";
+         execute_loadpoint "ShortRunCaps.gdx";
 
          PowerMCP.scaleopt=1;
 
-         ELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e2;
-         DELprofit.scale(ELc,v,trun,r)$(not ELnuc(Elc))=1e-2;
+         ELprofit.scale(ELc,v,trun,r)=1e3;
+         DELprofit.scale(ELc,v,trun,r)=1e-3;
 
-*         COtransCnstrctbal.scale(trun)=1e-1;
-*         COtransbld.scale(tr,trun,rco,rrco)=1e2;
+         EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
+         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
+
+         COtransCnstrctbal.scale(trun)=1e-1;
+         COtransbld.scale(tr,trun,rco,rrco)=1e2;
+
+         ELdeficit.scale(ELp,v,t,r)=1e-1;
+         DELdeficit.scale(ELp,v,t,r)=1e1;
+
+         EMELnoxlim.scale(trun,r)=1e-1;
+         DEMELnoxlim.scale(trun,r)=1e1;
 
 *         EMfgbal.scale(ELpcoal,v,trun,r)=1e2;
 *         DEMfgbal.scale(ELpcoal,v,trun,r)=1e-2;

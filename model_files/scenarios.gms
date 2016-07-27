@@ -1,5 +1,5 @@
 * !!! cost for operating capacity over ELLmchours
-         ELtariffmax(Elp,r)= ELtariffmax(Elp,r)/1.25;
+         ELtariffmax(Elp,r)= ELtariffmax(Elp,r)/1.17*0.8;
 *$(not ELphyd(Elp)) and not Elpw(Elp) and not ELpnuc(ELp)
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = (ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx'));
 
@@ -31,7 +31,10 @@
          ELfit(ELpw,trun,'Xinjiang') = 580;
 
          ELfit(ELpw,trun,r) = ELtariffmax(Elpw,r);
-         ELtariffmax(Elpw,r) = ELtariffmax('ultrsc',r)$(ELpfit<>1)+ELtariffmax(ELpw,r)*1.25$(ELpfit=1);
+         ELtariffmax(Elpw,r) =
+                ( ELtariffmax('ultrsc',r)$(ELpfit<>1)
+                 +ELtariffmax(ELpw,r)*(1.27/1.17)$(ELpfit=1))
+;
 *         ELwindsub.up(Elpw,v,trun,r) = ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r);
 
          rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco)*0.9999;
@@ -47,7 +50,7 @@ if( scen('calib'),
          COfimpmax('met',t,'IMMN') = 25;
          COfimpmax('coal',t,'IMKP') = 25;
 
-         COrailCFS=0;
+         COrailCFS=1;
 
          t_start=1;
 
@@ -113,3 +116,4 @@ mmBTUtoTons =  sum(met,COconsumpEIA(met,'t11'))/sum((met,r), OTHERCOconsump(met,
 *OTHERCOconsump(COf,time,rr)=COconsumpIHS(COf,time,rr)
 
 );
+

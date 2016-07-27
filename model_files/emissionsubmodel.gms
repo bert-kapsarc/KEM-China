@@ -135,7 +135,7 @@ EMELSO2std(ELpcoal,v,t,r)$(SO2_std=1)..
 ;
 
 
-EMELNO2std(ELpcoal,v,t,r)$(SO2_std=1)..
+EMELNO2std(ELpcoal,v,t,r)$(SO2_std=2)..
   -sum((gtyp,cv,sulf,sox,nox)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
          VrCo(ELpcoal,'coal',cv)*NO2C(r,ELpcoal)
@@ -151,5 +151,5 @@ DEMELfluegas(ELpcoal,v,t,r)..
   0 =g=
   -DEMfgbal(ELpcoal,v,t,r)
   +DEMELSO2std(ELpcoal,v,t,r)*ELpSO2std(ELpcoal,v,t,r)$(SO2_std=1)
-  +DEMELNO2std(ELpcoal,v,t,r)*ELpNO2std(ELpcoal,v,t,r)$(SO2_std=1)
+  +DEMELNO2std(ELpcoal,v,t,r)*ELpNO2std(ELpcoal,v,t,r)$(SO2_std=2)
   ;

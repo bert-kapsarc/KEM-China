@@ -308,7 +308,7 @@ Sets
          reg(gtyp) /reg/
          spin(gtyp) /spin/
 
-         wstep wind capacity steps /w1*w50/
+         wstep wind capacity steps /w1*w100/
          cc cloud cover /nc,pc,oc,dust/
 
          fgc flue gas control systems /DeSOx, DeNOx, noDeSOx, noDeNOx/
@@ -429,6 +429,8 @@ parameter gamma(ELp,time) specific subsidy grid values
 parameter ELtariffmax(ELp,rco) power plants regional on grid electricity tariffs RMB per MWH
           ELfgctariff(fgc) tariff supplement for flu gas control deployment RMB per MWH
 ;
+
+scalar ELwindtot lower bound on wind capacity (existing pus builds) /200/  ;
 
 
 $gdxin db\power.gdx
@@ -611,9 +613,9 @@ Positive variables
 
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
-         ELfuelsub(ELp,v,ELl,ELf,cv,sulf,trun,r)  Variable subsidy paid by government to compensate generators
+         ELfuelsub(ELp,v,ELl,ELf,gtyp,trun,r)  Variable subsidy paid by government to compensate generators
          ELdeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
-         ELwinddeficit(ELpw,v,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELwinddeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
          ELwindsub(ELp,v,trun,r)
@@ -711,6 +713,8 @@ Positive variables
          DELprofit(ELc,v,trun,r)
          DELwindtarget(trun)
          DELfitcap(ELp,v,trun,r)
+         DELdeficitcap(trun)
+
          DELfuelsublim(r,ELl,trun)
 
 *Duals for electricity

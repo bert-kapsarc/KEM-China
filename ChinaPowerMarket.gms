@@ -11,6 +11,9 @@ $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
 
 
+         scalar ELwindtotal ;
+         scalar ELdeficitmax;
+
 *!!!     Turn on demand in all regions
          rdem_on(r) = yes;
 
@@ -23,12 +26,19 @@ $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
          ELpfit=0;
-         EL2020=1;
+         ELwtarget=1;
          SO2_std=0;
+
+         ELwindtot=sum((ELpw,v,r),ELwindexistcp.l(ELpw,v,"t12",r))+1e-3;
+         ELdeficitmax = 200e3;
+
+*         ELCOconsump.fx(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$(
+*                 ELpfgc(Elpcoal,cv,sulf,sox,nox) and (noDesox(sox) or noDenox(nox)) ) =0;
 
 $INCLUDE scenarios.gms
 
 *$INCLUDE short_run.gms
+*COprodStats(COf,mm,ss,"t12",rco)  = COprodStats(COf,mm,ss,"t15",rco);
 *$INCLUDE new_stock.gms
 
 *parameter contract;
@@ -57,17 +67,17 @@ $INCLUDE scenarios.gms
 
          PowerMCP.scaleopt=1;
 
+         ELprofit.scale(ELc,v,trun,r)=1e2;
+         DELprofit.scale(ELc,v,trun,r)=1e-2;
+
          EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
          DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;
-
-         DEMELfluegas.scale(ELpcoal,v,t,r)=1e-3;
-         EMELfluegas.scale(ELpcoal,v,t,r)=1e3;
 
          COtransCnstrctbal.scale(trun)=1e-1;
          COtransbld.scale(tr,trun,rco,rrco)=1e2;
 
-*         DElwindsub.scale(ELpw,v,trun,r)=1e-2;
-*         Elwindsub.scale(ELpw,v,trun,r)=1e2;
+         EMELnoxlim.scale(trun,r)=1e-1;
+         DEMELnoxlim.scale(trun,r)=1e1;
 
 
          Solve PowerMCP using MCP;
