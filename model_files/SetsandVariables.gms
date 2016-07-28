@@ -504,10 +504,8 @@ variables
          DCOtransOpmaintbal(trun)      free dual of opmaintbal
          DCOimportbal(trun)            free dual of importbal
 
-
-
          DCOtransbldeq(tr,trun,rco,rrco) free dual on equalizing bi-directional rail capacity built
-
+         COprice(COf,cv,sulf,trun,r)
 
 positive Variables
 

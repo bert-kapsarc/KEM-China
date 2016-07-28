@@ -33,11 +33,11 @@
          ELfit(ELpw,trun,r) = ELtariffmax(Elpw,r);
          ELtariffmax(Elpw,r) =
                 ( ELtariffmax('ultrsc',r)$(ELpfit<>1)
-                 +ELtariffmax(ELpw,r)*(1.27/1.17)$(ELpfit=1))
+                 +ELtariffmax(ELpw,r)$(ELpfit=1))
 ;
 *         ELwindsub.up(Elpw,v,trun,r) = ELtariffmax(Elpw,r)-ELtariffmax('Ultrsc',r);
 
-         rail_disc(tr,t,rco,rrco)=COtransconstcst(tr,t,rco,rrco)*0.9999;
+         rail_disc(tr,trun,rco,rrco)=COtransconstcst(tr,trun,rco,rrco)*0.9999;
 
 
 if( scen('calib'),
@@ -47,8 +47,16 @@ if( scen('calib'),
          import_cap=1;
 
 
-         COfimpmax('met',t,'IMMN') = 25;
-         COfimpmax('coal',t,'IMKP') = 25;
+         COfimpmax('met',trun,'IMMN') = 25;
+         COfimpmax('coal',trun,'IMKP') = 25;
+
+
+* set a cap on imports equal to the imports reported in 2013 scaled by the increase in projected demand from 2013
+*         COfimpmax(COf,time,rimp)$(ord(time)>3 and COfimpmax(COf,time,rimp)=0 and sum((rr),COconsumpIHS(COf,'t13',rr))>0 )=
+*         COfimpmax(COf,'t13',rimp)*(1+ sum(rr$(COconsumpIHS(COf,time,rr)>0),
+*                                         COconsumpIHS(COf,time,rr)-COconsumpIHS(COf,'t13',rr))/sum((rr),COconsumpIHS(COf,'t13',rr))
+*         );
+
 
          COrailCFS=1;
 
@@ -69,7 +77,7 @@ $offtext
 
 
 
-*        allow coal mine expansion in 2011 conterfactual case
+*        allow coal mine expansion up to 2015 forecasted levels
 *         Cobld.up(COf,mm,ss,'t12',rco)$(COmine(COf,mm,ss,rco))=
 *         CoprodIHS(COf,mm,ss,'t15',rco)-CoprodIHS(COf,mm,ss,"t12",rco);
 *         Cobld.up(COf,mm,ss,'t12',rco)$(Cobld.up(COf,mm,ss,'t12',rco)<0)  =0;

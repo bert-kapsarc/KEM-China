@@ -380,8 +380,7 @@ Equations
 
 *         COtranslim(trun,rco,rrco) capacity limit on coal rail transport
 
-
-         COuselim(trun)
+         COprice_eqn(COf,cv,sulf,trun,r) Equality to store coal price used in generators revenue constraint
 
 * ====================== Dual   Relationships =================================*
 
@@ -579,7 +578,16 @@ COtransbldlim(t,rco)$(Cotransportmax(rco)>0)..
                  =g= -Cotransportmax(rco) ;
 $offtext
 
+
+COprice_eqn(COf,cv,sulf,t,r)$ELfCV(COf,cv,sulf).. COprice(COf,cv,sulf,t,r) -
+  sum((ELs),Elsnorm(ELs)*
+   ( DCOdem(COf,cv,sulf,ELs,t,r)
+     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+       DCOsuplim(COf,cv,sulf,ELs,t,rco)/num_nodes_reg(r))
+   ) ) =e=0;
+
 *Dual Relationships
+
 DCOtranspurchase(t).. COdiscfact(t)=g=-DCOtranspurchbal(t);
 DCOtransconstruct(t).. COdiscfact(t)=g=-DCOtranscnstrctbal(t);
 DCOtransopandmaint(t).. COdiscfact(t)=g=-DCOtransopmaintbal(t);
@@ -640,6 +648,7 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
                          )*(COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
   +DCOtransbldeq(tr,t,rco,rrco)$(land(tr))
   -DCOtransbldeq(tr,t,rrco,rco)$(land(tr))
+
 *  -DCOtransbudgetlim(tr,t)*COtranscapex(tr,rco,rrco)*COtransD(tr,rco,rrco)$(
 *         trans_budg=1 and rail(tr))
   +DCOtranscapbal(tr,t+COtransleadtime(tr,rco,rrco),rco,rrco)

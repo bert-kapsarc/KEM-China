@@ -19,19 +19,6 @@
 *       set import price fro met coal from North Korea
         COintlprice('coal','ss1',cv_ord,'low',time,"IMKP") = COintlprice('coal','ss1',cv_ord,'low',time,"south")*0.9;
 
-*        set upper bound on coal imports across major land borders with n Korea and Mognolia
-*         COfimpmax('coal',trun,"IMOT")=inf;
-*         COfimpmax('met',trun,"IMOT")=inf;
-*         COfimpmax('met',trun,"IMMN")=25;
-*         COfimpmax('coal',trun,"IMKP")=10;
-
-
-* set a cap on imports equal to the imports reported in 2013 scaled by the increase in projected demand from 2013
-*         COfimpmax(COf,time,rimp)$(ord(time)>3 and COfimpmax(COf,time,rimp)=0 and sum((rr),COconsumpIHS(COf,'t13',rr))>0 )=
-*         COfimpmax(COf,'t13',rimp)*(1+ sum(rr$(COconsumpIHS(COf,time,rr)>0),
-*                                         COconsumpIHS(COf,time,rr)-COconsumpIHS(COf,'t13',rr))/sum((rr),COconsumpIHS(COf,'t13',rr))
-*         );
-
 
          loop(ssi,
          COintlprice(COf,ssi,cv,sulf,time,rco)  =

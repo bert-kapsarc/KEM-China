@@ -1199,7 +1199,6 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
   +sum((ELl),
          (ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
          ELwindop(ELp,v,ELl,t,r))$(ELpw(ELp) and ELwtarget<>1)
-*and ELwtarget<>1
 
 *  Generator tariffs and costs for operating flue gas control systems
   +sum((gtyp,ELfcoal,cv,sulf,sox,nox)$(ELpcoal(ELp) and ELpfgc(ELp,cv,sulf,sox,nox)),
@@ -1218,37 +1217,20 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
          ELCOconsump(ELp,v,reg,cv,sulf,SOx,NOx,t,r)*COcvSCE(cv)*
          ELpCOparas(Elp,v,sulf,SOx,NOx,r))
 
-  -sum((ELl,ELf)$(ELpELf(ELp,ELf) and ELpspin(ELp)),ELomcst(ELp,v,r)*ELusomfrac*ELlchours(ELl)*
+*        spining capacity operating cost
+  -sum((ELl,ELf)$(ELpELf(ELp,ELf) and ELpspin(ELp)),
+         ELomcst(ELp,v,r)*ELusomfrac*ELlchours(ELl)*
                  ELupspincap(ELp,v,ELl,ELf,t,r))
 
-*$ontext
+*        fuel cost
   -sum((cv,sulf)$ELfCV('coal',cv,sulf),
-   ( DCOdem('coal',cv,sulf,'summ',t,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*sum(gtyp,(
-       sum((sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r))
+    COprice('coal',cv,sulf,t,r)*sum(gtyp,(
+       sum((sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
+         ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r))
 *      -sum((ELl),ELfuelsub(Elp,v,ELl,'coal',gtyp,t,r))$vo(v)
-     )
-   ) )$ELpcoal(ELp)
-*$offtext
-$ontext
-  -sum((gtyp,ELf)$ELpELf(ELp,ELf),(
-          DELCOcons(ELp,v,gtyp,t,r)$ELpcoal(ELp)
-*         +ELAPf(ELf,'ss0',t,r)$(not ELpcoal(ELp))
-*         +DELfcons(ELp,v,ELf,t,r)$(not ELpcoal(ELp))
-         )*
+    )))$ELpcoal(ELp)
 
-      sum((ELl),ELfuelburn(ELp,v,ELf,r)*
-         (        ELop(ELp,v,ELl,ELf,t,r)$reg(gtyp)
-                 +ELupspincap(Elp,v,ELl,ELf,t,r)
-                 *ELusrfuelfrac*ELlchours(ELl)$(ELpspin(Elp) and spin(gtyp))
-                 -ELfuelsub(ELp,v,ELl,ELf,gtyp,t,r)$( ((ELpspin(Elp) and spin(gtyp)) or reg(gtyp))
-                                                         and ELpcoal(ELp) and not ELpnuc(Elp) and vo(v))
-         )
-      )
-   )
-$offtext
+
 
 *$ontext
   -sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
@@ -1261,7 +1243,6 @@ $offtext
 *$offtext
 
   -(  ELwindbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELpw(ELp) and ELwtarget<>1)
-*  and ELwtarget<>1
      +ELhydbld(ELp,v,t-ELleadtime(Elp),r)$(vn(v) and ELphyd(ELp))
      +sum(ELppd$ELpbld(ELppd,v),ELcapadd(Elppd,ELp)*
          ELbld(Elppd,v,t-ELleadtime(Elppd),r))$ELpd(ELp)
@@ -1290,14 +1271,7 @@ $offtext
 ;
 
 ELdeficitcap(t)$(ELdefcap=1)..
--sum((ELp,v,r)$(ELptariff(ELp,v)),ELdeficit(ELp,v,t,r))=g=
-
-*-227e3
-*-28.5e3
-
-*-29.3e3
-
--ELdeficitmax
+-sum((ELp,v,r)$(ELptariff(ELp,v)),ELdeficit(ELp,v,t,r))=g=-ELdeficitmax
 ;
 
 ELfitcap(ELpw,v,t,r)$(ELpfit=1 and vn(v))..
@@ -1351,7 +1325,7 @@ DELcapsub(ELp,v,t,r)$(ELptariff(ELp,v))..
 sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELprofit(ELc,vv,t,r))$(ELptariff(ELp,v))
 ;
 
-DELfuelsub(ELpd,v,ELl,ELf,gtyp,t,r)$(ELptariff(ELpd,v) and ELpELf(ELpd,ELf) and
+DELfuelsub(ELpd,v,ELl,ELf,gtyp,t,r)$(ELptariff(ELpd,v) and ELpELf(ELpd,ELf) and ELpcoal(ELpd) and
          ((ELpspin(Elpd) and spin(gtyp)) or reg(gtyp)) and not ELpnuc(Elpd) and vo(v))..
          0=g=
   -DELfuelsublim(r,ELl,t)$ELrtariff(r)
@@ -1386,24 +1360,13 @@ DELfconsump(ELpd,v,ELf,fss,t,r)$(ELpfss(ELpd,ELf,fss) and not ELpcoal(ELpd))..
 ;
 
 DELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox)..
- (  DCOdem('coal',cv,sulf,'summ',t,r)
-  -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-    DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
- )*ELdiscfact(t)
-
+ COprice('coal',cv,sulf,t,r)*ELdiscfact(t)
          +0=g=
-
   -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*
          ELtariffmax(Elpcoal,r)*COcvSCE(cv)*ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)$(
                  (DeSOx(sox) or DeNOx(nox)) and reg(gtyp) and ELptariff(ELpcoal,v))
 
-  -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*
-   (
-     DCOdem('coal',cv,sulf,'summ',t,r)
-         -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim('coal',cv,sulf,'summ',t,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )$ELptariff(ELpcoal,v)
-
+  -sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r))*COprice('coal',cv,sulf,t,r)
 
   +sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELprofit(ELc,vv,t,r)*
          ( (ELfgctariff(sox)+ELfgctariff(nox))*
@@ -1723,146 +1686,5 @@ DELfgcbld(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
 
 * !!!    Include emissions submodule
 $INCLUDE emissionsubmodel.gms
-
-
-         t(trun) = yes;
-
-
-model PowerLP /
-*        POWER EQUATIONS
-         ELobjective,
-         ELpurchbal,ELcnstrctbal,ELopmaintbal,
-         ELfcons,ELCOCons,
-*ELfcons
-         ELfavail,
-         ELcapbal,ELcaplim,ELcapcontr,
-         ELhydcapbal,ELhydcaplim,ELhydutil,ELgtconvlim,
-         ELsup,ELdem,ELrsrvreq,
-         ELwindcapbal,ELwindcaplim,ELwindutil,ELupspinres,
-         ELwindcapsum,
-         ELwindcapsum2,
-         ELtranscaplim,ELtranscapbal,
-
-*         ELfgclim,ELfgccaplim,ELfgcfcons,ELfgccapbal,
-*         EMsulflim, EMELnoxlim
-
-*         ELhydutilsto,
-
-         /
-;
-
-*$ontext
-model PowerMCP /
-
-ELProfit.DELprofit,ELwindtarget.DELwindtarget,ELfuelsublim.DELfuelsublim,
-*ELfitcap.DELfitcap,DELwindsub.ELwindsub,
-ELdeficitcap.DELdeficitcap,
-ELpurchbal.DELpurchbal,ELcnstrctbal.DELcnstrctbal,ELopmaintbal.DELopmaintbal,
-ELfcons.DELfcons,ELCOcons.DELCOcons,
-*ELfconsspin.DELfcons
-ELfavail.DELfavail,ELcapbal.DELcapbal,
-ELcaplim.DELcaplim,ELcapcontr.DELcapcontr,
-*ELgtconvlim.DELgtconvlim,
-
-ELwindcapbal.DELwindcapbal,ELwindcaplim.DELwindcaplim,ELwindutil.DELwindutil,
-ELwindcapsum.DELwindcapsum,ELupspinres.DELupspinres,
-ELnucconstraint.DELnucconstraint,
-
-ELsup.DELsup,ELdem.DELdem,ELrsrvreq.DELrsrvreq,
-*ELdemloc.DELdemloc,ELdemlocbase.DELdemlocbase,
-
-ELtranscapbal.DELtranscapbal,ELtranscaplim.DELtranscaplim,
-ELhydcapbal.DELhydcapbal,ELhydcaplim.DELhydcaplim,ELhydutil.DELhydutil,
-
-
-ELhydutilsto.DELhydutilsto,
-
-ELfgccaplim.DELfgccaplim,ELfgccapmax.DELfgccapmax,ELfgccapbal.DELfgccapbal,
-
-DELImports.ELImports,DELConstruct.ELConstruct,DELOpandmaint.ELOpandmaint,
-DELexistcp.ELexistcp,DELbld.ELbld,
-*DELgttocc.ELgttocc,
-DELop.ELop,DELupspincap.ELupspincap,
-*DELoploc.ELoploc,
-DELwindop.ELwindop,DELwindoplevel.ELwindoplevel,
-DELwindexistcp.ELwindexistcp,DELwindbld.ELwindbld,
-
-
-DELtrans.ELtrans,DELtransbld.ELtransbld,DELtransexistcp.ELtransexistcp,
-DELfconsump.ELfconsump,DELCOconsump.ELCOconsump,
-*DELfconsumpspin.ELfconsumpspin
-
-DELhydexistcp.ELhydexistcp,DELhydbld.ELhydbld,DELhydop.ELhydop,
-DELhydopsto.ELhydopsto,
-
-DELfgcexistcp.ELfgcexistcp,
-DELfgcbld.ELfgcbld,
-
-DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,
-*DELsubsidycoal.ELsubsidycoal,
-
-DEMELfluegas.EMELfluegas,
-EMsulflim.DEMsulflim,
-EMELnoxlim.DEMELnoxlim,
-EMfgbal.DEMfgbal,EMELSO2std.DEMELSO2std,EMELNO2std.DEMELNO2std
-
-
-*$ontext
-
-COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
-COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
-COwashcaplim.DCOwashcaplim,COsulflim.DCOsulflim,
-COprodfx.DCOprodfx,COprodCV.DCOprodCV,COprodlim.DCOprodlim,
-
-DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
-DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod
-
-
-         COtransPurchbal.DCOtransPurchbal,COtransCnstrctbal.DCOtransCnstrctbal,
-         COtransOpmaintbal.DCOtransOpmaintbal,COtransbldeq.DCOtransbldeq,
-         COimportbal.DCOimportbal,
-
-         COimportsuplim.DCOimportsuplim,COimportlim.DCOimportlim,
-         COsup.DCOsup,COsuplim.DCOsuplim,
-         COdem.DCOdem,COdemOther.DCOdemOther,
-
-         COtranscapbal.DCOtranscapbal,COtransportcaplim.DCOtransportcaplim,
-         COtranscaplim.DCOtranscaplim,Cotransloadlim.DCotransloadlim,
-*         COexportlim.DCOexportlim,
-*         COtransbudgetlim.DCOtransbudgetlim,
-
-         DCOtransPurchase.COtransPurchase,DCOtransConstruct.COtransConstruct,
-         DCOtransOpandmaint.COtransOpandmaint,DCOimports.COimports,
-
-         DCOtrans.COtrans,DCOtransload.COtransload,
-         DCOtransexistcp.COtransexistcp,DCOtransbld.COtransbld,
-
-         Dcoaluse.coaluse, Dcoalimports.coalimports,
-*         Dcoalexports.coalexports
-
-         DOTHERCOconsumpsulf.OTHERCOconsumpsulf,
-*$offtext
-
-/;
-
-*         DEMsulflim.up(trun,r) =0;
-
-*        Some variable fixed to the model
-
-*         ELwindbld.fx(ELpw,v,trun,r)=0;
-*         ELhydbld.fx(ELphyd,v,trun,r)=0;
-*         ELupspincap.fx(ELpd,v,ELl,ELf,fss,cv,sulf,t,r)$ELpELf(ELpd,ELf,fss,cv,sulf)=0;
-
-*         DELfgclim.fx(fgc,Elpd,v,ELl,cv,sulf,t,r)$ELpELf(ELpd,'coal',cv,sulf)=0;
-*         DELfgcfcons.fx(fgc,cv,sulf,t,r)=0;
-*         DELfgccaplim.fx(fgc,ELpd,v,ELl,t,r)=0;
-*         DELfgccapbal.fx(fgc,ELpd,v,t,r)=0;
-*         DEMsulflim.fx(t,r)=0;
-*         DEMELnoxlim.fx(t,r)=0;
-
-*         ELhydopsto.fx(ELl,v,t,r)=0;
-*         DELhydutilsto.fx(v,t,r)=0;
-
-
 
 
