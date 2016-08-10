@@ -350,13 +350,13 @@ Sets
 
          ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
 
-         ELpgttocc(ELpd)=no;
+         ELpgttocc(ELp)=no;
          ELpgttocc('GTtoCC')=yes;
          ELpcom(ELpd)= not ELpgttocc(ELpd);
          ELpcom('CCcon')=no;
 
-         ELpbld(ELpd,v)$( (ELpcom(ELpd) and vn(v)) or
-                         (vo(v) and ELpgttocc(ELpd)))  = yes ;
+         ELpbld(ELp,v)$( (not ELpgttocc(ELp) and vn(v)) or
+                         (vo(v) and ELpgttocc(ELp)))  = yes ;
 
          ELfCV(ELfcoal,cv_ord,sulf) = yes;
          ELfCV(ELfnuclear,CVf,'ExtLow') = yes;
@@ -662,21 +662,22 @@ Positive variables
          ELfgcbld(ELp,v,fgc,trun,r)  New Flu gas desulphurization capacity builds in GW
 
 *Duals for electricity
-         DELcapbal(Elpd,v,trun,r)    free dual of capbal
+         DELcapbal(Elp,v,trun,r)    free dual of capbal
          DELwindcapbal(ELpw,v,trun,r)
-         DELwindcaplim(ELpw,v,trun,r)
+         DELwindcaplim(ELp,v,trun,r)
          DELgtconvlim(ELp,v,trun,r) free dual of Elgtconvlim
-         DELcaplim(ELpd,v,ELl,trun,r) dual of ELcaplim
+         DELcaplim(ELp,v,ELl,trun,r) dual of ELcaplim
          DELcapstocklim(ELp,v,trun,r) dual of ELcapstocklim
-         DELcapcontr(ELpd,v,trun,r) dual of ELcapcontr
+         DELcapcontr(ELp,v,trun,r) dual of ELcapcontr
 
-         DELwindutil(ELpw,ELl,v,trun,r)
+         DELwindutil(ELp,ELl,v,trun,r)
          DELwindcapsum(wstep,trun,r)
          DELupspinres(ELl,trun,r)
 
          DELhydcapbal(ELphyd,v,trun,r)     Dual of hydro capacity balance
          DELhydcaplim(ELphyd,ELl,v,trun,r) Dual of hydro capacity limit
-         DELhydutil(ELphyd,v,trun,r)   Dual of hydro utilization
+
+         DELhydutil(ELp,v,trun,r)   Dual of hydro utilization
          DELhydutilsto(v,trun,r)   Dual of hydro storage utilization
 
 
@@ -703,7 +704,7 @@ Positive variables
 * Duals fro FGD
          DELfgccapbal(ELpd,v,fgc,trun,r)
          DELfgccaplim(Elp,v,fgc,trun,r)
-         DELfgccapmax(ELpd,v,fgc,trun,r)
+         DELfgccapmax(ELp,v,fgc,trun,r)
 
          DELCOcvlimit(Elpd,trun,r)
 

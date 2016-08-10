@@ -47,8 +47,8 @@
          ELdemand Regional electricity demand
          ELsales Regional electricity sales
 
-         ELcapELp EL installed capacity by ELp and region
-         ELbldELp EL build by ELp and region
+         ELcapELp(ELp,trun,rAll) EL installed capacity by ELp and region
+         ELbldELp(ELp,trun,rAll) EL build by ELp and region
 
          ELcap installed capacity by region
          ELbldtot cumulative bld capacity by region

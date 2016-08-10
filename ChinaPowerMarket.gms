@@ -29,7 +29,7 @@ $INCLUDE discounting.gms
          ELwtarget=1;
          SO2_std=0;
 
-         ELwindtot=sum((ELpw,v,r),ELwindexistcp.l(ELpw,v,"t12",r))+1e-3;
+         ELwindtot=sum((ELpw,v,r),ELexistcp.l(ELpw,v,"t12",r))+1e-3;
          ELdeficitmax = 0e3;
 
 *         ELCOconsump.fx(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$(
@@ -60,7 +60,7 @@ $INCLUDE scenarios.gms
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
 
-         execute_loadpoint "LongRun.gdx" ;
+         execute_loadpoint "LongRun2.gdx" ;
 
 
          PowerMCP.scaleopt=1;

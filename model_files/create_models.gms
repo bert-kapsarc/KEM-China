@@ -6,11 +6,10 @@ model PowerLP /
 *ELfcons
          ELfavail,
          ELcapbal,ELcaplim,ELcapcontr,
-         ELhydcapbal,ELhydcaplim,ELhydutil,ELgtconvlim,
+         ELhydutil,ELgtconvlim,
          ELsup,ELdem,ELrsrvreq,
-         ELwindcapbal,ELwindcaplim,ELwindutil,ELupspinres,
+         ELwindcaplim,ELwindutil,ELupspinres,
          ELwindcapsum,
-         ELwindcapsum2,
          ELtranscaplim,ELtranscapbal,
 
 *         ELfgclim,ELfgccaplim,ELfgcfcons,ELfgccapbal,
@@ -35,15 +34,19 @@ ELfavail.DELfavail,ELcapbal.DELcapbal,
 ELcaplim.DELcaplim,ELcapcontr.DELcapcontr,
 *ELgtconvlim.DELgtconvlim,
 
-ELwindcapbal.DELwindcapbal,ELwindcaplim.DELwindcaplim,ELwindutil.DELwindutil,
+*ELwindcapbal.DELwindcapbal,
+ELwindcaplim.DELwindcaplim,ELwindutil.DELwindutil,
 ELwindcapsum.DELwindcapsum,ELupspinres.DELupspinres,
+
 ELnucconstraint.DELnucconstraint,
 
 ELsup.DELsup,ELdem.DELdem,ELrsrvreq.DELrsrvreq,
 *ELdemloc.DELdemloc,ELdemlocbase.DELdemlocbase,
 
 ELtranscapbal.DELtranscapbal,ELtranscaplim.DELtranscaplim,
-ELhydcapbal.DELhydcapbal,ELhydcaplim.DELhydcaplim,ELhydutil.DELhydutil,
+
+*ELhydcapbal.DELhydcapbal,ELhydcaplim.DELhydcaplim,
+ELhydutil.DELhydutil,
 
 
 ELhydutilsto.DELhydutilsto,
@@ -55,14 +58,15 @@ DELexistcp.ELexistcp,DELbld.ELbld,
 *DELgttocc.ELgttocc,
 DELop.ELop,DELupspincap.ELupspincap,
 *DELoploc.ELoploc,
-DELwindop.ELwindop,DELwindoplevel.ELwindoplevel,
-DELwindexistcp.ELwindexistcp,DELwindbld.ELwindbld,
+*DELwindop.ELwindop,
+DELwindoplevel.ELwindoplevel,
+*DELwindexistcp.ELwindexistcp,DELwindbld.ELwindbld,
 
 DELtrans.ELtrans,DELtransbld.ELtransbld,DELtransexistcp.ELtransexistcp,
 DELfconsump.ELfconsump,DELCOconsump.ELCOconsump,
 *DELfconsumpspin.ELfconsumpspin
 
-DELhydexistcp.ELhydexistcp,DELhydbld.ELhydbld,DELhydop.ELhydop,
+*DELhydexistcp.ELhydexistcp,DELhydbld.ELhydbld,DELhydop.ELhydop,
 DELhydopsto.ELhydopsto,
 
 DELfgcexistcp.ELfgcexistcp,
