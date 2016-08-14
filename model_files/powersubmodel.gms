@@ -1,44 +1,16 @@
-* ELECTRICITY MODEL FOR CHINA
-*use  gdx=ChinaPower   to write output to gdx file
-
-$ontext
-********************************************************************************
-*$INCLUDE ACCESS_sets.gms
-*$INCLUDE ACCESS_CO.gms
-*$INCLUDE ACCESS_EL.gms
-*$INCLUDE Macros.gms
-*$INCLUDE SetsandVariables.gms
-*$INCLUDE ScalarsandParameters.gms
-*$INCLUDE RW_param.gms
-*$INCLUDE coalsubmodel.gms
-*$INCLUDE coaltranssubmodel.gms
+$ONTEXT
+ELECTRICITY MODEL FOR CHINA
+This model provides a representaiton of the power market considereing 3 actors
+         1. Power Producers
+         2. State grid companies (System Operator)
+         3. Central and provicial governments (regulator)
+The model is formulated as a cost minimization problem. Hower the price paid
+to power generators by the system operator is regulated by the governments
+on-grid tariff policy.
+$OFFTEXT
 
 
-*parameter ELCOconsump2(ELpd,cv,sulf,t,rr);
-*Variables from other submodels that need to be exogenously fixed:
-$gdxin integratedLP_p.gdx
-*$load OTHERCOconsumpsulf coaluse COdem ELCOconsump2=ELCOconsump
-*coalprod
-$gdxin
-
-
-
-********************************************************************************
-*$offtext
-
-*Variables from other submodels that have to be exogenously fixed:
-$ontext
-WAELsupply.fx(ELl,time,r)=0;
-WAELpwrdemand.fx(time,r)=0;
-WAELrsrvcontr.fx(time,r)=0;
-WAELconsump.fx(ELl,time,r)=0;
-RFELconsump.fx(ELl,time,r)=0;
-CMELconsump.fx(ELlf,time,r)=0;
-PCELconsump.fx(ELl,time,r)=0;
-PCELpwrdemand.fx(time,r)=0;
-$offtext
-
-
+scalar ELdeficitmax maximum amount of deficit allowed for aggregate power producers;
 parameter ELfconsumpmax(ELf,time,rAll) fuel supply constraint;
 
 $gdxin db\power.gdx
@@ -107,6 +79,7 @@ parameter ELAPf(f,fss,time,r) administered price of fuels;
          ELAPf('Methane',fss0,time,'Shandong')= 64;
          ELAPf('Methane',fss0,time,'Xinjiang')= 40.29;
          ELAPf('Methane',fss0,time,'Tibet')= 64.11;
+
 
 
 Scalars
@@ -634,7 +607,7 @@ $gdxin
 
 parameter
          ELdemgro(ELl,time,r) Electricity demand growth rate relative to initial condition  ;
-         ELdemgro(ELl,time,r)=1$rdem_on(r);
+         ELdemgro(ELl,time,r)=1;
 
 
 * !!!     Fix intial cpaacpity levels.
@@ -813,16 +786,18 @@ parameter
 ;
 $offorder
 
-ELobjective.. z=e=
+ELobjective.. ELobjvalue=e=
   +sum(t,(ELImports(t)+ELConstruct(t)+ELOpandmaint(t))*ELdiscfact(t))
 
-  +sum((ELpcoal,v,gtyp,cv,sulf,sox,nox,ELf,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
-*          CoalFuelPrice*
+  +sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
+          COprice.l(COf,cv,sulf,t,r)*
           ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))
 
   +sum((ELpd,v,ELf,fss,t,r)$(not ELfcoal(ELf) and not ELpcoal(Elpd)),
-*         +OtherFuelPrices*
-         ELfconsump(ELpd,v,ELf,fss,t,r))
+         ELAPf(ELf,fss,t,r)*(
+         0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)) )*ELdiscfact(t)
+         )
+
 ;
 
 * CAPITAL COSTS
@@ -1038,7 +1013,7 @@ ELsup(ELl,t,r)..
   +ELlcgwonsite(r,ELl)*ELdemgro(ELl,t,r)*ELlchours(ELl)
 ;
 
-ELdem(ELl,t,rr)..
+ELdem(ELl,t,rr)$rdem_on(rr)..
    sum((ELt,ELll,r)$ELtransr(ELt,r,rr),
          Eltransyield(ELt,r,rr)*ELtranscoef(ELll,ELl,r,rr)*
          ELtrans(ELt,ELll,t,r,rr))
@@ -1301,8 +1276,8 @@ DELdeficit(ELp,v,t,r)$(ELptariff(ELp,v))..
 
 
 DELfconsump(ELpd,v,ELf,fss,t,r)$(ELpfss(ELpd,ELf,fss) and not ELpcoal(ELpd))..
-   ELAPf(ELf,fss,t,r)*ELdiscfact(t)*(
-         0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)) )
+   ELAPf(ELf,fss,t,r)*(
+         0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)) )*ELdiscfact(t)
          +0=g=
 
   -sum((Elc,vv)$ELcELp(ELc,vv,ELpd,v),DELprofit(ELc,vv,t,r))*
@@ -1593,9 +1568,5 @@ DELfgcbld(ELpd,v,fgc,t,r)$(ELpcoal(ELpd) and (DeSOx(fgc) or DeNOx(fgc)))..
   -DELfgccapmax(ELpd,v,fgc,t+ELfgcleadtime(fgc),r)
 ;
 
-
-
-* !!!    Include emissions submodule
-$INCLUDE emissionsubmodel.gms
 
 

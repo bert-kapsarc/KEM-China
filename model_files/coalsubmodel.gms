@@ -1,17 +1,3 @@
-$ontext
-$INCLUDE Macros.gms
-$INCLUDE SetsandVariables.gms
-$INCLUDE ScalarsandParameters.gms
-$INCLUDE RW_param.gms
-
-$gdxin calibration\ChinaPower.gdx
-$load coalprod
-$gdxin
-
-coalprod.fx(COf,cv,sulf,trun,rco) =coalprod.l(COf,cv,sulf,trun,rco);
-DCOsup.fx(COf,cv,sulf,ELs,trun,rco)=0;
-$offtext
-
 parameter COexist(COf,mm,ss,rco) existing coal supply in each region
 
 parameter COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
@@ -21,7 +7,7 @@ parameter COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
 
           COprodyield(COf,mm,ss,rw,time,rco) production yield for coal
 
-          COwashratio(COf,mm,ss,time,rco) production yield for coal
+          COwashratio(COf,mm,ss,time,rco) washing yield for coal
 *         COexpansion(COf,mm,ss,rco) IHS coal production levels and forecasts
 
           coalcv(COf,mm,ss,rw,time,rco) calorific value of coal
@@ -357,25 +343,32 @@ COprodStats(COf,mm,ss,time,rco)$(ord(time)>2) = COprodIHS(COf,mm,ss,time,rco);
 *         COomcst(COf,mm,ss,rw,time,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,time,rco);
 Equations
 * ====================== Primal Relationships =================================*
-         COobjective
+         COobjective Equation (2-1).(1) coal production costs only
 
          COpurchbal(trun) acumulates all purchases
          COcnstrctbal(trun) accumlates all construction activity
          COopmaintbal(trun) accumulates operations and maintenance costs
 
-         COcapbal(COf,mm,ss,trun,rco) coal production balance
-         COcaplim(COf,mm,ss,trun,rco) coal production capacity constraint
+         COcapbal(COf,mm,ss,trun,rco) coal production balance for multi period simulation
 
-         COsulflim(sulf,trun,rco) constraint on coal sulfur content in each region
-         COwashcaplim(COf,mm,ss,trun,rco)
-*         COashlim(trun) contraint on the national distribution of ash in raw coal production
-*         COashlimreg(trun,rco) contraint on the regional average ash content or raw coal
 
-         COprodCV(COf,cv,sulf,trun,rco)  equation to aggregate coal produciton units by average CV
+         COcaplim(COf,mm,ss,trun,rco) Equation (2-1).(2) coal production capacity constraint.
+*        The supply step setting the upper bound in this equation is disagregated
+*        into what exists (COexistcp) and what is built CObld.
+*        The equation COsupplylim sets the upper bound of each supply step.
 
-         COprodfx(COf,sulf,mm,ss,trun,rco) accounting equation to fix the production of other washed to that of washed coal
+         COsupplylim(COf,mm,ss,trun,rco) Limit on the amount of available coal supplies
 
-         COprodlim(COf,mm,ss,trun,rco) limit on mount of coal production
+         COsulflim(sulf,trun,rco) Eqn (2-1).(3) Constraint that sets the coal sulfur content in each region
+
+         COwashcaplim(COf,mm,ss,trun,rco) Eqn (2-1).(4) Sets the upper bound on coal washing for each regional suplier and mining method
+
+         COprodfx(COf,sulf,mm,ss,trun,rco) Eqn (2-1).(5) Limit the production of co-products (other washed coals) to that of washed coal
+
+         COprodCV(COf,cv,sulf,trun,rco) Eqn (2-1).(6) equation to aggregate coal produciton units into CV bins
+
+
+
 
 * ====================== Dual   Relationships =================================*
 
@@ -390,13 +383,6 @@ Equations
 ;
 
 $offorder
-*$ontext
-COobjective.. z =e=
-   sum(t,(COpurchase(t)+COConstruct(t)+COOpandmaint(t))*COdiscfact(t))
-;
-*$offtext
-
-
 
 COpurchbal(t).. sum((COf,mm,ss,rco)$COmine(COf,mm,ss,rco),COpurcst(COf,mm,t,rco)*CObld(COf,mm,ss,t,rco))
            -COpurchase(t)=e=0;
@@ -415,12 +401,15 @@ COcapbal(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco)..COexistcp(COf,mm,ss,t,rco)+
          -COexistcp(COf,mm,ss,t+1,rco)=g=0;
 
 COcaplim(COf,mm,ss,t,rco)$(COmine(COf,mm,ss,rco))..
-*
-
 COexistcp(COf,mm,ss,t,rco)
 +CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
   -sum((sulf,rw)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco) and COsulf(sulf,rco)),
                  COprod(COf,sulf,mm,ss,rw,t,rco)) =g= 0
+;
+
+COsupplylim(COf,mm,ss,t,rco)$(coal_cap=1 and COmine(COf,mm,ss,rco))..
+-COexistcp(COf,mm,ss,t,rco)-CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
+                 =g= -COprodStats(COf,mm,ss,t,rco)
 ;
 
 
@@ -440,18 +429,6 @@ COwashcaplim(COf,mm,ss,t,rco)$(coal(COf) and COmine(COf,mm,ss,rco) and COwashrat
          +CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
   -sum((sulf,rw)$(COrw(COf,mm,ss,sulf,rw,rco) and rwashed(rw)),
          COprod(COf,sulf,mm,ss,rw,t,rco))   =g= 0 ;
-
-$ontext
-COashlim(t)..
-COashDist(ash)*sum((COf,mm,ss,rco)$COmine(COf,mm,ss,rco),COexistcp(COf,mm,ss,t,rco)+CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
--sum((COf,sulf,mm,ss,rw,rco)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco)),
-         COprod(COf,sulf,mm,ss,rw,t,rco))   =e= 0 ;
-
-COashlimreg(t,rco)..
-COashReg(rco)*sum((COf,mm,ss)$COmine(COf,mm,ss,rco),COexistcp(COf,mm,ss,t,rco)+CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco))
--sum((COf,sulf,mm,ss,rw)$(not rwother(rw) and COrw(COf,mm,ss,sulf,rw,rco)),
-         COprod(COf,sulf,mm,ss,rw,t,rco)*COash(ash))   =g= 0 ;
-$offtext
 
 COprodfx(COf,sulf,mm,ss,t,rco)$(COmine(COf,mm,ss,rco))..
          +sum(rww$(rwashed(rww) and COrw(COf,mm,ss,sulf,rww,rco) and
@@ -474,12 +451,6 @@ COprodCV(COf,cv,sulf,t,rco)$COcvrco(COf,cv,sulf,t,rco)..
                          =g=0
 ;
 
-COprodlim(COf,mm,ss,t,rco)$(coal_cap=1 and COmine(COf,mm,ss,rco))..
-          -COexistcp(COf,mm,ss,t,rco)-CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
-                 =g=
-*                         -CoprodIHS(COf,mm,ss,t,rco)
-                         -COprodStats(COf,mm,ss,t,rco)
-;
 
 
 *================= dual relationships ==========================================
@@ -562,7 +533,7 @@ model coalMCP/
 
 COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
 COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
-COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COprodlim.DCOprodlim,
+COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COsupplylim.DCOprodlim,
 
 DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
 DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod
@@ -575,7 +546,7 @@ model coalLP
 /
          COobjective,
          COpurchbal, COcnstrctbal, COopmaintbal,COcapbal, COcaplim,
-         COsulflim,COprodCV, COprodfx, COprodlim,
+         COsulflim,COprodCV, COprodfx, COsupplylim,
 *         COashlim,        COashlimreg,
 /
 ;

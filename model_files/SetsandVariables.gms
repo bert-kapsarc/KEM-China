@@ -13,7 +13,11 @@ Sets
          wind_inc        increments of wind capacity /1*20/
          t(trun)         dynamic set for time
 
-         scenarios /DI1*DI8,CE1*CE8,base,calib,EIA/
+         scenarios pre-defined model scenarios /DI1*DI8,CE1*CE8,base,calib,EIA/
+
+         built_models pre-configured models by sector /Power, Coal, Integrated/
+
+         lp_mcp set to declare mcp or lp model /LP,MCP/
 
          Sect            sectors used in methane quota reallocation
                         /PC,EL,WA,CM,RF,fup/
@@ -491,7 +495,7 @@ ELfAP(ELfMP) = no;
 
 *        Variables of the coal submodels =======================================
 variables
-         z
+         COobjvalue
 
          DCOpurchbal(trun)        free dual of purchbal
          DCOcnstrctbal(trun)      free dual of cnstrctbal
@@ -594,6 +598,8 @@ positive Variables
 
 *Variables of the Power submodel
 Variables
+
+         ELobjvalue objective value of the power sector
          y(f,trun)
          testing(trun)
 *         fsubsidy(trun)

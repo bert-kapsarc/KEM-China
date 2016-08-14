@@ -348,7 +348,7 @@ COtranscapex('port',rco,rco) = 100;
 
 Equations
 * ====================== Primal Relationships =================================*
-         COtransobjective
+         COobjective  Equation (2-1).(1)
 
          COtransPurchbal(trun) acumulates all purchases
          COtransCnstrctbal(trun) accumlates all construction activity
@@ -372,15 +372,15 @@ Equations
 
          Cotransloadlim(COf,tr,trun,rco) limit on coal loading at each node
 
-         COexportlim(trun,rco) constraint of coal exports
+         COexportlim(trun,rco) constraint for coal exports
 
-         COtransbudgetlim(tr,trun) investment budget for railway capacity expansion
+*         COtransbudgetlim(tr,trun) investment budget for railway capacity expansion
 
 *         COtransbldlim(tr,trun,rco)  limit on investment in new port infrastructure
 
 *         COtranslim(trun,rco,rrco) capacity limit on coal rail transport
 
-         COprice_eqn(COf,cv,sulf,trun,r) Equality to store coal price used in generators revenue constraint
+         COprice_eqn(COf,cv,sulf,trun,r) Auxiliary equation for the marginal cost of coal in region r
 
 * ====================== Dual   Relationships =================================*
 
@@ -409,11 +409,16 @@ Equations
 ;
 
 $offorder
+*$ontext
+COobjective.. COobjvalue =e=
+    sum(t,(COpurchase(t)+COConstruct(t)+COOpandmaint(t))*COdiscfact(t))
+   +sum(t,(COtranspurchase(t)+COtransConstruct(t)
+         +COtransOpandmaint(t)+COimports(t))*COdiscfact(t))
 
-
-COtransobjective.. z =e=
-   sum(t,(COtranspurchase(t)+COtransConstruct(t)
-         +COtransOpandmaint(t)+COimports(t))*COdiscfact(t));
+   -sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
+          COprice(COf,cv,sulf,t,r)*
+          ELCOconsump.l(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))
+         ;
 
 
 COtranspurchbal(t).. sum((tr,rco,rrco)$arc(tr,rco,rrco),
@@ -434,7 +439,7 @@ COtranscnstrctbal(t)..
 
 COtransbldeq(tr,t,rco,rrco)$land(tr)..
    COtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco)
-  -COtransbld(tr,t,rrco,rco)$arc(tr,rrco,rco) =e= 0 ;
+  -COtransbld(tr,t,rrco,rco)$arc(tr,rrco,rco) =g= 0 ;
 
 
 COtransOpmaintbal(t)..
@@ -730,7 +735,7 @@ model coaltransMCP/
 
 COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
 COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
-COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COprodlim.DCOprodlim,
+COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COsupplylim.DCOprodlim,
 
 DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
 DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod

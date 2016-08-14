@@ -22,7 +22,7 @@
          ELptariff(ELpd,v) = no;
 
 
-* !!!    Set feed-in tariffs
+* !!!    Set feed-in tariffs for wind producers
          ELfit(ELpw,trun,r) = 600;
          ELfit(ELpw,trun,'CoalC') = 510;
          ELfit(ELpw,trun,'North') = 540;
@@ -42,23 +42,31 @@
 
 if( scen('calib'),
 
+*!!!     Turn on demand in all regions
+         rdem_on(r) = yes;
+
+
+*!!!     Turn on railway construction tax
+         COrailCFS=1;
+
+*!!!     Introduce a cap on coal production.
+*     COprodStats(COf,mm,ss,t,rco) must be stricly > COexistcp(COf,mm,ss,t,rco)
          coal_cap=1;
-         rail_cap=1;
-         import_cap=1;
 
 
+*!!!     Used in older version to assign maximum capacity on mixed freight lines
+*        Current version assumes all rails lines are coal dedicated
+*        This assumption can be modified by setting allocation quotas for some
+*        cooridors.
+*         rail_cap=1;
+
+*!!!     Set upper bound on imports from some suppliers.
+*         import_cap=1;
          COfimpmax('met',trun,'IMMN') = 25;
          COfimpmax('coal',trun,'IMKP') = 25;
 
 
-* set a cap on imports equal to the imports reported in 2013 scaled by the increase in projected demand from 2013
-*         COfimpmax(COf,time,rimp)$(ord(time)>3 and COfimpmax(COf,time,rimp)=0 and sum((rr),COconsumpIHS(COf,'t13',rr))>0 )=
-*         COfimpmax(COf,'t13',rimp)*(1+ sum(rr$(COconsumpIHS(COf,time,rr)>0),
-*                                         COconsumpIHS(COf,time,rr)-COconsumpIHS(COf,'t13',rr))/sum((rr),COconsumpIHS(COf,'t13',rr))
-*         );
-
-
-         COrailCFS=1;
+         ELwtarget=1;
 
          t_start=1;
 
@@ -89,6 +97,9 @@ $offtext
 
 
 elseif scen('EIA'),
+
+
+
 
 COtransbld.up(tr,trun,rco,rrco) = 0;
 

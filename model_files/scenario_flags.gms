@@ -13,8 +13,8 @@ scalars  import_cap set to 1 to enforce the import constraint /0/
          ELdereg    set to 1 to switch on deregulated power supply market /1/
 
          ELdefcap place cap on generator deficits /0/
-         ELwtarget     set to 1 switch on strategic wind targets /0/
-         ELpfit      set to 1 switch on fit for renewables /1/
+         ELwtarget  set to 1 switch on strategic wind targets /0/
+         ELpfit     set to 1 switch on fit for renewables /0/
          SO2_std   apply regioanl sulfur standards /0/
          nox_std   apply regioanl sulfur standards /0/
 
@@ -33,3 +33,4 @@ scalars  import_cap set to 1 to enforce the import constraint /0/
          multigrid set to 1 to use multiple grid levels for investment susbidy optimization /0/;
 ********************************************************************************
 ;
+

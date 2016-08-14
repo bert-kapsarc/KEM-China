@@ -60,7 +60,8 @@ $INCLUDE scenarios.gms
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
 
-         execute_loadpoint "LongRun2.gdx" ;
+         execute_loadpoint "LongRun.gdx" ;
+
 
 
          PowerMCP.scaleopt=1;

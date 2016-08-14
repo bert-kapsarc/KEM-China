@@ -56,10 +56,6 @@ transport(land,trun) = Cotr(land,trun);
 transport('river',trun) = Cotrriver(trun);
 transport('sea',trun) = Cotrsea(trun);
 
-parameter COobjvalue;
-COobjvalue = sum(trun,(COpurchase.l(trun)+COConstruct.l(trun)+COOpandmaint.l(trun))*COdiscfact(trun))+
- sum(trun,(COtranspurchase.l(trun)+COtransConstruct.l(trun)+COtransOpandmaint.l(trun)+COimports.l(trun))*COdiscfact(trun)) ;
-
 CotransbldD(trun) = sum((rco,rrco)$(COtransbld.l('rail',trun,rco,rrco)>0),COtransD('rail',rco,rrco)/2);
 Cotransbldton(trun) = sum((rco,rrco)$(COtransbld.l('rail',trun,rco,rrco)>0),COtransbld.l('rail',trun,rco,rrco)/2);
 Cotransbldport(trun) = sum(rco$(COtransbld.l('port',trun,rco,rco)>0),COtransbld.l('port',trun,rco,rco));
@@ -67,7 +63,7 @@ Cotransbldport(trun) = sum(rco$(COtransbld.l('port',trun,rco,rco)>0),COtransbld.
 
 parameter COcosts;
 
-COcosts('total_economic_cost ',trun) = COobjvalue;
+COcosts('total_economic_cost ',trun) = COobjvalue.l;
 COcosts('mining_cost ',trun) = COOpandmaint.l(trun);
 COcosts('import_cost ',trun) =  COimports.l(trun);
 COcosts('rail_investment ',trun) = sum((rco,rrco),COtranscapex('rail',rco,rrco)*COtransbld.l('rail',trun,rco,rrco)*COtransD('rail',rco,rrco) ) ;
