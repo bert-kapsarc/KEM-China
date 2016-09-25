@@ -1,5 +1,6 @@
-model PowerLP_eqns Equation for power submodule LP (primal equations must match MCP)/
+model PowerLP Equation for power submodule LP (primal equations must match MCP)/
 *ELProfit, Ignore profit constraint in LP model. this constraint can only be exprewssed as an MCP.
+ELobjective
 ELwindtarget,ELfuelsublim,
 ELdeficitcap,
 ELpurchbal,ELcnstrctbal,ELopmaintbal,
@@ -15,8 +16,6 @@ ELhydutil,ELhydutilsto,
 ELfgccaplim,ELfgccapmax,ELfgccapbal
 /
 ;
-
-model PowerLP /PowerLP_eqns ELobjective/
 
 *$ontext
 model PowerMCP
@@ -60,9 +59,8 @@ DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,
 /;
 
 
-model CoalLP_eqns Equation for power submodule LP (primal equations must match MCP)/
+model CoalLP Equation for power submodule LP (primal equations must match MCP)/
 COobjective
-COprice_eqn,
 COpurchbal,COcnstrctbal,COopmaintbal,
 COcapbal,COcaplim,
 COwashcaplim,COsulflim,
@@ -82,13 +80,10 @@ COtranscaplim,Cotransloadlim,
 /
 ;
 
-model CoalLP /CoalLP_eqns/
-
 model CoalMCP
 /
 *$ontext
-COobjective,
-COprice_eqn,
+COprice_eqn.COprice,
 COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
 COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
 COwashcaplim.DCOwashcaplim,COsulflim.DCOsulflim,
@@ -125,7 +120,7 @@ DOTHERCOconsumpsulf.OTHERCOconsumpsulf,
 
 /;
 
-model EmissionLP_eqns /
+model EmissionLP /
 
 EMsulflim,EMELnoxlim,
 EMfgbal,EMELSO2std,EMELNO2std
@@ -137,25 +132,17 @@ DEMELfluegas.EMELfluegas,
 EMsulflim.DEMsulflim,EMELnoxlim.DEMELnoxlim,
 EMfgbal.DEMfgbal,EMELSO2std.DEMELSO2std,EMELNO2std.DEMELNO2std
 /;
+
 equation objective;
-variable objvalue;
 $offorder
-objective.. objvalue =e=
- sum(t,(COpurchase(t)+COConstruct(t)+COOpandmaint(t))*COdiscfact(t))
-+sum(t,(COtranspurchase(t)+COtransConstruct(t)
-         +COtransOpandmaint(t)+COimports(t))*COdiscfact(t))
-+sum(t,(ELImports(t)+ELConstruct(t)+ELOpandmaint(t))*ELdiscfact(t))
-+sum((ELpd,v,ELf,fss,t,r)$(not ELfcoal(ELf) and not ELpcoal(Elpd)),
-         ELAPf(ELf,fss,t,r)*(
-         0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)) )*ELdiscfact(t)
-         )
-;
+objective.. objvalue =e=COobjvalue+ELobjvalue;
 $onorder
 
 
 * additiona model options.
-Model IntegratedLP /PowerLP_eqns EmissionLP_eqns CoalLP_eqns objective/ ;
+Model IntegratedLP /PowerLP EmissionLP CoalLP objective/ ;
 Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
+
 
          IntegratedMCP.scaleopt=1;
 
@@ -173,3 +160,7 @@ Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
 
          EMELnoxlim.scale(trun,r)=1e-1;
          DEMELnoxlim.scale(trun,r)=1e1;
+
+*         COtransOpmaintbal.scale(trun)=1e2;
+         DCOtransOpmaintbal.scale(trun)=1e-2;
+         COobjective.scale=1e2;

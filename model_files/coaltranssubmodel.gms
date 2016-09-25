@@ -20,7 +20,7 @@ $gdxin PowerMCP_p.gdx
 $gdxin
 
 
-*   coalprod.fx(COf,cv,sulf,trun,rco)=coalprod.l(COf,cv,sulf,trun,rco)*1;
+   coalprod.fx(COf,cv,sulf,trun,rco)=coalprod.l(COf,cv,sulf,trun,rco)*1;
    ELCOconsump.fx(ELpcoal,cv,sulf,trun,rr)= 0;
    ELfconsumpspin.fx(Elpd,ELf,cv,sulf,trun,rr)=0;
 
@@ -29,9 +29,6 @@ $gdxin
    ELfconsumpspin.fx(Elpd,ELf,'CV60',sulf,trun,rr)=sum(cv,ELfconsumpspin.l(Elpd,Elf,cv,sulf,trun,rr))$ELpcoal(ELpd);
 
          rdem_on(rr) = yes;
-
-
-********************************************************************************
 $offtext
 
 *Surcahrges sourced from Credit Suisse report 2013
@@ -46,13 +43,10 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
           COtranscapex(tr,rco,rrco) purchase cost of transmission capacity Yuan per tonne km
 
-          COtranspurcst(tr,time,rco,rrco) purchase cost of transmission capacity RMB per tone-km (rail) per tone (port)
-          COtransconstcst(tr,time,rco,rrco) construction cost of transmission capacity RMB per tone-km (rail) per tone (port)
+          COtranspurcst(tr,time,rco,rrco) purchase cost of transportation capacity RMB per tone-km (rail) per tone (port)
+          COtransconstcst(tr,time,rco,rrco) construction cost of transportation capacity RMB per tone-km (rail) per tone (port)
 
           COtransbudget(tr,time) budget constraint for investment of tranportation infrastrcuture in million RMB
-
-
-          Railrates(tc,tc_rate) rail tarrifs Yuan per t per km
 
           COtransomcst(tr,rco,rrco) O&M cost in Yuan per tonne per km
           COtransomcst2(COf,tr,rco,rrco) O&M cost in Yuan per tonne per km
@@ -70,13 +64,11 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
           OTHERCOconsump(COf,time,rr) exogenous coal demand
 
-          OTHERCOconsumpProv_weight(COf,time,rAll) exogenous coal demand by total weight
+*          OTHERCOconsumpProv_weight(COf,time,rAll) exogenous coal demand by total weight
 
-          OTHERCOconsump_weight(COf,time,rr) exogenous coal demand by total weight
+*          OTHERCOconsump_weight(COf,time,rr) exogenous coal demand by total weight
 
           COtranslifetime(tr) Lifetime of tranportation equipment
-
-*          Cotranscapmax(tr,rco) upper limit on the available amount of transport infrastructure
 
           COintlprice(COf,ssi,cv,sulf,time,rco) market price for fuels for aggreaget CV bin
 
@@ -94,7 +86,7 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
           COtranslifetime(tr) = 100;
 
 $gdxin db\coaltrans.gdx
-$load COtransD COtransexist OTHERCOconsumpProv OTHERCOconsumpProv_weight COtransomcst COtranscapex Railrates
+$load COtransD COtransexist OTHERCOconsumpProv COtransomcst COtranscapex
 * COtransyield COtransalloc COfexpmax
 $gdxin
 
@@ -107,39 +99,6 @@ $gdxin
 *          COtransleadtime('rail',rco,rrco)$(COtransexist('rail',rco,rrco)=0)=3;
 *          COtransleadtime('rail',rco,rrco)$(COtransexist('rail',rco,rrco)>0)=1;
 *          COtransleadtime('port',rco,rrco)=2;
-
-
-* Split  coal consumption into east and western Nei Mongol using GDP as weight
-OTHERCOconsumpProv(COf,IHScoaluse,time,"NME") = OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")*0.3;
-OTHERCOconsumpProv(COf,IHScoaluse,time,"NM") =
-         OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")-
-         OTHERCOconsumpProv(COf,IHScoaluse,time,"NME");
-
-* Split  coal consumption into east and western Nei Mongol using GDP as weight
-OTHERCOconsumpProv_weight(COf,time,"NME") = OTHERCOconsumpProv_weight(COf,time,"NM")*0.3;
-OTHERCOconsumpProv_weight(COf,time,"NM") =
-         OTHERCOconsumpProv_weight(COf,time,"NM")-
-         OTHERCOconsumpProv_weight(COf,time,"NME");
-
-
-$ontext
- Get sum of other CO consumption sectors
-OTHERCOconsump(steam,time,rr)=sum((GB,IHSother)$regions(rr,GB),
-                         OTHERCOconsumpProv(steam,IHSother,time,GB));
-$offtext
-
-
-
-OTHERCOconsump_weight(COf,time,rr)=sum(GB$regions(rr,GB),
-         OTHERCOconsumpProv_weight(COf,time,GB));
-
-*OTHERCOconsump(met,time,rr)=sum((GB,IHSmet)$regions(rr,GB),
-*                         OTHERCOconsumpProv(met,IHSmet,time,GB));
-
-OTHERCOconsump('met',time,rr)=COstatistics('Metallurgical',time,rr);
-
-OTHERCOconsump(coal,time,rr)=COstatistics('Other',time,rr);
-
 
 parameter COconsumpEIA(COf,time) EIA coal demand forecast,
           coalintlpriceEIA(COf,time,rco,rrco) EIA international coal price reference (for china )
@@ -158,13 +117,11 @@ $gdxin
                                  min     con     max
          coal.t14             -0.04   0.011   0.05
          coal.t15             -0.04   0.056   0.10
-*,lignite
+
          (hardcoke,met).t14     -0.063   0.051   0.12
          (hardcoke,met).t15     -0.044   0.061   0.20
          ;
 
-
-*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 * replicate distance between nodes
@@ -252,22 +209,13 @@ COtransyield(tr,rco,rrco) = COtransyield(tr,rco,rrco)*1;
 * allow for large quantities of coal transport by truck
 COtransexist('truck',rco,rrco)$arc('truck',rco,rrco)=1e4;
 
-********** Set transportation costs (tariffs)
-*COtransomcst2(COf,'rail',rco,rrco)= COtransomcst('rail',rco,rrco);
-*per distance rate for coal dedicated lines calaculted from regression of tranport rates from SXcoal rail database
-COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco) = 0.0943;
-*fix rate for coal dedicated lines calaculted from regression of tranport rates from SXcoal rail database
-COtransomcst1(COf,'rail') = 25.8;
 
-scalar RailSurcharge;
-RailSurcharge = RailRates('ELS','rate2')+RailRates('CFS','rate2');
+parameter RailSurcharge(time) rail tax collected for electricification and construction;
+RailSurcharge(trun) = 0.045;
 
 * tariff structure for rail freight lines
-COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco)=RailRates('TC4','rate2')
-*+RailSurcharge$(COrailCFS=1)
-;
-
-COtransomcst1(COf,'rail') =RailRates('TC4','rate1');
+COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco)= 0.0753;
+COtransomcst1(COf,'rail') = 13.8;
 
 COtransomcst2(COf,"truck",rco,rrco)$arc('truck',rco,rrco) = 0.55;
 
@@ -289,8 +237,6 @@ COtransomcst2(COf,"truck",rco,rrco)$arc('truck',rco,rrco) = 0.55;
           = 0.04;
 
 
-
-
 *estimate transcapex cost if not input. use an average of other rail expansion costs
 COtranscapex('rail',rco,rrco)$(COtranscapex('rail',rco,rrco)=0 and arc('rail',rco,rrco)) = 0.33;
 
@@ -303,17 +249,7 @@ COtranscapex('port',rco,rco) = 100;
 
 
 
-*Cotranscapmax('port','SDCB1') = 0;
-*Cotranscapmax('port','SDCB1') = 15;
-*Cotranscapmax('port','AHCB1') = 100;
-*Cotranscapmax('port','AHCB2') = 50;
-
-
-
-
-
-
-         COtransbudget('rail','t15') = 500e3;
+COtransbudget('rail','t15') = 500e3;
 
 
 **********Set leadtimes on new infrasturucture pojects
@@ -327,6 +263,7 @@ COtranscapex('port',rco,rco) = 100;
          COtransexistcp.fx(tr,trun,rco,rrco)$(ord(trun)=1 and arc(tr,rco,rrco))=COtransexist(tr,rco,rrco);
 
 *         COtransmax.up(time,rco,rrco) = COtransalloc('rail',rco,rrco) ;
+
 
 
          parameter num_nodes_reg(r);
@@ -361,14 +298,14 @@ Equations
          COimportlim(Cof,trun,rco) limitation on coal imports
 
 
-         COsup(COf,cv,sulf,ELs,trun,rco) measures fuel use
-         COsuplim(COf,cv,sulf,ELs,trun,rco) supply limit on the amount of coal consumption outside provincial demand center
-         COdem(f,cv,sulf,ELs,trun,rrco) regionalized fuel demand
+         COsup(COf,cv,sulf,trun,rco) measures fuel use
+         COsuplim(COf,cv,sulf,trun,rco) supply limit on the amount of coal consumption outside provincial demand center
+         COdem(f,cv,sulf,trun,rrco) regionalized fuel demand
          COdemOther(COf,trun,rrco)
 
          COtranscapbal(tr,trun,rco,rrco) coal transport balance
-         COtransportcaplim(tr,ELs,trun,rco)  coal port transport balance
-         COtranscaplim(tr,ELs,trun,rco,rrco) coal transport capcity constraint
+         COtransportcaplim(tr,trun,rco)  coal port transport balance
+         COtranscaplim(tr,trun,rco,rrco) coal transport capcity constraint
 
          Cotransloadlim(COf,tr,trun,rco) limit on coal loading at each node
 
@@ -392,12 +329,12 @@ Equations
 
          DCOimports(trun) dual on Coal trade
 
-         DCOtrans(COf,cv,sulf,tr,ELs,trun,rco,rrco) dual from COtrans
+         DCOtrans(COf,cv,sulf,tr,trun,rco,rrco) dual from COtrans
          DCOtransload(COf,tr,trun,rco)  dual from COtransload
          DCOtransexistcp(tr,trun,rco,rrco) dual from COtransexistcp
          DCOtransbld(tr,trun,rco,rrco) dual from COtransbld
 
-         Dcoaluse(COf,cv,sulf,ELs,trun,rco) dual from coal use
+         Dcoaluse(COf,cv,sulf,trun,rco) dual from coal use
 
          Dcoalimports(COf,ssi,cv,sulf,trun,rco)  dual from coalprod
          Dcoalexports(COf,cv,sulf,trun,rco)  dual from coalprod
@@ -414,10 +351,12 @@ COobjective.. COobjvalue =e=
     sum(t,(COpurchase(t)+COConstruct(t)+COOpandmaint(t))*COdiscfact(t))
    +sum(t,(COtranspurchase(t)+COtransConstruct(t)
          +COtransOpandmaint(t)+COimports(t))*COdiscfact(t))
-
+$ontext
+*        intersectoral revenues
    -sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
-          COprice(COf,cv,sulf,t,r)*
-          ELCOconsump.l(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))
+          COprice.l(COf,cv,sulf,t,r)*
+          ELCOconsump.l(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))$(
+$offtext
          ;
 
 
@@ -443,12 +382,12 @@ COtransbldeq(tr,t,rco,rrco)$land(tr)..
 
 
 COtransOpmaintbal(t)..
-   sum((COf,cv,sulf,tr,Els,rco,rrco)$(COfCV(COf,cv) and arc(tr,rco,rrco)),
+   sum((COf,cv,sulf,tr,rco,rrco)$(COfCV(COf,cv) and arc(tr,rco,rrco)),
 *         and not rimp(rco) and not rexp(rrco)
 ******* No load/unloading fee for imported coal (price incl unloading fees)
 ******* No variablie tranport fees for import coal (price incl transport)
-          COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco)*COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco)
-         +COtransomcst1(COf,tr)*COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco)$port(tr)
+          COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco)*COtrans(COf,cv,sulf,tr,t,rco,rrco)
+         +COtransomcst1(COf,tr)*COtrans(COf,cv,sulf,tr,t,rco,rrco)$port(tr)
   )
   +sum((COf,tr,rco)$(land(tr)),
          COtransomcst1(COf,tr)*COtransload(COf,tr,t,rco))
@@ -485,11 +424,11 @@ COimportlim(COf,t,rimp)$(import_cap=1 and COfimpmax(COf,t,rimp)>0)..
 ******* No load/unloading fee for imported coal (cost incl unloading )
 Cotransloadlim(COf,tr,t,rco)$(land(tr))..
    COtransload(COf,tr,t,rco)
-  -sum((ELs,cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rco,rrco)),
-         COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco))
-  +sum((ELs,cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rrco,rco)),
+  -sum((cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rco,rrco)),
+         COtrans(COf,cv,sulf,tr,t,rco,rrco))
+  +sum((cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rrco,rco)),
          COtransyield(tr,rrco,rco)*
-                 COtrans(COf,cv,sulf,tr,Els,t,rrco,rco))
+                 COtrans(COf,cv,sulf,tr,t,rrco,rco))
             =g= 0 ;
 
 COexportlim(t,rco)..
@@ -498,41 +437,41 @@ COexportlim(t,rco)..
                  =g=-COfexpmax(t,rco);
 
 
-COsup(COf,cv,sulf,Els,t,rco)$(COfCV(COf,cv))..
+COsup(COf,cv,sulf,t,rco)$(COfCV(COf,cv))..
   coalprod(COf,cv,sulf,t,rco)$COcvrco(COf,cv,sulf,t,rco)
   +sum((ssi)$(COintlprice(COf,ssi,cv,sulf,t,rco)>0 and COfimpss(COf,ssi,cv,sulf,t)>0),
          coalimports(COf,ssi,cv,sulf,t,rco))
   +sum((tr,rrco)$arc(tr,rrco,rco),COtransyield(tr,rrco,rco)*
-         COtrans(COf,cv,sulf,tr,ELs,t,rrco,rco))
+         COtrans(COf,cv,sulf,tr,t,rrco,rco))
   -sum((tr,rrco)$arc(tr,rco,rrco),
-         COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco))
-  -coaluse(COf,cv,sulf,ELs,t,rco) =g=0
+         COtrans(COf,cv,sulf,tr,t,rco,rrco))
+  -coaluse(COf,cv,sulf,t,rco) =g=0
 ;
 
-COsuplim(COf,cv,sulf,ELs,t,rco)$(not r(rco) and rcodem(rco) and
+COsuplim(COf,cv,sulf,t,rco)$(not r(rco) and rcodem(rco) and
          COfcv(COf,cv))..
-  -coaluse(COf,cv,sulf,ELs,t,rco)
+  -coaluse(COf,cv,sulf,t,rco)
   +sum(rr$(rco_dem(rco,rr)),
          ( OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
            +sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
                  ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$ELfcoal(COf)
-         )*Elsnorm(ELs)/num_nodes_reg(rr))
+         )/num_nodes_reg(rr))
          =g=0;
 
 
-COdem(COf,cv,sulf,ELs,t,rr)$COfcv(COf,cv)..
-   sum((rco)$rco_dem(rco,rr),coaluse(COf,cv,sulf,Els,t,rco))
-  -OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*Elsnorm(ELs)
+COdem(COf,cv,sulf,t,rr)$COfcv(COf,cv)..
+   sum((rco)$rco_dem(rco,rr),coaluse(COf,cv,sulf,t,rco))
+  -OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
 
   -sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
-         ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))*Elsnorm(ELs)
+         ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$run_model('Power')
 
 *         -WAfconsump(COf,t,rr)$WAf(COf)
 *        -PCfconsump(COf,t,rr)*fPCconv(COf)$PCm(COf)
 *         -RFcrconsump(COf,t,rr)*fRFconv(COf)$RFf(COf)
 *         -CMfconsump(COf,t,rr)$CMf(COf)
 *  and consumption from all other sectors
-*         -fExports(COf,t,rr)*Elsnorm(ELs)
+*         -fExports(COf,t,rr)
 
                   =g=  0;
 
@@ -550,46 +489,45 @@ COtranscapbal(tr,t,rco,rrco)$arc(tr,rco,rrco)..
                  -COtransexistcp(tr,t+1,rco,rrco) =g=0
 ;
 
-COtranscaplim(tr,ELs,t,rco,rrco)$(arc(tr,rco,rrco) and land(tr))..
-   COtransexistcp(tr,t,rco,rrco)*Elsnorm(ELs)
-  +COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco)*Elsnorm(ELs)
+COtranscaplim(tr,t,rco,rrco)$(arc(tr,rco,rrco) and land(tr))..
+   COtransexistcp(tr,t,rco,rrco)
+  +COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco)
   -sum((COf,cv,sulf)$COfCV(COf,cv),
-         COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco))
+         COtrans(COf,cv,sulf,tr,t,rco,rrco))
 =g=0;
 
 $ontext
 COtranslim(t,rco,rrco)$(rail_cap=1)..
-         -sum((COf,cv,tr,sulf,ELs)$(COfCV(COf,cv) and arc(tr,rco,rrco) and rail(tr)),
-                 COtrans(COf,cv,sulf,tr,ELs,t,rco,rrco) )
+         -sum((COf,cv,tr,sulf)$(COfCV(COf,cv) and arc(tr,rco,rrco) and rail(tr)),
+                 COtrans(COf,cv,sulf,tr,t,rco,rrco) )
          + COtransmax(t,rco,rrco)  =g=  0 ;
 $offtext
 
-COtransportcaplim(tr,ELs,t,rco)$(rport(rco) and port(tr))..
+COtransportcaplim(tr,t,rco)$(rport(rco) and port(tr))..
 sum(rrco$(arc(tr,rco,rrco) and ord(rco)=ord(rrco)),COtransexistcp(tr,t,rco,rrco)+
-         COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco))*Elsnorm(ELs)
+         COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco))
 -sum((COf,cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rco,rrco)),
-         COtrans(COf,cv,sulf,tr,Els,t,rco,rrco))
+         COtrans(COf,cv,sulf,tr,t,rco,rrco))
 -sum((COf,cv,sulf,rrco)$(COfCV(COf,cv) and arc(tr,rrco,rco)),
-         COtrans(COf,cv,sulf,tr,ELs,t,rrco,rco)*COtransyield(tr,rrco,rco))
+         COtrans(COf,cv,sulf,tr,t,rrco,rco)*COtransyield(tr,rrco,rco))
 -sum((COf,ssi,cv,sulf)$(COintlprice(COf,ssi,cv,sulf,t,rco)>0 and COfimpss(COf,ssi,cv,sulf,t)>0),
-         coalimports(COf,ssi,cv,sulf,t,rco)*Elsnorm(ELs))
+         coalimports(COf,ssi,cv,sulf,t,rco))
                  =g=0;
 
 $ontext
 COtransbldlim(t,rco)$(Cotransportmax(rco)>0)..
-         -sum((ELs,,tr)$(arc(tr,rco,rco) and port(tr)),
-                  COtransexistcp(tr,t,rco,rco)*Elsnorm(ELs)
-                 +COtransbld(tr,t-COtransleadtime(tr,rco,rco),rco,rco)*Elsnorm(ELs))
+         -sum((,tr)$(arc(tr,rco,rco) and port(tr)),
+                  COtransexistcp(tr,t,rco,rco)
+                 +COtransbld(tr,t-COtransleadtime(tr,rco,rco),rco,rco))
                  =g= -Cotransportmax(rco) ;
 $offtext
 
 
 COprice_eqn(COf,cv,sulf,t,r)$ELfCV(COf,cv,sulf).. COprice(COf,cv,sulf,t,r) -
-  sum((ELs),Elsnorm(ELs)*
-   ( DCOdem(COf,cv,sulf,ELs,t,r)
+   ( DCOdem(COf,cv,sulf,t,r)
      -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim(COf,cv,sulf,ELs,t,rco)/num_nodes_reg(r))
-   ) ) =e=0;
+       DCOsuplim(COf,cv,sulf,t,rco)/num_nodes_reg(r))
+   ) =e=0;
 
 *Dual Relationships
 
@@ -605,30 +543,28 @@ Dcoalimports(COf,ssi,cv,sulf,t,rco)$(COfcv(COf,cv)
   -DCOimportsuplim(COf,ssi,cv,sulf,t)
   -DCOimportlim(COf,t,rco)$(import_cap=1 and rimp(rco) and
          (cv_met(cv) or COcvSCE(cv)*7000<10000) and COfimpmax(COf,t,rco)>0)
-  +sum(ELs,DCOsup(COf,cv,sulf,ELs,t,rco))
-  -sum((tr,ELs)$port(tr),
-         DCOtransportcaplim(tr,ELs,t,rco)*Elsnorm(ELs))$rport(rco)
+  +DCOsup(COf,cv,sulf,t,rco)
+  -sum((tr)$port(tr),
+         DCOtransportcaplim(tr,t,rco))$rport(rco)
 ;
 
 
 DOTHERCOconsumpsulf(COf,cv,sulf,t,rr)$COfCV(COf,cv).. 0 =g=
-   sum((ELs,rco)$(rco_dem(rco,rr) and rcodem(rco) and not r(rco)),
-         DCOsuplim(COf,cv,sulf,ELs,t,rco)*ELsnorm(ELs)/num_nodes_reg(rr))
-  -sum(Els,DCOdem(COf,cv,sulf,ELs,t,rr)*ELsnorm(ELs))
+  -COprice(COf,cv,sulf,t,rr)
   +DCOdemOther(COf,t,rr)*COcvSCE(cv)
   -(DEMsulflim(t,rr)*COsulfDW(sulf)*1.6)$(rdem_on(rr) and coal(COf))
 ;
 
 
 * !!!!!! Fix copmlementarity relationship
-Dcoaluse(COf,cv,sulf,Els,t,rco)$(COfcv(COf,cv)).. 0 =g=
-  -DCOsup(COf,cv,sulf,ELs,t,rco)
+Dcoaluse(COf,cv,sulf,t,rco)$(COfcv(COf,cv)).. 0 =g=
+  -DCOsup(COf,cv,sulf,t,rco)
 
-  -DCOsuplim(COf,cv,sulf,ELs,t,rco)$(rcodem(rco) and not r(rco))
+  -DCOsuplim(COf,cv,sulf,t,rco)$(rcodem(rco) and not r(rco))
 
 
   +sum((rr)$(rco_dem(rco,rr)),
-         DCOdem(COf,cv,sulf,ELs,t,rr))
+         DCOdem(COf,cv,sulf,t,rr))
 ;
 
 
@@ -638,10 +574,8 @@ DCOtransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco)..
    0=g=
   +DCOtranscapbal(tr,t,rco,rrco)
   -DCOtranscapbal(tr,t-1,rco,rrco)
-  +sum(ELs,DCOtranscaplim(tr,ELs,t,rco,rrco)*
-         Elsnorm(ELs))$(land(tr))
-  +sum(ELs,DCOtransportcaplim(tr,ELs,t,rco)*
-         Elsnorm(ELs))$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
+  +DCOtranscaplim(tr,t,rco,rrco)$(land(tr))
+  +DCOtransportcaplim(tr,t,rco)$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
 ;
 
 DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
@@ -657,16 +591,14 @@ DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
 *  -DCOtransbudgetlim(tr,t)*COtranscapex(tr,rco,rrco)*COtransD(tr,rco,rrco)$(
 *         trans_budg=1 and rail(tr))
   +DCOtranscapbal(tr,t+COtransleadtime(tr,rco,rrco),rco,rrco)
-  +sum(ELs,DCOtranscaplim(tr,ELs,t+COtransleadtime(tr,rco,rrco),rco,rrco)*
-         Elsnorm(ELs))$(land(tr))
-  +sum(ELs,DCOtransportcaplim(tr,ELs,t+COtransleadtime(tr,rco,rco),rco)*
-         Elsnorm(ELs))$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
+  +DCOtranscaplim(tr,t+COtransleadtime(tr,rco,rrco),rco,rrco)$land(tr)
+  +DCOtransportcaplim(tr,t+COtransleadtime(tr,rco,rco),rco)$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
 ;
 
 
-DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
+DCOtrans(COf,cv,sulf,tr,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 
-  +(RailSurcharge*COtransD(tr,rco,rrco))$(COrailCFS=1 and rail(tr)) =g=
+  +(RailSurcharge(t)*COtransD(tr,rco,rrco))$(COrailCFS=1 and rail(tr)) =g=
 
   +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
 *$(not rimp(rco) and not rexp(rrco))
@@ -676,14 +608,14 @@ DCOtrans(COf,cv,sulf,tr,Els,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
   +DCOtransloadlim(COf,tr,t,rrco)*COtransyield(tr,rco,rrco)$land(tr)
   -DCOtransloadlim(COf,tr,t,rco)$land(tr)
 
-  +DCOsup(COf,cv,sulf,ELs,t,rrco)*COtransyield(tr,rco,rrco)
-  -DCOsup(COf,cv,sulf,ELs,t,rco)
+  +DCOsup(COf,cv,sulf,t,rrco)*COtransyield(tr,rco,rrco)
+  -DCOsup(COf,cv,sulf,t,rco)
 
 
-  -DCOtranscaplim(tr,ELs,t,rco,rrco)$land(tr)
+  -DCOtranscaplim(tr,t,rco,rrco)$land(tr)
 
-  -(DCOtransportcaplim(tr,ELs,t,rco)
-         +DCOtransportcaplim(tr,ELs,t,rrco)*COtransyield(tr,rco,rrco))$(
+  -(DCOtransportcaplim(tr,t,rco)
+         +DCOtransportcaplim(tr,t,rrco)*COtransyield(tr,rco,rrco))$(
          rport(rco) and port(tr))
 ;
 
@@ -716,6 +648,38 @@ $INCLUDE scenarios.gms
 $INCLUDE emissionsubmodel.gms
 
 $INCLUDE discounting.gms
+
+
+$ontext
+
+* Split  coal consumption into east and western Nei Mongol using GDP as weight
+OTHERCOconsumpProv(COf,IHScoaluse,time,"NME") = OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")*0.3;
+OTHERCOconsumpProv(COf,IHScoaluse,time,"NM") =
+         OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")-
+         OTHERCOconsumpProv(COf,IHScoaluse,time,"NME");
+
+* Split  coal consumption into east and western Nei Mongol using GDP as weight
+OTHERCOconsumpProv_weight(COf,time,"NME") = OTHERCOconsumpProv_weight(COf,time,"NM")*0.3;
+OTHERCOconsumpProv_weight(COf,time,"NM") =
+         OTHERCOconsumpProv_weight(COf,time,"NM")-
+         OTHERCOconsumpProv_weight(COf,time,"NME");
+
+
+
+* Get sum of other CO consumption sectors
+*OTHERCOconsump(steam,time,rr)=sum((GB,IHSother)$regions(rr,GB),
+*                         OTHERCOconsumpProv(steam,IHSother,time,GB));
+
+
+
+
+OTHERCOconsump_weight(COf,time,rr)=sum(GB$regions(rr,GB),
+         OTHERCOconsumpProv_weight(COf,time,GB));
+
+*OTHERCOconsump(met,time,rr)=sum((GB,IHSmet)$regions(rr,GB),
+*                         OTHERCOconsumpProv(met,IHSmet,time,GB));
+
+
 
          COdiscfact(time)  = 1;
 

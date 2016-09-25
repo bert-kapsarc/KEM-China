@@ -13,7 +13,6 @@ parameter COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
           coalcv(COf,mm,ss,rw,time,rco) calorific value of coal
 
           COsulfur(sulf,time,rco) sulfur content of all coal produced in each region
-          COsulfur2(sulf,time,rco) sulfur content of all coal produced in each region
 
           COstatistics(COstats,time,rAll)
 
@@ -26,50 +25,6 @@ $gdxin
 
 
 COsulfur(sulf,time,rco) = COsulfur(sulf,'t11',rco);
-
-
-
-*        SPLIT INNER MONGOLIA AND EASTERN INNER MONGOLIA
-COstatistics(COstats,time,'NME')=COstatistics(COstats,time,'NM')*0.3;
-COstatistics(COstats,time,'NM')=COstatistics(COstats,time,'NM')
-                                 -COstatistics(COstats,time,'NME');
-
-COstatistics(COstats,trun,r) = sum((GB)$regions(r,GB),
-                                 COstatistics(COstats,trun,GB));
-
-COstatistics(COstats,trun,"China") = sum(r,COstatistics(COstats,trun,r) )
-
-parameter COash(ash) coal ash content
-         /noash    0  /
-$ontext
-         ash5     0.05
-         ash15    0.15
-         ash25    0.25
-         ash35    0.35
-         ash45    0.45
-         /
-$offtext
-          COashDist(ash) distribution of coal ash content nationally  /
-*        source Coal Initiative Reports White Paper Series Guadong Sun, Kennedy School of Government Harvard University
-         noash    1  /
-$ontext
-         ash5     0.092
-         ash15    0.398
-         ash25    0.336
-         ash35    0.137
-         ash45    0.037
-         /
-$offtext
-
-         COashReg(rco) regional average raw coal percentage ash content
-;
-         COashReg(rco) = 0.3;
-
-
-$gdxin db\coalprod.gdx
-*$load COashReg
-$gdxin
-
 
 
 
@@ -295,9 +250,6 @@ $offtext
                  COomcst(met,"under",ss,rw,time,rco)<=0 AND
                  COmine(met,'under',ss,rco))=
             smax((rrco),COomcst(met,"under",ss,rw,time,rrco));
-
-
-*         abort COprodyield;
 ;
 
 
@@ -321,6 +273,16 @@ COstatistics('coal prod IHS',time,r) = sum((coal,mm,ss,rco)$rco_sup(rco,r),
                                          COprodIHS(coal,mm,ss,time,rco));
 COstatistics('met prod IHS',time,r) = sum((met,mm,ss,rco)$rco_sup(rco,r),
                                          COprodStats(met,mm,ss,time,rco));
+
+*        SPLIT INNER MONGOLIA AND EASTERN INNER MONGOLIA supply and demand statistics
+         COstatistics(COstats,time,'NME')=COstatistics(COstats,time,'NM')*0.3;
+         COstatistics(COstats,time,'NM')=COstatistics(COstats,time,'NM')
+                                 -COstatistics(COstats,time,'NME');
+
+         COstatistics(COstats,trun,r) = sum((GB)$regions(r,GB),
+                                 COstatistics(COstats,trun,GB));
+
+         COstatistics(COstats,trun,"China") = sum(r,COstatistics(COstats,trun,r))
 
 loop(r,
          COprodStats(coal,mm,ss,trun,rco)$(rco_sup(rco,r)
@@ -396,7 +358,7 @@ COopmaintbal(t)..
          *COprod(COf,sulf,mm,ss,rw,t,rco))
   -COopandmaint(t)=e=0;
 
-COcapbal(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco)..COexistcp(COf,mm,ss,t,rco)+
+COcapbal(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco).. COexistcp(COf,mm,ss,t,rco)+
          CObld(COf,mm,ss,t-COleadtime(COf,mm,rco),rco)
          -COexistcp(COf,mm,ss,t+1,rco)=g=0;
 
@@ -461,7 +423,7 @@ DCOopandmaint(t).. 1*COdiscfact(t)=g=-DCOopmaintbal(t);
 
 Dcoalprod(COf,cv,sulf,t,rco)$(COcvrco(COf,cv,sulf,t,rco)).. 0=g=
    -DCOprodCV(COf,cv,sulf,t,rco)
-   +sum(ELs,DCOsup(COf,cv,sulf,ELs,t,rco))$COfCV(COf,cv);
+   +DCOsup(COf,cv,sulf,t,rco)$COfCV(COf,cv);
 
 
 DCOprod(COf,sulf,mm,ss,rw,t,rco)$COrw(COf,mm,ss,sulf,rw,rco)..   0 =g=

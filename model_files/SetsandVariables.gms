@@ -15,12 +15,13 @@ Sets
 
          scenarios pre-defined model scenarios /DI1*DI8,CE1*CE8,base,calib,EIA/
 
-         built_models pre-configured models by sector /Power, Coal, Integrated/
+         built_models pre-configured models by sector /Power, Coal/
 
          lp_mcp set to declare mcp or lp model /LP,MCP/
 
-         Sect            sectors used in methane quota reallocation
-                        /PC,EL,WA,CM,RF,fup/
+         sectors        Sectors in the model including aggregate All sectors
+                        /All,CO,PC,EL,WA,CM,RF,fup/
+         Sect(sectors)
 
          allmaterials all materials in KEM
                  /coal,met,hardcoke,lignite,
@@ -115,10 +116,11 @@ Sets
          port(tr) water based transportation /port/
          rail(tr) rail tranportation /rail/
          land(tr) land based transport modes
+;
 
-
-         tc tariff code for rail transport /TC1*TC7,CFS,ELS/
-         tc_rate rail tariff rate RMB per tonne (1) and RMB per tonne km (2) /rate1,rate2/;
+*        Subset sect includes all sectors, eexluding aggregate all.
+         sect(sectors)=yes;
+         sect('All')=no;
 
          cv_ord(cv) = (not cv_met(cv) and not CVf(cv));
 
@@ -135,7 +137,7 @@ Sets
     sets
 *                 rtr all transshipment nodes
                  Rall
-                 rco(rALL)     all nodes used for coal network
+                 rco(rALL) all nodes used for coal network
                  r(rco)  all demand regions
                  grid    /North, Northeast, Central, East, West, South/
                  rgrid(r,grid)
@@ -421,7 +423,6 @@ alias(ELl,ELll);
 
 * On grid tarrif scenairos
 ********************************************************************************
-
 positive Variables       capsubsidy(time), subsidy(time) investment subsidy variable
                          DELsuptariff (ELp,trun,r)
 ;
@@ -445,16 +446,8 @@ $gdxin
          ELfgctariff('DeNOx') = 10;
 
 ELtariffmax(ELpog,r) = ELtariffmax('CC',r) ;
-*ELtariffmax(ELphydsto,r) = ELtariffmax('Ultrsc',r) ;
-
-ELtariffmax(ELp,'Henan')$(ELtariffmax(ELp,'Henan')=0) = ELtariffmax(ELp,'Central');
-ELtariffmax(ELp,'CoalC')$(ELtariffmax(ELp,'CoalC')=0) = ELtariffmax(ELp,'North');
-ELtariffmax(ELp,'Shandong')$(ELtariffmax(ELp,'Shandong')=0) = ELtariffmax(ELp,'North');
-ELtariffmax(ELp,'Xinjiang')$(ELtariffmax(ELp,'Xinjiang')=0) = ELtariffmax(ELp,'West');
-ELtariffmax(ELp,'Tibet')$(ELtariffmax(ELp,'Tibet')=0) = ELtariffmax(ELp,'West');
 
 ELtariffmax(ELpcoal,r)$(ELtariffmax(ELpcoal,r)=0) = ELtariffmax('Ultrsc',r);
-ELtariffmax(ELpog,r)$(ELtariffmax(ELpog,r)=0) = smax(rr,ELtariffmax('CC',rr));
 
 ELtariffmax(ELphyd,r)$(ELtariffmax(ELphyd,r)=0) = ELtariffmax('Hydrolg',r);
 ELtariffmax(ELphydsto,r) = ELtariffmax('CC',r);
@@ -493,10 +486,14 @@ ELfAP(ELf) = yes;
 ELfAP(ELfMP) = no;
 
 
+*        GLOBAL objective value variable for all sectors
+Variable objvalue;
+
+
 *        Variables of the coal submodels =======================================
 variables
-         COobjvalue
 
+         COobjvalue
          DCOpurchbal(trun)        free dual of purchbal
          DCOcnstrctbal(trun)      free dual of cnstrctbal
          DCOopmaintbal(trun)      free dual of opmaintbal
@@ -510,9 +507,9 @@ variables
 
          DCOtransbldeq(tr,trun,rco,rrco) free dual on equalizing bi-directional rail capacity built
          COprice(COf,cv,sulf,trun,r)
+         COprice_dummy(COf,cv,sulf,trun,r)
 
 positive Variables
-
 
          COexistcp(COf,mm,ss,trun,rco)
          CObld(COf,mm,ss,trun,rco)
@@ -521,13 +518,13 @@ positive Variables
 
          coalprod(COf,cv,sulf,trun,rco) Quantity of coal produced in a given mining region by average calorific value and sulfur content
          coalprod2(COf,cv,sulf,mm,ss,rw,trun,rco) fg
-         coaluse(COf,cv,sulf,ELs,trun,rco) Quantity of coal used locally in demand region with internal production
+         coaluse(COf,cv,sulf,trun,rco) Quantity of coal used locally in demand region with internal production
          coaluse_local
 
          coalimports(COf,ssi,cv,sulf,trun,rco)  Quantity of fuel imported by average calorific value
          coalexports(COf,cv,sulf,trun,rco) Quantity of coal exported
 
-         COtrans(COf,cv,sulf,tr,ELs,trun,rco,rrco)
+         COtrans(COf,cv,sulf,tr,trun,rco,rrco)
          COtransload(COf,tr,trun,rco)
          COtransexistcp(tr,trun,rco,rrco)
          COtransbld(tr,trun,rco,rrco)
@@ -569,16 +566,16 @@ positive Variables
          DCOimportsuplim(COf,ssi,cv,sulf,trun) dual capacity limit on coal import supply steps
          DCOimportlim(Cof,trun,rco) dual capacity limitation on coal imports
 
-         DCOsup(COf,cv,sulf,ELs,trun,rco) dual on coal supply constraint
-         DCOsuplim(f,cv,sulf,ELs,trun,rco) supply limit on the amount of coal consumption outside provincial demand center
+         DCOsup(COf,cv,sulf,trun,rco) dual on coal supply constraint
+         DCOsuplim(f,cv,sulf,trun,rco) supply limit on the amount of coal consumption outside provincial demand center
 
-         DCOdem(f,cv,sulf,ELs,trun,rrco) dual of coal demand constraint
+         DCOdem(f,cv,sulf,trun,rrco) dual of coal demand constraint
          DCOdemOther(COf,trun,rrco) dual of total demand constrian
 
 
          DCOtranscapbal(tr,trun,rco,rrco) dual price for fuel transport balance
-         DCOtransportcaplim(tr,Els,trun,rco) dual price for fuel transport port balance
-         DCOtranscaplim(tr,ELs,trun,rco,rrco) dual price for fuel transport capacity constraint
+         DCOtransportcaplim(tr,trun,rco) dual price for fuel transport port balance
+         DCOtranscaplim(tr,trun,rco,rrco) dual price for fuel transport capacity constraint
 
          DCotransloadlim(COf,tr,trun,rco) dual price for transport loading constraint
 
@@ -598,11 +595,11 @@ positive Variables
 
 *Variables of the Power submodel
 Variables
-
-         ELobjvalue objective value of the power sector
+         ELobjvalue
          y(f,trun)
          testing(trun)
 *         fsubsidy(trun)
+
 *Dual activities for the MCP
          DELpurchbal(trun)               free dual of purchbal
          DELcnstrctbal(trun)             free dual of cnstrctbal

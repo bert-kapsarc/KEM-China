@@ -13,8 +13,8 @@ fconsump("EL",'coal_sce',trun,"China") = sum(r,fconsump("EL",'coal_sce',trun,r))
 
 parameter ProvAvgCV(COf,trun,rco);
 ProvAvgCV(COf,trun,rco)=sum((ash,sulf,cv,ELs),
-         coaluse.l(COf,cv,sulf,ELs,trun,rco)*COcvSCE(cv))/
-         sum((ash,sulf,cv,ELs),coaluse.l(COf,cv,sulf,ELs,trun,rco));
+         coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))/
+         sum((ash,sulf,cv,ELs),coaluse.l(COf,cv,sulf,trun,rco));
 
 fconsump("EL",COf,trun,r) = fconsump("EL",COf,trun,r)/ProvAvgCV(COf,trun,r);
 
@@ -139,10 +139,8 @@ ELdiscfact(trun)*(
   )
 
   +sum((gtyp,cv,sulf,sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
-   ( DCOdem.l('coal',cv,sulf,'summ',trun,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*ELCOconsump.l(ELp,v,gtyp,cv,sulf,sox,nox,trun,r)
+   COprice.l('coal',cv,sulf,trun,r)*
+   ELCOconsump.l(ELp,v,gtyp,cv,sulf,sox,nox,trun,r)
   )$ELpcoal(Elp)
 
   +sum((ELf,fss)$(ELpd(ELp) and not Elpcoal(ELp) and ELpfss(ELp,ELf,fss)),
@@ -239,9 +237,9 @@ Accounting('Costs','Government')=
 Accounting('Revenue','Coal (from power)')=
 
 sum((COf,cv,sulf,trun,r),COdiscfact(trun)*
-   ( DCOdem.l(COf,cv,sulf,'summ',trun,r)*1
+   ( DCOdem.l(COf,cv,sulf,trun,r)*1
       -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-        DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
+        DCOsuplim.l('coal',cv,sulf,trun,rco)/num_nodes_reg(r))
    )*
 sum((Elpcoal,v,gtyp,sox,nox),ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,r))$ELfcoal(COf)
 )
@@ -253,12 +251,8 @@ Accounting('Revenue','Coal')=
 Accounting('Revenue','Coal (from power)')
 
 +sum((COf,cv,sulf,trun,r),COdiscfact(trun)*
-   ( DCOdem.l(COf,cv,sulf,'summ',trun,r)*1
-      -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-        DCOsuplim.l('coal',cv,sulf,'summ',trun,rco)*Elsnorm('summ')/num_nodes_reg(r))
-   )*
-OTHERCOconsumpsulf.l(COf,cv,sulf,trun,r)
-
+         COprice.l(COf,cv,sulf,trun,r)*
+         OTHERCOconsumpsulf.l(COf,cv,sulf,trun,r)
 )
 ;
 

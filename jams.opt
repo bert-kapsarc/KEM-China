@@ -1,0 +1,4 @@
+
+subsolver path
+subsolveropt 1
+filename mcpmod.gms

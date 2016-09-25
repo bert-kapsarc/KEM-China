@@ -21,6 +21,9 @@
 *        no on-grid electricity tarrifs
          ELptariff(ELpd,v) = no;
 
+         ELctariff(ELc,v) = no;
+         ELcELp(ELp,v,ELp,v)= no;
+
 
 * !!!    Set feed-in tariffs for wind producers
          ELfit(ELpw,trun,r) = 600;

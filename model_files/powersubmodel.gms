@@ -789,15 +789,15 @@ $offorder
 ELobjective.. ELobjvalue=e=
   +sum(t,(ELImports(t)+ELConstruct(t)+ELOpandmaint(t))*ELdiscfact(t))
 
-  +sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
-          COprice.l(COf,cv,sulf,t,r)*
-          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))
-
-  +sum((ELpd,v,ELf,fss,t,r)$(not ELfcoal(ELf) and not ELpcoal(Elpd)),
-         ELAPf(ELf,fss,t,r)*(
+  +sum((ELpd,v,ELf,fss,t,r)$(ELpfss(ELpd,ELf,fss) and not ELfcoal(ELf) and not ELpcoal(Elpd)),
+         ELfconsump(ELpd,v,ELf,fss,t,r)*ELAPf(ELf,fss,t,r)*(
          0.01$(fss0(fss) and not ELpnuc(ELpd))+1$(not fss0(fss) or Elpnuc(ELpd)) )*ELdiscfact(t)
          )
 
+* Fuel supply costs when not running supply submodules
+  +sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
+          COprice.l(COf,cv,sulf,t,r)*
+          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))$(not run_model('Coal'))
 ;
 
 * CAPITAL COSTS
@@ -1046,6 +1046,7 @@ sum(r$rgrid(r,grid),
   +sum((ELphyd,v),
      ELexistcp(ELphyd,v,t,r)+ELbld(ELphyd,v,t-ELleadtime(ELphyd),r)$vn(v))
 )
+*         define peak demand from other sectors
          =g= sum(r$rgrid(r,grid),ELreserve*ELlcgw(r,'LS1')*ELdemgro('LS1',t,r));
 
 * TRANSMISSION
@@ -1153,7 +1154,9 @@ ELprofit(ELc,vv,t,r)$ELctariff(ELc,vv)..
 
 *        fuel cost
   -sum((cv,sulf)$ELfCV('coal',cv,sulf),
-    COprice('coal',cv,sulf,t,r)*sum(gtyp,(
+    (     COprice('coal',cv,sulf,t,r)$run_model('Coal')
+         +COprice.l('coal',cv,sulf,t,r)$(not run_model('Coal'))    )*
+    sum(gtyp,(
        sum((sox,nox)$ELpfgc(ELp,cv,sulf,sox,nox),
          ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r))
 *      -sum((ELl),ELfuelsub(Elp,v,ELl,'coal',gtyp,t,r))$vo(v)

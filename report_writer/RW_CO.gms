@@ -12,42 +12,42 @@ COprodNet(COf,rw,trun,rco) = sum((mm,ss,sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rc
 COprodPUnet(COf,mm,ss,rw,trun,rco) = sum((sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
 CObldrco(Cof,trun,rco) = sum((mm,ss),CObld.l(COf,mm,ss,trun,rco));
 
-COuser(COf,rco)      =sum((cv,sulf,ELs,trun),coaluse.l(COf,cv,sulf,ELs,trun,rco)*COcvSCE(cv));
+COuser(COf,rco)      =sum((cv,sulf,trun),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv));
 
-Cotranstot(tr,trun,rco,rrco) = sum((COf,cv,sulf,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
+Cotranstot(tr,trun,rco,rrco) = sum((COf,cv,sulf),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco));
 
 
-COtransin(tr,trun,rrco) = sum((COf,cv,sulf,rco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
-COtransout(tr,trun,rco) = sum((COf,cv,sulf,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
+COtransin(tr,trun,rrco) = sum((COf,cv,sulf,rco),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco));
+COtransout(tr,trun,rco) = sum((COf,cv,sulf,rrco),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco));
 
 Cotransnet(tr,trun,rrco) = COtransin(tr,trun,rrco) - COtransout(tr,trun,rrco);
 
-COtransfrom(tr,trun,rco) = sum((COf,cv,sulf,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco));
+COtransfrom(tr,trun,rco) = sum((COf,cv,sulf,rrco),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco));
 
-COtransimp(COf,cv,trun,rrco) = sum((sulf,rimp,tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
+COtransimp(COf,cv,trun,rrco) = sum((sulf,rimp,tr),COtrans.l(COf,cv,sulf,tr,trun,rimp,rrco));
 
-COtranstonkm(tr,trun)=sum((COf,cv,sulf,rco,rrco,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco)*COtransD(tr,rco,rrco));
+COtranstonkm(tr,trun)=sum((COf,cv,sulf,rco,rrco),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco)*COtransD(tr,rco,rrco));
 
-*coalimports.l(Cof,cv,sulf,trun,rimp,rrco) = sum((tr,ELs),COtrans.l(COf,cv,sulf,tr,ELs,trun,rimp,rrco));
+*coalimports.l(Cof,cv,sulf,trun,rimp,rrco) = sum((tr),COtrans.l(COf,cv,sulf,tr,trun,rimp,rrco));
 
 parameter COtransimp_temp;
 
 
 loop(i,
 COtransimp_temp(COf,cv,trun,rco) = 0;
-COtransimp_temp(COf,cv,trun,rco)$(COtransimp(COf,cv,trun,rco)>0) = sum(rrco, sum((sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco)));
-COtransimp(COf,cv,trun,rrco)$(COtransimp(COf,cv,trun,rrco)=0) = sum(rco, sum((sulf,tr,ELs)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco))) ;
+COtransimp_temp(COf,cv,trun,rco)$(COtransimp(COf,cv,trun,rco)>0) = sum(rrco, sum((sulf,tr)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco)));
+COtransimp(COf,cv,trun,rrco)$(COtransimp(COf,cv,trun,rrco)=0) = sum(rco, sum((sulf,tr)$(COtransimp(COf,cv,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco))) ;
 COtransimp(COf,cv,trun,rrco) = COtransimp(COf,cv,trun,rrco)-COtransimp_temp(COf,cv,trun,rrco);
 );
 
 
 
-Cotr(tr,trun) = sum((COf,cv,sulf,rrco,rco,ELs)$(coalprod.l(COf,cv,sulf,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) - COtrans.l(COf,cv,sulf,tr,ELs,trun,rrco,rco)) ;
-Cotrriver(trun) = sum((COf,cv,sulf,rport_riv,rrport_riv,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport_riv,rrport_riv));
-*-COtrans.l(COf,cv,sulf,'port',ELs,'t01',rrport_riv,rport_riv)
-COtrport(rport,trun)  = sum((COf,cv,sulf,rrport,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport,rrport)) ;
-Cotrsea(trun) = sum((COf,cv,sulf,rport_sea,rrport_sea,ELs),COtrans.l(COf,cv,sulf,'port',ELs,trun,rport_sea,rrport_sea)) ;
-*-COtrans.l(COf,cv,sulf,'port',ELs,'t01',rrport_sea,rport_sea)
+Cotr(tr,trun) = sum((COf,cv,sulf,rrco,rco)$(coalprod.l(COf,cv,sulf,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco) - COtrans.l(COf,cv,sulf,tr,trun,rrco,rco)) ;
+Cotrriver(trun) = sum((COf,cv,sulf,rport_riv,rrport_riv),COtrans.l(COf,cv,sulf,'port',trun,rport_riv,rrport_riv));
+*-COtrans.l(COf,cv,sulf,'port','t01',rrport_riv,rport_riv)
+COtrport(rport,trun)  = sum((COf,cv,sulf,rrport),COtrans.l(COf,cv,sulf,'port',trun,rport,rrport)) ;
+Cotrsea(trun) = sum((COf,cv,sulf,rport_sea,rrport_sea),COtrans.l(COf,cv,sulf,'port',trun,rport_sea,rrport_sea)) ;
+*-COtrans.l(COf,cv,sulf,'port','t01',rrport_sea,rport_sea)
 *$offtext
 
 parameter transport ;
@@ -73,13 +73,13 @@ COcosts('rail_cap',trun)= Cotransbldton(trun);
 COcosts('port_investment',trun) = sum((rco),COtranscapex('port',rco,rco)*COtransbld.l('port',trun,rco,rco)) ;
 COcosts('port_cap',trun)= Cotransbldport(trun);
 
-parameter Cotranspath(COf,cv,sulf,tr,ELs,trun,rco,rrco,path_order);
+parameter Cotranspath(COf,cv,sulf,tr,trun,rco,rrco,path_order);
 
 
 
-Cotranspath(COf,cv,sulf,tr,ELs,trun,rco,rrco,'1') = Cotrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) ;
-Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,'2') = Cotrans.l(COf,cv,sulf,tr,ELs,trun,rco,rrco) ;
-Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,path_order)$(not port(tr))= Cotranspath(COf,cv,sulf,tr,ELs,trun,rrco,rco,path_order);
+Cotranspath(COf,cv,sulf,tr,trun,rco,rrco,'1') = Cotrans.l(COf,cv,sulf,tr,trun,rco,rrco) ;
+Cotranspath(COf,cv,sulf,tr,trun,rrco,rco,'2') = Cotrans.l(COf,cv,sulf,tr,trun,rco,rrco) ;
+Cotranspath(COf,cv,sulf,tr,trun,rrco,rco,path_order)$(not port(tr))= Cotranspath(COf,cv,sulf,tr,trun,rrco,rco,path_order);
 
 parameter Cotransbldpath(tr,trun,rco,rrco,path_order);
 
@@ -118,24 +118,18 @@ parameter coal_price(*,COf,trun);
 
 
 coal_price('All',COf,trun) =
-   sum((cv,sulf,Els,r),
-   ( DCOdem.l(COf,cv,sulf,ELs,trun,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim.l('coal',cv,sulf,ELs,trun,rco)*Elsnorm(ELs)/num_nodes_reg(r))
-   )*sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco))
-   )/sum((cv,sulf,rco,rr,ELs)$rco_dem(rco,rr),coaluse.l(COf,cv,sulf,Els,trun,rco)*COcvSCE(cv))
+   sum((cv,sulf,r),COprice.l(COf,cv,sulf,trun,r)*
+         sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
+   )/sum((cv,sulf,rco,rr)$rco_dem(rco,rr),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
 ;
 
 coal_price(r,COf,trun) =
-   sum((cv,sulf,Els),
-   ( DCOdem.l(COf,cv,sulf,ELs,trun,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
-       DCOsuplim.l('coal',cv,sulf,ELs,trun,rco)*Elsnorm(ELs)/num_nodes_reg(r))
-   )*sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco))
-   )/sum((cv,sulf,rco,ELs)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,Els,trun,rco)*COcvSCE(cv))
+   sum((cv,sulf),COprice.l(COf,cv,sulf,trun,r)
+   *sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
+   )/sum((cv,sulf,rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
 ;
 
-coal_price('Qinghuangdao',COf,trun) = smax(ELs,COsup.m(COf,'CV62','LOW',ELs,trun,'North'));
+coal_price('Qinghuangdao',COf,trun) = COsup.m(COf,'CV62','LOW',trun,'North');
 
 parameter coal_prod_SCE(COf,trun);
 parameter coal_imp_SCE(COf,trun);

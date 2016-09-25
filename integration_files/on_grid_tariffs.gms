@@ -16,8 +16,9 @@
 * !!!!   ELcELp subset defines plants operated by regional power companies
 * !!!!   Elctariff defines companies evaluated in the revenue contraints
 *$ontext
+*        Companies are aggregated by vintage, so we only track vn
          ELctariff(ELbig,vn)=yes;
-         ELctariff(ELnuc,v)=yes;
+         ELctariff(ELnuc,vn)=yes;
 *         ELctariff(ELwind,v)=yes;
 *
          ELcELp(ELbig,vv,ELp,v)$(not Elpnuc(Elp) and Elctariff(Elbig,vv)) = yes;

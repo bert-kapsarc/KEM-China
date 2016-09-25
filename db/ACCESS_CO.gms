@@ -88,23 +88,26 @@ UNION SELECT CoalType2,MiningMethod,PU,'t35',Region,[Washing ratio (%)] FROM Coa
 p5=COwashratio
 
 
-
 Q6=SELECT 'ExtLow','t11',Region,ExtLow FROM CBRsulfur \
 UNION SELECT 'Low','t11',Region,Low FROM CBRsulfur \
 UNION SELECT 'Med','t11',Region,Med FROM CBRsulfur \
 UNION SELECT 'High','t11',Region,High FROM CBRsulfur
 p6=COsulfur
 
+
 Q9 = SELECT coal_type,year,'IMOT',tonnes FROM coal_imports \
 UNION SELECT coal_type,year,'IMOT',tonnes FROM coal_imports \
 UNION SELECT coal_type,year,'IMOT',tonnes FROM coal_imports
 p9 = COfimpmax
 
+
 Q10 = SELECT 'coal',[t],'IMOT','South',COintlprice FROM period,[Coal_dem_EIA] WHERE year=[yr]
 P10 = coalintlpriceEIA
 
+
 Q11 = SELECT 'coal',[t],'IMOT','South',coalintlcv FROM period,[Coal_dem_EIA] WHERE year=[yr]
 P11 = coalintlcvEIA
+
 
 Q12=SELECT 'coal',[t],steam FROM period,[COAL_dem_EIA] WHERE year=[yr] \
 UNION SELECT 'met',[t],met FROM period,[COAL_dem_EIA] WHERE year=[yr]
@@ -113,6 +116,7 @@ P12 = COconsumpEIA
 
 Q13=SELECT [t],WCD_QUADS FROM period,[COAL_dem_EIA] WHERE year=[yr]
 P13 = WCD_Quads
+
 
 Q14=  SELECT 'Production','t12',[rdem],Production FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
 UNION SELECT 'Other','t12',[rdem],Other FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
