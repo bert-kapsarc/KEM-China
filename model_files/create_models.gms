@@ -1,7 +1,8 @@
 model PowerLP Equation for power submodule LP (primal equations must match MCP)/
 *ELProfit, Ignore profit constraint in LP model. this constraint can only be exprewssed as an MCP.
 ELobjective
-ELwindtarget,ELfuelsublim,
+ELprofit,
+ELwindtarget,
 ELdeficitcap,
 ELpurchbal,ELcnstrctbal,ELopmaintbal,
 ELfcons,ELCOcons,
@@ -21,23 +22,20 @@ ELfgccaplim,ELfgccapmax,ELfgccapbal
 model PowerMCP
 
 /
-ELProfit.DELprofit,ELwindtarget.DELwindtarget,ELfuelsublim.DELfuelsublim,
+ELProfit.DELprofit,ELwindtarget.DELwindtarget,
 *ELfitcap.DELfitcap,DELwindsub.ELwindsub,
 ELdeficitcap.DELdeficitcap,
 ELpurchbal.DELpurchbal,ELcnstrctbal.DELcnstrctbal,ELopmaintbal.DELopmaintbal,
 ELfcons.DELfcons,ELCOcons.DELCOcons,
-*ELfconsspin.DELfcons
 ELfavail.DELfavail,ELcapbal.DELcapbal,
 ELcaplim.DELcaplim,ELcapcontr.DELcapcontr,
 *ELgtconvlim.DELgtconvlim,
-*ELwindcapbal.DELwindcapbal,
 ELwindcaplim.DELwindcaplim,ELwindutil.DELwindutil,
 ELwindcapsum.DELwindcapsum,ELupspinres.DELupspinres,
 ELnucconstraint.DELnucconstraint,
 ELsup.DELsup,ELdem.DELdem,ELrsrvreq.DELrsrvreq,
-*ELdemloc.DELdemloc,ELdemlocbase.DELdemlocbase,
+*ELdemloc.DELdemloc
 ELtranscapbal.DELtranscapbal,ELtranscaplim.DELtranscaplim,
-*ELhydcapbal.DELhydcapbal,ELhydcaplim.DELhydcaplim,
 ELhydutil.DELhydutil,
 ELhydutilsto.DELhydutilsto,
 ELfgccaplim.DELfgccaplim,ELfgccapmax.DELfgccapmax,ELfgccapbal.DELfgccapbal,
@@ -47,15 +45,11 @@ DELexistcp.ELexistcp,DELbld.ELbld,
 *DELgttocc.ELgttocc,
 DELop.ELop,DELupspincap.ELupspincap,
 *DELoploc.ELoploc,
-*DELwindop.ELwindop,
 DELwindoplevel.ELwindoplevel,
-*DELwindexistcp.ELwindexistcp,DELwindbld.ELwindbld,
 DELtrans.ELtrans,DELtransbld.ELtransbld,DELtransexistcp.ELtransexistcp,
 DELfconsump.ELfconsump,DELCOconsump.ELCOconsump,
-*DELfconsumpspin.ELfconsumpspin
 DELhydopsto.ELhydopsto,DELfgcexistcp.ELfgcexistcp,DELfgcbld.ELfgcbld,
-DELcapsub.Elcapsub,DELfuelsub.ELfuelsub,DELdeficit.ELdeficit,
-*DELsubsidycoal.ELsubsidycoal,
+DELcapsub.Elcapsub,DELdeficit.ELdeficit,
 /;
 
 
@@ -83,7 +77,7 @@ COtranscaplim,Cotransloadlim,
 model CoalMCP
 /
 *$ontext
-COprice_eqn.COprice,
+COprice_eqn,
 COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
 COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
 COwashcaplim.DCOwashcaplim,COsulflim.DCOsulflim,
@@ -139,10 +133,23 @@ objective.. objvalue =e=COobjvalue+ELobjvalue;
 $onorder
 
 
-* additiona model options.
+* additional model options.
+
+Model CoalPowerLP /PowerLP CoalLP objective/ ;
+Model CoalPowerMCP /PowerMCP CoalMCP/ ;
+
 Model IntegratedLP /PowerLP EmissionLP CoalLP objective/ ;
 Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
 
+         option savepoint=1;
+         option MCP=PATH;
+         option NLP=pathnlp;
+         option LP=cbc;
+
+         PowerMCP.optfile=1;
+         CoalMCP.optfile=1;
+         IntegratedMCP.optfile=1;
+         CoalPowerMCP.optfile=1;
 
          IntegratedMCP.scaleopt=1;
 
@@ -161,6 +168,6 @@ Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
          EMELnoxlim.scale(trun,r)=1e-1;
          DEMELnoxlim.scale(trun,r)=1e1;
 
-*         COtransOpmaintbal.scale(trun)=1e2;
+         COtransOpmaintbal.scale(trun)=1e2;
          DCOtransOpmaintbal.scale(trun)=1e-2;
          COobjective.scale=1e2;

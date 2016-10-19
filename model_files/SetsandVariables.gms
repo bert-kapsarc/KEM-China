@@ -13,9 +13,9 @@ Sets
          wind_inc        increments of wind capacity /1*20/
          t(trun)         dynamic set for time
 
-         scenarios pre-defined model scenarios /DI1*DI8,CE1*CE8,base,calib,EIA/
+         scenarios pre-defined model scenarios /calib,EIA/
 
-         built_models pre-configured models by sector /Power, Coal/
+         built_models pre-configured models by sector /Power, Coal, Emissions/
 
          lp_mcp set to declare mcp or lp model /LP,MCP/
 
@@ -134,40 +134,42 @@ Sets
          COfsulf(coal,sulf) = yes;
          COfsulf(met,sulfmet) = yes;
 
-    sets
-*                 rtr all transshipment nodes
-                 Rall
-                 rco(rALL) all nodes used for coal network
-                 r(rco)  all demand regions
-                 grid    /North, Northeast, Central, East, West, South/
-                 rgrid(r,grid)
-*                 region sub regions used to aggregate provinces
-                 GB(rALL) standard label for chinese provinces
-                 province province of each node
-                 city name of major city
-                 node_type node type
-                 nodes(rco,GB,province,city,node_type) all nodes with region label and full name
-                 regions(rco,GB) table used to aggregate provincial demand data into regional demand data
-                 rco_dem(rco,r) nodes that can be used for coal consumption in remand region r
-                 rcodem(rco) nodes that can be used for coal consumption
+sets
+         Rall
+         rco(rALL) all nodes used for coal network
+         r(rco)  all demand regions
+         grid    /North, Northeast, Central, East, West, South/
+         rgrid(r,grid)
+         GB(rALL) standard label for chinese provinces
+         province province of each node
+         city name of major city
+         node_type node type
+         nodes(rco,GB,province,city,node_type) all nodes with region label and full name
+         regions(rco,GB) table used to aggregate provincial demand data into regional demand data
+         rco_r_dem(rco,r) supply or transit nodes that can be used for coal consumption in remand region r
+         rcodem(rco) all nodes that can be used for coal consumption
 
-                 rimp(rco)
-                 rexp(rco)
-                 rport(rco)
-                 rport_sea(rco)
-                 rport_riv(rco)
+         rimp(rco)
+         rexp(rco)
+         rport(rco)
+         rport_sea(rco)
+         rport_riv(rco)
 
-                 ss domestic coal supply sources for IHS Cola Rush report
+         ss domestic coal supply sources for IHS Cola Rush report
 
-                 coord /latitude,longitude/
+         coord /latitude,longitude/
 
 
 ;
-                 parameters latitude(rco),longitude(rco);
+
+         land(tr) = yes;
+         land(port) = no;
+
+         parameters latitude(rco),longitude(rco);
 
 *$ontext
 $gdxin db\setsandparameters.gdx
-$load Rall, rco,GB, r,regions, rco_dem, ss, province, city, node_type, nodes, rport_sea,
+$load Rall, rco,GB, r,regions, rco_r_dem, ss, province, city, node_type, nodes, rport_sea,
 $load rport_riv, rport
 $load latitude, longitude
 $gdxin
@@ -204,11 +206,9 @@ loop((GB,city,node_type),
          rimp(rco)$nodes(rco,GB,"Import",city,node_type) = yes;
          rexp(rco)$nodes(rco,GB,"Export",city,node_type) = yes;
 );
-land(tr) = yes;
-land(port) = no;
 
          loop(r,
-         rcodem(rco)$rco_dem(rco,r) = yes;
+                 rcodem(rco)$rco_r_dem(rco,r) = yes;
          );
 
          alias (r,rr);
@@ -219,19 +219,14 @@ land(port) = no;
          alias (rport_sea,rrport_sea);
          alias (rport_riv,rrport_riv);
 
-
-         alias (mm,mm2);
          alias (ss,ss2);
          alias (sulf,sulff);
-
-
 
          alias (rw,rww)
          alias (COf,COff);
 
-         alias (ssi,ssii);
-
          set    ELs /summ/
+
 *,wint,spfa/
          alias (ELs,ELss)
 
@@ -338,9 +333,7 @@ Sets
          ELpELf(Elp,f) fuel use for different generators
          ELpfss(Elp,f,fss) fuel use for different generators
          ELpfgc(Elp,cv,sulf,fgc,fgc) fuel use for different generators
-         ELfCV(f,cv,sulf)
-         ELcELp(ELc,vv,ELp,v) bundle of plants belonging to a given company
-         ELctariff(Elc,v)
+         ELfCV(f,cv,sulf) Set for calorific value and sulfur contents by fuel type (coal fuels)
 ;
 
 
@@ -363,6 +356,9 @@ Sets
 
          ELpbld(ELp,v)$( (not ELpgttocc(ELp) and vn(v)) or
                          (vo(v) and ELpgttocc(ELp)))  = yes ;
+         ELpbld('CCcon',v)=0;
+         ELpbld('PV',v)=0;
+         ELpbld('Subcr',v)=0;
 
          ELfCV(ELfcoal,cv_ord,sulf) = yes;
          ELfCV(ELfnuclear,CVf,'ExtLow') = yes;
@@ -431,12 +427,15 @@ parameter gamma(ELp,time) specific subsidy grid values
 ;
           gamma(ELp,time) = 0;
 
+scalar ELwindtot lower bound on wind capacity (existing pus builds) /200/  ;
+
+
+*        PARAMETERS and SETS used for ongird tariff scenarios and to define
+*        concentration of power plants
+
 parameter ELtariffmax(ELp,rco) power plants regional on grid electricity tariffs RMB per MWH
           ELfgctariff(fgc) tariff supplement for flu gas control deployment RMB per MWH
 ;
-
-scalar ELwindtot lower bound on wind capacity (existing pus builds) /200/  ;
-
 
 $gdxin db\power.gdx
 $load ELtariffmax
@@ -446,29 +445,32 @@ $gdxin
          ELfgctariff('DeNOx') = 10;
 
 ELtariffmax(ELpog,r) = ELtariffmax('CC',r) ;
-
 ELtariffmax(ELpcoal,r)$(ELtariffmax(ELpcoal,r)=0) = ELtariffmax('Ultrsc',r);
-
 ELtariffmax(ELphyd,r)$(ELtariffmax(ELphyd,r)=0) = ELtariffmax('Hydrolg',r);
 ELtariffmax(ELphydsto,r) = ELtariffmax('CC',r);
-
 ELtariffmax(ELpw,r)$(ELtariffmax(ELpw,r)=0) = ELtariffmax('Windon',r);
 
 
 sets
 ELptariff(ELp,v) power plants with ongrid electricity tarrif
-ELptariffcoal(v) power plants with ongrid electricity tarrif
+ELctariff(Elc,v) tariff by power company
+ELcELp(ELc,vv,ELp,v) bundle of plants belonging to a given company
 ELpdsub(ELpd) subsidized disp power plant types
 ELpwsub(ELpw) subsidized wind power plant types
 ELpsub(ELp)   subsidized power plants
-
-ELrtariff(r)
+ELrtariff(r)  Limit tariff policy to select regions
 ;
 
+         ELrtariff(r) = yes;
+
+*        no on-grid electricity tarrifs
+         ELptariff(ELpd,v) = no;
+         ELctariff(ELc,v) = no;
+         ELcELp(ELp,v,ELp,v)= no;
+
 *        intialize subsidy grid sets for non susbsidized runs
-ELrtariff(r)   =no;
-ELpdsub(Elpd) = no;
-ELpwsub(Elpw) = no;
+         ELpdsub(Elpd) = no;
+         ELpwsub(Elpw) = no;
 
 
 sets
@@ -615,7 +617,7 @@ Positive variables
 
          ELcapsub(ELp,v,trun,r)   Capital subsidy paid by government to compensate generators
          ELfuelsub(ELp,v,ELl,ELf,gtyp,trun,r)  Variable subsidy paid by government to compensate generators
-         ELdeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
+         ELdeficit(ELc,v,trun,r) Deficit encountered by companies operating bundle of gerneators
          ELwinddeficit(ELp,v,trun,r) Deficit encountered by companies operating bundle of gerneators
 
          ELtariff(ELp,v,trun,r)
@@ -728,7 +730,4 @@ Positive variables
          DEMELNO2std(ELpcoal,v,trun,r)
 
          EMELfluegas(ELp,v,trun,r)
-
-
-
 ;

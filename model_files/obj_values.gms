@@ -1,7 +1,7 @@
 if(run_model('Coal'),
          COprice.l(COf,cv,sulf,t,r)=
    ( COdem.m(COf,cv,sulf,t,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+     -sum(rco$(rco_r_dem(rco,r) and not r(rco) and rcodem(rco)),
        COsuplim.m(COf,cv,sulf,t,rco)/num_nodes_reg(r))
    )
 );
@@ -9,7 +9,7 @@ if(run_model('Coal'),
 if(run_model('Power'), ELobjvalue.l=
   +sum(t,(ELImports.l(t)+ELConstruct.l(t)+ELOpandmaint.l(t))*ELdiscfact(t))
 
-  +sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
+  +sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
           COprice.l(COf,cv,sulf,t,r)*
           ELCOconsump.l(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))
 
@@ -25,7 +25,7 @@ if(run_model('Coal'),
    +sum(t,(COtranspurchase.l(t)+COtransConstruct.l(t)
          +COtransOpandmaint.l(t)+COimports.l(t))*COdiscfact(t))
 
-   -sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
+   -sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
           COprice.l(COf,cv,sulf,t,r)*
           ELCOconsump.l(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r))$run_model('Power')
    ;
@@ -33,5 +33,5 @@ if(run_model('Coal'),
 
 objvalue.l = Elobjvalue.l+COobjvalue.l ;
 
-display objvalue.l,COobjvalue.l,ELobjvalue.l
+display objvalue.l,COobjvalue.l,ELobjvalue.l   ;
 

@@ -24,6 +24,9 @@ sector) are exogenously defined.
 
 MODEL DECLERATION
 The $INCLUDE statement create_models defines the models that can be solved
+Configure to run 2 models standalone (Coal and Power),
+plusand an additional emissions component thatcan be solved when running
+the model as integrated Coal and Power
 
 
 options to use when running this filel
@@ -42,56 +45,45 @@ $INCLUDE RW_param.gms
 
 set  run_model(built_models) defines what built model will be run. Is a subset of buil_models which represents the model instances that hav been developed. Options are Coal and or Power
      run_mode(lp_mcp) Tell the model to solve in lp or mcp mode. can only select one of these options.;
-*        select model(s) to run -  Coal, Power
+*        select model(s) to run -  Coal, Power, Emissions
          run_model('Coal')=yes;
-*         run_model('Power')=yes;
-*         run_model('Refining')=yes;
-*        select model to run in LP or MCP mode (select one only!)
-         run_mode('LP')=yes;
+         run_model('Power')=yes;
+         run_model('Emissions')=yes;
 
-set      model_input /predefined, savepoint/
+*        run in LP or MCP mode (select one only!)
+         run_mode('MCP')=yes;
+
+set      model_input type of inputs that can be used to set cross-cuttting activities in stand alone models /predefined, savepoint/
          run_with_inputs(model_input);
-
          run_with_inputs('predefined')=yes;
-
-
 
 
 
 $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
+
 $INCLUDE powersubmodel.gms
 $INCLUDE emissionsubmodel.gms
 
 $INCLUDE create_models.gms
 
-*!!!     Turn on demand in all regions
-         rdem_on(r) = yes;
-
-$INCLUDE imports.gms
-
 
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
-
-         ELwindtot=sum((ELpw,v,r),ELexistcp.l(ELpw,v,"t12",r))+1e-3;
-         ELdeficitmax = 0e3;
-
+$INCLUDE imports.gms
 $INCLUDE scenarios.gms
-*$INCLUDE on_grid_tariffs.gms
+$INCLUDE price_and_demand.gms
+
+if( run_mode('mcp'),
+$INCLUDE on_grid_tariffs.gms
+);
 *$INCLUDE short_run.gms
-*COprodStats(COf,mm,ss,"t12",rco)  = COprodStats(COf,mm,ss,"t15",rco);
+COprodStats(COf,mm,ss,"t12",rco)  = COprodStats(COf,mm,ss,"t15",rco);
 *$INCLUDE new_stock.gms
 
-
-         option savepoint=1;
-         option MCP=PATH;
-         option NLP=pathnlp;
-         option LP=cbc;
-         PowerMCP.optfile=1;
-
-*         execute_loadpoint "LongRunWind2020.gdx" ELwindtarget, Elwindop ;
+          execute_loadpoint "test2.gdx";
+*         execute_loadpoint "test2.gdx" ELwindtarget, Elwindop ;
 *         ELfitv.fx(Elpw,trun,r) =
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
 *                 sum((v,rr,ELl),ELwindop.l(ELpw,v,ELl,trun,rr));
@@ -100,15 +92,30 @@ $INCLUDE scenarios.gms
 
           file info / '%emp.info%' /;
           putclose info / 'modeltype mcp';
-IF( run_model('Coal'),
+
+IF( run_model('Coal') and run_model('Power') and run_model('Emissions') ,
+   If(run_mode('LP'),
+         Solve IntegratedLP using LP minimizing objvalue ;
+
+   elseif run_mode('MCP'),
+         execute_loadpoint "IntegratedMCP_p.gdx" ;
+         Solve IntegratedMCP using MCP;
+
+   );
+elseif run_model('Coal') and run_model('Power'),
+   If(run_mode('LP'),
+         Solve CoalPowerLP using NLP minimizing objvalue ;
+   elseif run_mode('MCP'),
+         execute_loadpoint "IntegratedMCP_p.gdx" ;
+         Solve CoalPowerMCP using MCP;
+
+   );
+
+elseif run_model('Coal'),
 
 
     If(run_mode('LP'),
 *         Solve CoalLP using LP minimizing COobjvalue;
-
-
-
-         CoalLP.optfile=1;
 
          solve CoalLP using emp minimizing COobjvalue;
 
@@ -118,23 +125,16 @@ IF( run_model('Coal'),
 
 elseif run_model('Power'),
    If(run_mode('LP'),
+
          Solve PowerLP using NLP minimizing ELobjvalue;
 
    elseif run_mode('MCP'),
          Solve PowerMCP using MCP;
    );
 
-elseif run_model('Coal') and run_model('Power') ,
-   If(run_mode('LP'),
-         Solve IntegratedLP using LP minimizing objvalue;
-
-   elseif run_mode('MCP'),
-         execute_loadpoint "IntegratedMCP_p.gdx" ;
-         Solve IntegratedMCP using MCP;
-$INCLUDE obj_values.gms
-   );
-
 );
+
+$INCLUDE obj_values.gms
 
 $INCLUDE RW_EL.gms
 $INCLUDE RW_CO.gms

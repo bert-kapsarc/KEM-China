@@ -135,7 +135,7 @@ EMELSO2std(ELpcoal,v,t,r)$(SO2_std=1)..
 ;
 
 
-EMELNO2std(ELpcoal,v,t,r)$(SO2_std=2)..
+EMELNO2std(ELpcoal,v,t,r)$(SO2_std=1)..
   -sum((gtyp,cv,sulf,sox,nox)$ELpfgc(Elpcoal,cv,sulf,sox,nox),
          ELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)*EMfgc(nox)*
          VrCo(ELpcoal,'coal',cv)*NO2C(r,ELpcoal)

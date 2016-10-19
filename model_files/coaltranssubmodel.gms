@@ -1,36 +1,3 @@
-*following section only needed if the submodel is run o astand-alone basis
-$inlinecom /* */
-$ontext
-********************************************************************************
-*$INCLUDE ACCESS_sets.gms
-*$INCLUDE ACCESS_CO.gms
-$INCLUDE Macros.gms
-$INCLUDE SetsandVariables.gms
-$INCLUDE ScalarsandParameters.gms
-*$INCLUDE RW_param.gms
-$INCLUDE coalsubmodel.gms
-
-
-
-*Variables from other submodels that need to be exogenously fixed:
-$gdxin PowerMCP_p.gdx
-*$load coalprod
-*$load ELCOconsump ELfconsumpspin
-*COexpansion coalintlcv
-$gdxin
-
-
-   coalprod.fx(COf,cv,sulf,trun,rco)=coalprod.l(COf,cv,sulf,trun,rco)*1;
-   ELCOconsump.fx(ELpcoal,cv,sulf,trun,rr)= 0;
-   ELfconsumpspin.fx(Elpd,ELf,cv,sulf,trun,rr)=0;
-
-
-   ELCOconsump.fx(ELpcoal,'CV60',sulf,trun,rr)= sum(cv,ELCOconsump.l(ELpcoal,cv,sulf,trun,rr));
-   ELfconsumpspin.fx(Elpd,ELf,'CV60',sulf,trun,rr)=sum(cv,ELfconsumpspin.l(Elpd,Elf,cv,sulf,trun,rr))$ELpcoal(ELpd);
-
-         rdem_on(rr) = yes;
-$offtext
-
 *Surcahrges sourced from Credit Suisse report 2013
 scalar   CF_surcharge railway construction fund surcharge;
 scalar   EL_surcharge railway electrification surcharge;
@@ -271,7 +238,7 @@ COtransbudget('rail','t15') = 500e3;
 
          loop(r,
                  rtemp(rco)=no
-         loop(rco$rco_dem(rco,r),
+         loop(rco$rco_r_dem(rco,r),
 
                  rtemp(rco) = yes;
          );
@@ -282,6 +249,7 @@ COtransbudget('rail','t15') = 500e3;
          num_nodes_reg('northeast') = 3;
 
          parameter rail_disc discount on rail investments from rail tax CFS;
+
 
 Equations
 * ====================== Primal Relationships =================================*
@@ -451,16 +419,16 @@ COsup(COf,cv,sulf,t,rco)$(COfCV(COf,cv))..
 COsuplim(COf,cv,sulf,t,rco)$(not r(rco) and rcodem(rco) and
          COfcv(COf,cv))..
   -coaluse(COf,cv,sulf,t,rco)
-  +sum(rr$(rco_dem(rco,rr)),
+  +sum(rr$(rco_r_dem(rco,rr)),
          ( OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
            +sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
-                 ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$ELfcoal(COf)
+                 ELCOconsump(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$(ELfcoal(COf) and run_model('power'))
          )/num_nodes_reg(rr))
          =g=0;
 
 
 COdem(COf,cv,sulf,t,rr)$COfcv(COf,cv)..
-   sum((rco)$rco_dem(rco,rr),coaluse(COf,cv,sulf,t,rco))
+   sum((rco)$rco_r_dem(rco,rr),coaluse(COf,cv,sulf,t,rco))
   -OTHERCOconsumpsulf(COf,cv,sulf,t,rr)
 
   -sum((Elpcoal,v,gtyp,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal(COf)),
@@ -523,9 +491,9 @@ COtransbldlim(t,rco)$(Cotransportmax(rco)>0)..
 $offtext
 
 
-COprice_eqn(COf,cv,sulf,t,r)$ELfCV(COf,cv,sulf).. COprice(COf,cv,sulf,t,r) -
+COprice_eqn(COf,cv,sulf,t,r)$COfcv(COf,cv).. COprice(COf,cv,sulf,t,r) -
    ( DCOdem(COf,cv,sulf,t,r)
-     -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+     -sum(rco$(rco_r_dem(rco,r) and not r(rco)),
        DCOsuplim(COf,cv,sulf,t,rco)/num_nodes_reg(r))
    ) =e=0;
 
@@ -549,21 +517,21 @@ Dcoalimports(COf,ssi,cv,sulf,t,rco)$(COfcv(COf,cv)
 ;
 
 
-DOTHERCOconsumpsulf(COf,cv,sulf,t,rr)$COfCV(COf,cv).. 0 =g=
-  -COprice(COf,cv,sulf,t,rr)
+DOTHERCOconsumpsulf(COf,cv,sulf,t,rr)$COfcv(COf,cv) .. 0 =g=
+   -( DCOdem(COf,cv,sulf,t,rr)
+     -sum(rco$(rco_r_dem(rco,rr) and not r(rco)),
+       DCOsuplim(COf,cv,sulf,t,rco)/num_nodes_reg(rr))
+   )
   +DCOdemOther(COf,t,rr)*COcvSCE(cv)
   -(DEMsulflim(t,rr)*COsulfDW(sulf)*1.6)$(rdem_on(rr) and coal(COf))
 ;
 
 
-* !!!!!! Fix copmlementarity relationship
-Dcoaluse(COf,cv,sulf,t,rco)$(COfcv(COf,cv)).. 0 =g=
+Dcoaluse(COf,cv,sulf,t,rco)$COfcv(COf,cv).. 0 =g=
   -DCOsup(COf,cv,sulf,t,rco)
-
   -DCOsuplim(COf,cv,sulf,t,rco)$(rcodem(rco) and not r(rco))
 
-
-  +sum((rr)$(rco_dem(rco,rr)),
+  +sum((rr)$(rco_r_dem(rco,rr)),
          DCOdem(COf,cv,sulf,t,rr))
 ;
 
@@ -601,9 +569,7 @@ DCOtrans(COf,cv,sulf,tr,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
   +(RailSurcharge(t)*COtransD(tr,rco,rrco))$(COrailCFS=1 and rail(tr)) =g=
 
   +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
-*$(not rimp(rco) and not rexp(rrco))
   +DCOtransopmaintbal(t)*COtransomcst1(COf,tr)$(port(tr))
-* and not rimp(rco) and not rexp(rrco)
 
   +DCOtransloadlim(COf,tr,t,rrco)*COtransyield(tr,rco,rrco)$land(tr)
   -DCOtransloadlim(COf,tr,t,rco)$land(tr)
@@ -626,153 +592,3 @@ DCOtransload(COf,tr,t,rco)$land(tr).. 0 =g=
 
 *  -DCOexportlim(t,rco,rrco)
 ;
-
-
-
-$ontext
-********************************************************************************
-;
-
-Scalar
-count /0/;
-Repeat(count=count+1; Solve FuelMCP using MCP; until((FuelMCP.modelstat eq 1)or(count eq 20)));
-********************************************************************************
-$offtext
-
-
-$ontext
-$INCLUDE powersubmodel.gms
-
-$INCLUDE imports.gms
-$INCLUDE scenarios.gms
-$INCLUDE emissionsubmodel.gms
-
-$INCLUDE discounting.gms
-
-
-$ontext
-
-* Split  coal consumption into east and western Nei Mongol using GDP as weight
-OTHERCOconsumpProv(COf,IHScoaluse,time,"NME") = OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")*0.3;
-OTHERCOconsumpProv(COf,IHScoaluse,time,"NM") =
-         OTHERCOconsumpProv(COf,IHScoaluse,time,"NM")-
-         OTHERCOconsumpProv(COf,IHScoaluse,time,"NME");
-
-* Split  coal consumption into east and western Nei Mongol using GDP as weight
-OTHERCOconsumpProv_weight(COf,time,"NME") = OTHERCOconsumpProv_weight(COf,time,"NM")*0.3;
-OTHERCOconsumpProv_weight(COf,time,"NM") =
-         OTHERCOconsumpProv_weight(COf,time,"NM")-
-         OTHERCOconsumpProv_weight(COf,time,"NME");
-
-
-
-* Get sum of other CO consumption sectors
-*OTHERCOconsump(steam,time,rr)=sum((GB,IHSother)$regions(rr,GB),
-*                         OTHERCOconsumpProv(steam,IHSother,time,GB));
-
-
-
-
-OTHERCOconsump_weight(COf,time,rr)=sum(GB$regions(rr,GB),
-         OTHERCOconsumpProv_weight(COf,time,GB));
-
-*OTHERCOconsump(met,time,rr)=sum((GB,IHSmet)$regions(rr,GB),
-*                         OTHERCOconsumpProv(met,IHSmet,time,GB));
-
-
-
-         COdiscfact(time)  = 1;
-
-
-option MCP=path;
-option LP=pathnlp;
-
-option limrow=0;
-option limcol=0;
-
-
-option savepoint=1;
-
-
-model coaltransMCP/
-
-
-COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
-COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
-COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COsupplylim.DCOprodlim,
-
-DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
-DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod
-
-         COtransPurchbal.DCOtransPurchbal,COtransCnstrctbal.DCOtransCnstrctbal,
-         COtransOpmaintbal.DCOtransOpmaintbal,COtransbldeq.DCOtransbldeq,
-         COimportbal.DCOimportbal,
-
-         COimportsuplim.DCOimportsuplim,COimportlim.DCOimportlim,
-         COsup.DCOsup,COsuplim.DCOsuplim,
-         COdem.DCOdem,COdemOther.DCOdemOther,
-
-         COtranscapbal.DCOtranscapbal,COtransportcaplim.DCOtransportcaplim,
-         COtranscaplim.DCOtranscaplim,Cotransloadlim.DCotransloadlim,
-*         COexportlim.DCOexportlim,
-*COtransbudgetlim.DCOtransbudgetlim,
-
-         DCOtransPurchase.COtransPurchase,DCOtransConstruct.COtransConstruct,
-         DCOtransOpandmaint.COtransOpandmaint,DCOimports.COimports,
-
-         DCOtrans.COtrans,DCOtransload.COtransload,
-         DCOtransexistcp.COtransexistcp,DCOtransbld.COtransbld,
-
-         Dcoaluse.coaluse, Dcoalimports.coalimports,
-*         Dcoalexports.coalexports
-
-         DOTHERCOconsumpsulf.OTHERCOconsumpsulf,
-
-*         EMsulflim.DEMsulflim,
-
-/
-;
-
-
-
-model coaltransLP
-/
-***** Coaltrans equations
-         COtransobjective,
-
-         COtransPurchbal, COtransCnstrctbal,COtransOpmaintbal,
-         COtransbldeq,COimportbal,
-         COimportsuplim,COsup,COimportlim,COsuplim,
-         COdem,COdemOther,
-
-         COtranscapbal,COtransportcaplim,COtranscaplim,Cotransloadlim,
-*         COexportlim,
-
-*         EMsulflim
-
-*         COexportlim
-*        ,COtransbudgetlim
-*         COashlim,COashlimreg,
-/
-;
-
-t(trun)=yes;
-z.l=0;
-*Solve coaltransLP using LP minimizing z;
-
-
-*execute_loadpoint "coaltransMCP_p.gdx";
-
-Solve coaltransMCP using MCP;
-
-scalar zMCP;
-
-zMCP=0;
-
-
-zMCP= sum(trun,(COtranspurchase.l(trun)+COtransConstruct.l(trun)
-         +COtransOpandmaint.l(trun)+COimports.l(trun))*COdiscfact(trun))
-
-display zMCP,z.l;
-
-$offtext

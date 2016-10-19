@@ -1,14 +1,13 @@
 parameter COexist(COf,mm,ss,rco) existing coal supply in each region
 
-parameter COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
+          COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
           COprodStats(COf,mm,ss,time,rco) China energy statistic coal production
 
           COomcst(COf,mm,ss,rw,time,rco) O&M cost in Yuan
 
-          COprodyield(COf,mm,ss,rw,time,rco) production yield for coal
+          COprodyield(COf,mm,ss,rw,time,rco) production yield for coal between 0 and 1
 
           COwashratio(COf,mm,ss,time,rco) washing yield for coal
-*         COexpansion(COf,mm,ss,rco) IHS coal production levels and forecasts
 
           coalcv(COf,mm,ss,rw,time,rco) calorific value of coal
 
@@ -20,13 +19,11 @@ parameter COprodIHS(COf,mm,ss,time,rco) IHS coal production levels and forecasts
 
 $gdxin db\coalprod.gdx
 $load COprodyield COwashratio CoprodIHS coalcv COomcst COsulfur COstatistics
-*COexpansion coalintlcv
+*coalintlcv
 $gdxin
 
 
 COsulfur(sulf,time,rco) = COsulfur(sulf,'t11',rco);
-
-
 
 
 parameter COpurcst(COf,mm,time,rco)   purchase cost of mining capacity
@@ -36,7 +33,7 @@ parameter COpurcst(COf,mm,time,rco)   purchase cost of mining capacity
 
 scalar    COdiscrate  fuel sector discounting rate /0.04/;
 
-                         COpurcst(COf,mm,time,rco) = 100;
+                         COpurcst(COf,mm,time,rco) = 0;
                          COconstcst(COf,mm,ss,time,rco) = 0;
 
 
@@ -124,17 +121,6 @@ elseif ord(time)>25,
 *        metallurgical and hard coking coal are always washed
          COprodyield(coal,mm,ss,"raw",trun,rco)$(
                  smax(time,CoprodIHS(coal,mm,ss,time,rco))>0) = 1;
-
-$ontext
-         COprodyield(COf,mm,ss,rw,time,rco)$(COprodyield(COf,mm,ss,rw,time,rco)=0 and COexist(COf,mm,ss,rco)=0)
-                 = COprodyield(COf,mm,ss-1,rw,time,rco);
-         coalcv(COf,mm,ss,rw,time,rco)$(coalcv(COf,mm,ss,rw,time,rco)=0 and COexist(COf,mm,ss,rco)=0)
-                 = coalcv(COf,mm,ss-1,rw,time,rco);
-
-*        for new supply steps (above the IHS coal rush levels) apply 10% increase
-*         COomcst(COf,mm,ss,rw,time,rco)$(COomcst(COf,mm,ss,rw,time,rco)=0 and COexistcp.l(COf,mm,ss,time,rco)=0 and COprodyield(COf,mm,ss,rw,time,rco)>0)=
-*         COomcst(COf,mm,ss-1,rw,time,rco)*1.1;
-$offtext
 
 
          COprodyield("met",'under',"South and east coast Met",rw,time,"East")=
@@ -258,7 +244,7 @@ $offtext
 
 set        rco_sup(rco,r) region where each coal supply basin is located
 ;
-         rco_sup(rco,r)$rco_dem(rco,r) = yes;
+         rco_sup(rco,r)$rco_r_dem(rco,r) = yes;
 *         rco_sup('NMCBHulun','Northeast')=yes;
 *         rco_sup('NMCBXilin','Northeast')=yes;
 
@@ -269,20 +255,23 @@ set        rco_sup(rco,r) region where each coal supply basin is located
          COprodStats(met,mm,ss,time,rco)
           = COprodIHS(met,mm,ss,time,rco)*0.96;
 
+*        SPLIT INNER MONGOLIA AND EASTERN INNER MONGOLIA supply and demand statistics
+COstatistics(COstats,time,'NME')=COstatistics(COstats,time,'NM')*0.3;
+COstatistics(COstats,time,'NM')=COstatistics(COstats,time,'NM')
+                        -COstatistics(COstats,time,'NME');
+
+COstatistics(COstats,trun,r) = sum((GB)$regions(r,GB),
+                        COstatistics(COstats,trun,GB));
+COstatistics(COstats,trun,"China") = sum(r,COstatistics(COstats,trun,r)) ;
+
+
+
 COstatistics('coal prod IHS',time,r) = sum((coal,mm,ss,rco)$rco_sup(rco,r),
                                          COprodIHS(coal,mm,ss,time,rco));
 COstatistics('met prod IHS',time,r) = sum((met,mm,ss,rco)$rco_sup(rco,r),
                                          COprodStats(met,mm,ss,time,rco));
 
-*        SPLIT INNER MONGOLIA AND EASTERN INNER MONGOLIA supply and demand statistics
-         COstatistics(COstats,time,'NME')=COstatistics(COstats,time,'NM')*0.3;
-         COstatistics(COstats,time,'NM')=COstatistics(COstats,time,'NM')
-                                 -COstatistics(COstats,time,'NME');
 
-         COstatistics(COstats,trun,r) = sum((GB)$regions(r,GB),
-                                 COstatistics(COstats,trun,GB));
-
-         COstatistics(COstats,trun,"China") = sum(r,COstatistics(COstats,trun,r))
 
 loop(r,
          COprodStats(coal,mm,ss,trun,rco)$(rco_sup(rco,r)
@@ -291,10 +280,11 @@ loop(r,
          *COprodIHS(coal,mm,ss,trun,rco)/COstatistics('coal prod IHS',trun,r)*1.03;
 );
 
-COprodStats(COf,mm,ss,time,rco)$(ord(time)>2) = COprodIHS(COf,mm,ss,time,rco);
 
-*         COprodStats(COf,mm,ss,time,rco)=
-*         COprodStats(COf,mm,ss,time,rco)*(1$met(COf) + 1$coal(COf));
+
+
+*        take ihs forecast for future production stats
+COprodStats(COf,mm,ss,time,rco) = COprodIHS(COf,mm,ss,time,rco);
 
 *        fix production levels to those reported in IHS coal rush data or
 *        China Energy statistics
@@ -302,10 +292,11 @@ COprodStats(COf,mm,ss,time,rco)$(ord(time)>2) = COprodIHS(COf,mm,ss,time,rco);
                  and ord(trun)=1)=COprodStats(COf,mm,ss,trun,rco);
 *         COprodIHS(COf,mm,ss,time,rco);
 
-*         COomcst(COf,mm,ss,rw,time,rco)$(not raw(rw)) = COomcst(COf,mm,ss,rw,time,rco);
+
+
 Equations
 * ====================== Primal Relationships =================================*
-         COobjective Equation (2-1).(1) coal production costs only
+         COobjective Equation (2-1).(1) coal production and transportation cost objective function for coal production
 
          COpurchbal(trun) acumulates all purchases
          COcnstrctbal(trun) accumlates all construction activity
@@ -465,65 +456,3 @@ DCObld(COf,mm,ss,t,rco)$COmine(COf,mm,ss,rco) .. 0 =g=
          COwashratio(COf,mm,ss,'t11',rco))$(coal(COf) and COwashratio(COf,mm,ss,'t11',rco)>0)
    -DCOprodlim(COf,mm,ss,t+COleadtime(COf,mm,rco),rco)$(coal_cap=1)
 ;
-
-
-
-********************************************************************************
-*Capital cost discounting
-$ontext
-$INCLUDE coaltranssubmodel.gms
-$INCLUDE powersubmodel.gms
-
-
-
-$INCLUDE imports.gms
-$INCLUDE scenarios.gms
-$INCLUDE discounting.gms
-
-         COdiscfact(time)  = 1;
-
-
-option MCP=path;
-option LP=pathnlp;
-
-option limrow=10;
-option limcol=10;
-
-model coalMCP/
-
-*Coal
-
-COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
-COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
-COsulflim.DCOsulflim,COprodfx.DCOprodfx,COprodCV.DCOprodCV,COsupplylim.DCOprodlim,
-
-DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
-DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod
-/
-;
-
-
-
-model coalLP
-/
-         COobjective,
-         COpurchbal, COcnstrctbal, COopmaintbal,COcapbal, COcaplim,
-         COsulflim,COprodCV, COprodfx, COsupplylim,
-*         COashlim,        COashlimreg,
-/
-;
-
-t(trun)=yes;
-
-Solve coalLP using LP minimizing z;
-
-
-Solve coalMCP using MCP;
-
-scalar zMCP;
-
-zMCP= sum(trun,(COpurchase.l(trun)+COConstruct.l(trun)+COOpandmaint.l(trun))*COdiscfact(trun))
-
-
-display z.l,zMCP;
-$offtext

@@ -18,7 +18,7 @@ Q5=select province from nodes
 s5=province
 
 Q6=select Region,Region_dem from Regions
-s6=rco_dem
+s6=rco_r_dem
 
 Q7=select port_sea from Regions
 s7=rport_sea

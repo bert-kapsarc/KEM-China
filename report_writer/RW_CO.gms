@@ -119,14 +119,14 @@ parameter coal_price(*,COf,trun);
 
 coal_price('All',COf,trun) =
    sum((cv,sulf,r),COprice.l(COf,cv,sulf,trun,r)*
-         sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
-   )/sum((cv,sulf,rco,rr)$rco_dem(rco,rr),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
+         sum((rco)$rco_r_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
+   )/sum((cv,sulf,rco,rr)$rco_r_dem(rco,rr),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
 ;
 
 coal_price(r,COf,trun) =
    sum((cv,sulf),COprice.l(COf,cv,sulf,trun,r)
-   *sum((rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
-   )/sum((cv,sulf,rco)$rco_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
+   *sum((rco)$rco_r_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco))
+   )/sum((cv,sulf,rco)$rco_r_dem(rco,r),coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))
 ;
 
 coal_price('Qinghuangdao',COf,trun) = COsup.m(COf,'CV62','LOW',trun,'North');

@@ -3,11 +3,9 @@
 
 *        Discounting plant capital costs over lifetime
          ELdiscoef1(ELp,trun) = discounting(ELlifetime(ELp),ELdiscountrate,i,trun,thyb);
-*        intdiscfact(ELdiscountrate,trun,thyb)/sumdiscfact(ELlifetime(ELp),ELdiscountrate,i);
 
 *        Discounting transmission capital costs over lifetime (35 time periods)
          ELdiscoef2(trun) = discounting(35,ELdiscountrate,i,trun,thyb);
-*intdiscfact(ELdiscountrate,trun,thyb)/sumdiscfact(35,ELdiscountrate,i);
 
          ELpurcst(ELp,trun,r)=ELpurcst(ELp,trun,r)*ELdiscoef1(ELp,trun);
          ELconstcst(ELp,trun,r)=ELconstcst(ELp,trun,r)*ELdiscoef1(ELp,trun);

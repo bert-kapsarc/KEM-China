@@ -1,7 +1,7 @@
-ssolu="D:\Dropbox (KAPSARC)\DL - KEM\KEM-China\225a\empsolu.dat"
-sstat="D:\Dropbox (KAPSARC)\DL - KEM\KEM-China\225a\empstat.dat"
-scntr="D:\Dropbox (KAPSARC)\DL - KEM\KEM-China\225a\empcntr.dat"
-smatr="D:\Dropbox (KAPSARC)\DL - KEM\KEM-China\225a\empmatr.dat"
+ssolu="D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\225b\empsolu.dat"
+sstat="D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\225b\empstat.dat"
+scntr="D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\225b\empcntr.dat"
+smatr="D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\225b\empmatr.dat"
 suppress=1 AL=1 LO=3
 LP=CBC
 MIP=CPLEX

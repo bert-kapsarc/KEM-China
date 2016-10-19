@@ -238,7 +238,7 @@ Accounting('Revenue','Coal (from power)')=
 
 sum((COf,cv,sulf,trun,r),COdiscfact(trun)*
    ( DCOdem.l(COf,cv,sulf,trun,r)*1
-      -sum(rco$(rco_dem(rco,r) and not r(rco) and rcodem(rco)),
+      -sum(rco$(rco_r_dem(rco,r) and not r(rco) and rcodem(rco)),
         DCOsuplim.l('coal',cv,sulf,trun,rco)/num_nodes_reg(r))
    )*
 sum((Elpcoal,v,gtyp,sox,nox),ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,r))$ELfcoal(COf)
