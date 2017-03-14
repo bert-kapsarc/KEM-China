@@ -47,8 +47,8 @@ set  run_model(built_models) defines what built model will be run. Is a subset o
      run_mode(lp_mcp) Tell the model to solve in lp or mcp mode. can only select one of these options.;
 *        select model(s) to run -  Coal, Power, Emissions
          run_model('Coal')=yes;
-         run_model('Power')=yes;
-         run_model('Emissions')=yes;
+*         run_model('Power')=yes;
+*         run_model('Emissions')=yes;
 
 *        run in LP or MCP mode (select one only!)
          run_mode('MCP')=yes;
@@ -73,16 +73,18 @@ $INCLUDE discounting.gms
 
 $INCLUDE imports.gms
 $INCLUDE scenarios.gms
+$include data_manipulation.gms
 $INCLUDE price_and_demand.gms
+
 
 if( run_mode('mcp'),
 $INCLUDE on_grid_tariffs.gms
 );
 *$INCLUDE short_run.gms
-COprodStats(COf,mm,ss,"t12",rco)  = COprodStats(COf,mm,ss,"t15",rco);
+*COprodData(COf,mm,ss,"t12",rco)  = COprodData(COf,mm,ss,"t15",rco);
 *$INCLUDE new_stock.gms
 
-          execute_loadpoint "test2.gdx";
+*          execute_loadpoint "test2.gdx";
 *         execute_loadpoint "test2.gdx" ELwindtarget, Elwindop ;
 *         ELfitv.fx(Elpw,trun,r) =
 *                 (ELwindtarget.m(trun)*ELwindtarget.l(trun))/
@@ -90,16 +92,22 @@ COprodStats(COf,mm,ss,"t12",rco)  = COprodStats(COf,mm,ss,"t15",rco);
 
          t(trun) = yes;
 
-          file info / '%emp.info%' /;
-          putclose info / 'modeltype mcp';
+         file myinfo /'%emp.info%'/;
+                  put myinfo 'dualvar DCOdem COdem';
+                  put myinfo 'dualvar DCOsuplim COsuplim';
+         putclose myinfo / 'modeltype mcp'/;
+*          abort ss;
 
 IF( run_model('Coal') and run_model('Power') and run_model('Emissions') ,
    If(run_mode('LP'),
          Solve IntegratedLP using LP minimizing objvalue ;
 
+
    elseif run_mode('MCP'),
+
          execute_loadpoint "IntegratedMCP_p.gdx" ;
          Solve IntegratedMCP using MCP;
+*         solve KEM_EMP using EMP minimizing z;
 
    );
 elseif run_model('Coal') and run_model('Power'),
@@ -120,7 +128,10 @@ elseif run_model('Coal'),
          solve CoalLP using emp minimizing COobjvalue;
 
    elseif run_mode('MCP'),
+
          Solve CoalMCP using MCP;
+*         solve CoalLP using EMP minimizing COobjvalue_CFS;
+
    );
 
 elseif run_model('Power'),

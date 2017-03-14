@@ -3,7 +3,7 @@
 *!!!     Restrict hydro investment
          ELbld.up(Elphyd,'new',trun,r)=0;
 
-         rail_disc(tr,trun,rco,rrco)=COtransconstcst(tr,trun,rco,rrco)*0.9999;
+         rail_disc('rail',trun,rco,rrco)=COtransconstcst('rail',trun,rco,rrco)*0.9999;
 
 
 *        SET fixed and sunk costs used for power suppliers revenue constraint
@@ -27,16 +27,11 @@ if( scen('calib'),
 
 
 *!!!     Turn on railway construction tax
-         COrailCFS=1;
+         COrailCFS=0;
 
 *!!!     Introduce a cap on coal production.
-*     COprodStats(COf,mm,ss,t,rco) must be stricly > COexistcp(COf,mm,ss,t,rco)
+*     COprodData(COf,mm,ss,t,rco) must be stricly > COexistcp(COf,mm,ss,t,rco)
          coal_cap=1;
-
-
-*!!!     Set upper bound on imports from some suppliers.
-         COfimpmax('met',trun,'IMMN') = 25;
-         COfimpmax('coal',trun,'IMKP') = 25;
 
 *        allow coal mine expansion up to 2015 forecasted levels
 *         Cobld.up(COf,mm,ss,'t12',rco)$(COmine(COf,mm,ss,rco))=
@@ -58,16 +53,7 @@ $offtext
 
 
 
-*!!!     Used in older version to assign maximum capacity on mixed freight lines
-*        Current version assumes all rails lines are coal dedicated
-*        This assumption can be modified by setting allocation quotas for some
-*        cooridors.
-*         rail_cap=1;
-
-*temp2(COf,mm,ss,rco) = (CoprodIHS(COf,mm,ss,'t15',rco)-CoprodIHS(COf,mm,ss,'t11',rco));
-*CoprodIHS(COf,mm,ss,'t11',rco)=CoprodIHS(COf,mm,ss,'t11',rco)+temp2(COf,mm,ss,rco)$(temp2(COf,mm,ss,rco)>0);
-
-
+$ontext
 elseif scen('EIA'),
 
 
@@ -102,9 +88,9 @@ mmBTUtoTons =  sum(met,COconsumpEIA(met,'t11'))/sum((met,r), OTHERCOconsump(met,
 
         OTHERCOconsump(met,time,rr)=OTHERCOconsump(met,time,rr)/mmBTUtoTons;
 
-*$offtext
+
 
 *OTHERCOconsump(COf,time,rr)=COconsumpIHS(COf,time,rr)
-
+$offtext
 );
 

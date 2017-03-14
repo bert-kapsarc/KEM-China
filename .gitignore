@@ -3,6 +3,8 @@
 **/*.lst
 **/*.lxi
 **/*.accdb
+**/*.tmp
+*.tmp
 db/*.xlsx
 **/*.xlsx
 *.gdx

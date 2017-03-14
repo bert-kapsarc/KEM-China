@@ -24,50 +24,33 @@ Sets
          Sect(sectors)
 
          allmaterials all materials in KEM
-                 /coal,met,hardcoke,lignite,
-                 crude,HFO, diesel, dummyf,u-235, natgas, ethane, methane, NGL, propane,naphtha,
-                 ethylene,methanol, MTBE, styrene,propylene,ethylene-glycol,vcm,
-                 ldpe, lldpe, hdpe, pp, pvc, polystyrene,ammonia,urea,2EH,
-                 vinacetate,propoxide,prop-glycol,toluene,formald,urea-formald,
-                 butadiene,Gcond,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,lightcrude
-                 sr-gas-oil,hsr-naphtha,lsr-naphtha,hh-naphtha,hl-naphtha,sr-resid,
-                 sr-keros,sr-distill,cc-gasoline,cc-naphtha,lhc-naphtha,lt-naphtha,
-                 a-gasoline,v-gas-oil,hv-gas-oil,v-resid,cc-gas-oil,c-gas-oil,c-naphtha,
-                 ref-gas,fuel-gas,isomerate,h-reformate,l-reformate,95motorgas,91motorgas,
-                 LPG,vis-resid,olefingas,petcoke,Butane,Pentane,Jet-fuel,Asphalt,
-                 ht-diesel,hc-diesel,CaCO3,CaCO3c,CaCO3SAFm,Sand,Clay,Irono,Gypsum,
-                 Pozzn,PortI,PortV,PozzC,PortIp,PortVp,PozzCp,ClinkIh,ClinkVh,ClinkPh,
-                 ClinkI,ClinkV,ClinkP,CKD,CaCO3SAF,CSAF,Ca,O,Si,Al,Fe,CO2,CaO,SiO2,
-                 Al2O3,Fe2O3,C3S,C2S,C3A,C4AF,biomass,msw,geo/
+                 /coal,met,
+                 dummyf,u-235, natgas,
+                 methane,ethane,propane,gcond,NGL,
+                 crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
+                 lightcrude,HFO,diesel/
 
-         f(allmaterials) fuels /coal,met,hardcoke,lignite,
-                 crude,dummyf,u-235,natgas,ethane,methane,NGL,
-                 propane,naphtha,Gcond,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,lightcrude,
-                 hsr-naphtha,lsr-naphtha,hh-naphtha,hl-naphtha,sr-resid,Asphalt
-                 sr-keros,sr-distill,cc-gasoline,cc-naphtha,lhc-naphtha,lt-naphtha,
-                 a-gasoline,v-gas-oil,hv-gas-oil,v-resid,cc-gas-oil,c-gas-oil,c-naphtha,
-                 ref-gas,fuel-gas,isomerate,h-reformate,l-reformate,95motorgas,91motorgas,
-                 LPG,vis-resid,olefingas,petcoke,HFO,Diesel,Butane,Pentane,Jet-fuel,
-                 ht-diesel,hc-diesel,MTBE,biomass,msw,geo/
+         f(allmaterials) fuels
+                 /coal,met,
+                 dummyf,u-235, natgas,
+                 methane,ethane,propane,gcond,NGL,
+                 crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
+                 lightcrude,HFO,diesel/
 
 
-         fup(f) upstream fuels /coal,met,hardcoke,lignite,
-                               methane,ethane,propane,gcond,NGL,u-235,
-                               crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy/
+         fup(f) upstream fuels
+                 /coal,met,
+                 dummyf,u-235, natgas,
+                 methane,ethane,propane,gcond,NGL,
+                 lightcrude,crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy/
 
 
-         COf(f) coal fuel types /met,hardcoke,coal/
+         COf(f) coal fuel types /met,coal/
 
          COfdem(COf) /met,coal/
          coal(COf) thermal coal fuel types /coal/
 
-         met(COf) metallurigcal fuel types /met,hardcoke/
-*,anthracite,meagre,weakcoke,strongcoke,thermcoal,lignite/
-*,crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,methane,ethane,NGL,propane,Gcond,u-235,dummyf/
-*         natgas(fup) natural gas / methane,ethane,NGL,propane,Gcond/
-*         crude(fup) crude grades /Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy/
-*         coal(COf) /met,hardcoke,coal/
-*,lignite/
+         met(COf) metallurigcal fuel types /met/
 
          IHScoaluse / 'Electricity Generation','Industry (excluding met. coal)',
                          'Heat Supply','Residential','Other Non-Industry','Metallurgical' /
@@ -76,9 +59,7 @@ Sets
 
          IHSother(IHScoaluse)
 
-         COstats /'Production','coal prod IHS','met prod IHS','Other','Metallurgical','Power'/
-
-         COforecast coal price forecast scenarios /max,min,con/
+         COstats /'Production','Other','Metallurgical','Power'/
 
          mm mining method /open,under/
          ssi steps for import supply curve /ss0*ss20/
@@ -115,6 +96,8 @@ Sets
          tr transportation modes /rail,port,truck/
          port(tr) water based transportation /port/
          rail(tr) rail tranportation /rail/
+         truck /truck/
+
          land(tr) land based transport modes
 ;
 
@@ -141,10 +124,6 @@ sets
          grid    /North, Northeast, Central, East, West, South/
          rgrid(r,grid)
          GB(rALL) standard label for chinese provinces
-         province province of each node
-         city name of major city
-         node_type node type
-         nodes(rco,GB,province,city,node_type) all nodes with region label and full name
          regions(rco,GB) table used to aggregate provincial demand data into regional demand data
          rco_r_dem(rco,r) supply or transit nodes that can be used for coal consumption in remand region r
          rcodem(rco) all nodes that can be used for coal consumption
@@ -158,10 +137,7 @@ sets
          ss domestic coal supply sources for IHS Cola Rush report
 
          coord /latitude,longitude/
-
-
 ;
-
          land(tr) = yes;
          land(port) = no;
 
@@ -169,8 +145,8 @@ sets
 
 *$ontext
 $gdxin db\setsandparameters.gdx
-$load Rall, rco,GB, r,regions, rco_r_dem, ss, province, city, node_type, nodes, rport_sea,
-$load rport_riv, rport
+$load Rall, rco,GB, r,regions, rco_r_dem, ss, rport_sea,
+$load rport_riv, rport, rimp,
 $load latitude, longitude
 $gdxin
 
@@ -183,9 +159,7 @@ set
          West(r) /West,Xinjiang/
          Henan(r) /Henan/
          Shandong(r) /Shandong/
-
          Xinjiang(r) /Xinjiang/
-
          rdem_on(rco);
 
          Alias(North,N) ;
@@ -201,11 +175,6 @@ set
          rgrid(Central,'Central') = yes;
          rgrid(West,'West') = yes;
          rgrid(South,'South') = yes;
-
-loop((GB,city,node_type),
-         rimp(rco)$nodes(rco,GB,"Import",city,node_type) = yes;
-         rexp(rco)$nodes(rco,GB,"Export",city,node_type) = yes;
-);
 
          loop(r,
                  rcodem(rco)$rco_r_dem(rco,r) = yes;
@@ -224,10 +193,10 @@ loop((GB,city,node_type),
 
          alias (rw,rww)
          alias (COf,COff);
+         alias (coal,coall)
 
          set    ELs /summ/
 
-*,wint,spfa/
          alias (ELs,ELss)
 
 *Sets and variables specific to the submodels:
@@ -239,13 +208,13 @@ Sets
 
          ELc power plant companies /     ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
                                          Hydrolg,Hydrosto,HydroROR,
-                                         Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                         Windon, Windoff,SubcrSML,SubcrLRG,
                                          Superc,Ultrsc
                                          ELbig
                                    /
          ELp(ELc) power plant types /    ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
                                          Hydrolg,Hydrosto,HydroROR,
-                                         Windon, Windoff,Subcr,SubcrSML,SubcrLRG,
+                                         Windon, Windoff,SubcrSML,SubcrLRG,
                                          Superc,Ultrsc/
 
          ELbig(ELc) Full regional market concentration /ELbig/
@@ -356,9 +325,8 @@ Sets
 
          ELpbld(ELp,v)$( (not ELpgttocc(ELp) and vn(v)) or
                          (vo(v) and ELpgttocc(ELp)))  = yes ;
-         ELpbld('CCcon',v)=0;
-         ELpbld('PV',v)=0;
-         ELpbld('Subcr',v)=0;
+         ELpbld('CCcon',v)=no;
+         ELpbld('PV',v)=no;
 
          ELfCV(ELfcoal,cv_ord,sulf) = yes;
          ELfCV(ELfnuclear,CVf,'ExtLow') = yes;
@@ -373,21 +341,13 @@ Sets
 
          Parameter
          ELlchours(ELl) time (hours) in each load segment 1 = peak 5 = base
-/
+         /
          LS1  117
          LS2  1127
          LS3  3820
          LS4  3024
          LS5  696
-
-$ontext
-         LS1  117
-         LS2  1130
-         LS3  3830
-         LS4  3007
-         LS5  700
-$offtext
-/
+         /
 
 
          ELsdays(ELs)
@@ -496,6 +456,7 @@ Variable objvalue;
 variables
 
          COobjvalue
+         COobjvalue_CFS           objective value including CFS
          DCOpurchbal(trun)        free dual of purchbal
          DCOcnstrctbal(trun)      free dual of cnstrctbal
          DCOopmaintbal(trun)      free dual of opmaintbal
@@ -601,6 +562,8 @@ Variables
          y(f,trun)
          testing(trun)
 *         fsubsidy(trun)
+
+         ELprofit(ELc,vv,trun,r)
 
 *Dual activities for the MCP
          DELpurchbal(trun)               free dual of purchbal
@@ -714,7 +677,7 @@ Positive variables
          DELCOcvlimit(Elpd,trun,r)
 
 * Duals for profit constraint and wind target
-         DELprofit(ELc,v,trun,r)
+         DELrevenue_constraint_bilinear(ELc,v,trun,r)
          DELwindtarget(trun)
          DELfitcap(ELp,v,trun,r)
          DELdeficitcap(trun)

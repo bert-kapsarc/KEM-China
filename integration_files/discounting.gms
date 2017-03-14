@@ -16,7 +16,7 @@
 ********* Discounting coal tranport submodel
          COdiscfact(trun)=discfact(COdiscrate,trun);
 
-         COdiscoef(trun) = discounting(30,COdiscrate,i,trun,thyb);
+         COdiscoef(trun) = discounting(50,COdiscrate,i,trun,thyb);
 
 
          COpurcst(COf,mm,trun,rco)  = 0*COdiscoef(trun);;

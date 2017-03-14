@@ -6,15 +6,15 @@ Q1=SELECT 'HVAC',r,rr,AC FROM ELtransgrid \
 UNION SELECT 'UHVDC',r,rr,DC FROM ELtransgrid
 P1=ELtransexist
 
-Q2=SELECT ELp,vintage,size,[Heat Recovery],GB,SumOfGW FROM ELexist_coal \
-UNION SELECT ELp,vintage,'large',[Heat Recovery],rdem,SumOfGW FROM ELexist_nuclear \
-UNION SELECT ELp,vintage,'large',[Heat Recovery],rdem,SumOfGW FROM ELexist_other
+Q2=SELECT ELp,vintage,[Heat Recovery],Region,SumOfGW FROM ELexist_coal \
+UNION SELECT ELp,vintage,[Heat Recovery],Region,SumOfGW FROM ELexist_nuclear \
+UNION SELECT ELp,vintage,[Heat Recovery],Region,SumOfGW FROM ELexist_other
 P2=ELexist
 
-Q3=SELECT ELp,vintage,size,[Heat Recovery],rdem,SumOfGW FROM ELexist_coal_nox
+Q3=SELECT ELp,vintage,[Heat Recovery],Region,SumOfGW FROM ELexist_coal_nox
 P3=ELnoxexist
 
-Q4=SELECT ELp,vintage,size,[Heat Recovery],rdem,SumOfGW FROM ELexist_coal_sox
+Q4=SELECT ELp,vintage,[Heat Recovery],Region,SumOfGW FROM ELexist_coal_sox
 P4=ELfgdexist
 
 Q5=SELECT r,ophours FROM ELhydrohours
@@ -26,15 +26,7 @@ P6=ELhydexist
 Q7=SELECT Region,SumOfGW FROM IHS_wind
 P7=ELwindexist
 
-
-Q8=SELECT 'lightcrude','t12',[rdem],[Crude, mmbbl] FROM FuelAllocation2012,[nodes]  Where [Prov]=Province \
-UNION SELECT 'diesel','t12',[rdem],[Diesel, mt] FROM FuelAllocation2012,[nodes]  Where [Prov]=Province \
-UNION SELECT 'HFO','t12',[rdem],[Fuel oil, mt] FROM FuelAllocation2012,[nodes]  Where [Prov]=Province \
-UNION SELECT 'methane','t12',[rdem],[all gas, trillion btu] FROM FuelAllocation2012,[nodes]  Where [Prov]=Province \
-UNION SELECT 'coal','t12',[rdem],[coal, mtce] FROM FuelAllocation2012,[nodes]  Where [Prov]=Province
-P8=ELfconsumpmax
-
-Q9=SELECT [rdem],[2012]/1000 FROM [hydro_capacity_CEIC],nodes WHERE Prov=[Province]
+Q9=SELECT Region,[SumOf2012]/1000 FROM [CEIC Hydro]
 P9=ELhydroCEIC
 
 Q10=SELECT ELp,Region,Tariff FROM OnGridTariffs
@@ -47,7 +39,11 @@ Q12=SELECT 'HVAC',r,rr,Distance from ELtransgrid Where Connect_AC OR [AC]>0 \
 UNION SELECT 'UHVDC',r,rr,Distance from ELtransgrid Where Connect_DC OR [DC]>0
 P12=ELtransD
 
+Q13=SELECT Fuel,Region,Consumption FROM FuelAllocation
+P13=FuelAllocation
 
+Q14=SELECT Fuel,Time,Multiplier FROM FuelAllocationTrend
+P14=FuelAllocationTrend
 
 $offecho
 

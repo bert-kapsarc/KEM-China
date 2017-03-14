@@ -92,12 +92,6 @@ Cotransbldpath(tr,trun,rrco,rco,path_order)$(not port(tr))= Cotransbldpath(tr,tr
 
 * reset node type if no production
 
-    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))>0) =yes;
-    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"intermediate") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))>0) =no;
-
-    nodes(rco,GB,province,city,"intermediate")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))=0) =yes;
-    nodes(rco,GB,province,city,"supply")$(nodes(rco,GB,province,city,"supply") and sum((COf,cv,sulf,trun),coalprod.l(COf,cv,sulf,trun,rco))=0) =no;
-
 parameter coalprod_calib(COf,cv,sulf,trun,rco) ;
 
 
@@ -144,5 +138,5 @@ EIA('China weighted average marginal cost',COf,trun) = coal_price('All',COf,trun
 EIA('Qinghuangdao',COf,trun) = coal_price('Qinghuangdao',COf,trun);
 EIA('Imports 7000 kcal/kg', COf, trun) = coal_imp_SCE(COf,trun);
 EIA('Production 7000 kcal/kg', COf, trun) = coal_prod_SCE(COf,trun);
-EIA('Coal demand trillion btu',COf,trun) = COconsumpEIA(COF,trun) ;
+*EIA('Coal demand trillion btu',COf,trun) = COconsumpEIA(COF,trun) ;
 EIA('Coal demand 7000 kcal/kg',COf,trun) = sum(rr,OTHERCOconsump(COF,trun,rr));

@@ -1,7 +1,7 @@
 model PowerLP Equation for power submodule LP (primal equations must match MCP)/
 *ELProfit, Ignore profit constraint in LP model. this constraint can only be exprewssed as an MCP.
 ELobjective
-ELprofit,
+ELprofit_eqn,
 ELwindtarget,
 ELdeficitcap,
 ELpurchbal,ELcnstrctbal,ELopmaintbal,
@@ -22,7 +22,7 @@ ELfgccaplim,ELfgccapmax,ELfgccapbal
 model PowerMCP
 
 /
-ELProfit.DELprofit,ELwindtarget.DELwindtarget,
+ELProfit_eqn,ELrevenue_constraint_bilinear.DELrevenue_constraint_bilinear,ELwindtarget.DELwindtarget,
 *ELfitcap.DELfitcap,DELwindsub.ELwindsub,
 ELdeficitcap.DELdeficitcap,
 ELpurchbal.DELpurchbal,ELcnstrctbal.DELcnstrctbal,ELopmaintbal.DELopmaintbal,
@@ -54,6 +54,7 @@ DELcapsub.Elcapsub,DELdeficit.ELdeficit,
 
 
 model CoalLP Equation for power submodule LP (primal equations must match MCP)/
+COobjective_CFS
 COobjective
 COpurchbal,COcnstrctbal,COopmaintbal,
 COcapbal,COcaplim,
@@ -129,17 +130,19 @@ EMfgbal.DEMfgbal,EMELSO2std.DEMELSO2std,EMELNO2std.DEMELNO2std
 
 equation objective;
 $offorder
-objective.. objvalue =e=COobjvalue+ELobjvalue;
+objective.. objvalue =e=COobjvalue_CFS+ELobjvalue;
 $onorder
 
 
 * additional model options.
 
-Model CoalPowerLP /PowerLP CoalLP objective/ ;
+Model CoalPowerLP /PowerLP ELrevenue_constraint CoalLP objective/ ;
+Model CoalPowerNLP /PowerLP ELrevenue_constraint_bilinear CoalLP objective/ ;
 Model CoalPowerMCP /PowerMCP CoalMCP/ ;
 
-Model IntegratedLP /PowerLP EmissionLP CoalLP objective/ ;
-Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
+Model IntegratedLP /CoalPowerLP EmissionLP/ ;
+Model IntegratedNLP /CoalPowerNLP EmissionLP/ ;
+Model IntegratedMCP /CoalPowerMCP EmissionMCP/ ;
 
          option savepoint=1;
          option MCP=PATH;
@@ -156,8 +159,8 @@ Model IntegratedMCP /PowerMCP CoalMCP EmissionMCP/ ;
          PowerMCP.scaleopt=1;
          CoalMCP.scaleopt=1;
 
-         ELprofit.scale(ELc,v,trun,r)=1e2;
-         DELprofit.scale(ELc,v,trun,r)=1e-2;
+         ELrevenue_constraint_bilinear.scale(ELc,v,trun,r)=1e2;
+         DELrevenue_constraint_bilinear.scale(ELc,v,trun,r)=1e-2;
 
          EMfgbal.scale(ELpcoal,v,trun,r)=1e3;
          DEMfgbal.scale(ELpcoal,v,trun,r)=1e-3;

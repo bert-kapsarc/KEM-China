@@ -1,24 +1,17 @@
-         COintlprice(COf,ssi,cv_ord,sulf,time,rimp) = 0;
+*!!!     Set upper bound on imports from some suppliers.
+         COfimpmax('met',trun,'IMMN') = 25;
+         COfimpmax('coal',trun,'IMKP') = 25;
 
-* Extract EIA table coal prices and interpolate to match the CV bins used by the model
-* convert USD to 2012 RMB. Prices are listed for Guangdong Guizhou port
 
-         COintlprice(COf,"ss1",cv_ord,"low",time,rport_sea)$(coalintlcvEIA(COf,time,'IMOT','south')>=COboundCV(cv_ord,'lo') and
-                                               coalintlcvEIA(COf,time,'IMOT','south')<COboundCV(cv_ord,'up')    and
-                                                 coalintlpriceEIA(COf,time,'IMOT','south')>0)
-         =coalintlpriceEIA(COf,time,'IMOT','south')*6.310*COcvSCE(cv_ord)*7000/coalintlcvEIA(COf,time,'IMOT','south')/1.17*1.5;
+Parameter COimportprice(COf,cv,sulf,rco)
+          COpricetrend(time)
+          WCD_Quads(time) world coal demand in quadrillion btu;
 
-*        COintlprice(COf,'ss1',cv_ord,sulf,time,rimp,rrco)$(COintlprice(COf,'ss1',cv_ord,sulf,time,rimp,rrco)=0 and path('port',rimp,rrco))
-*         = COintlprice(COf,'ss1',cv_ord,sulf,time,rimp,'South');
+$gdxin db\coalprod.gdx
+$load  COimportprice COpricetrend WCD_Quads
+$gdxin
 
-        COintlprice('met','ss1','CVmet','low',time,rport_sea) = smax(cv_ord,COintlprice('coal','ss1',cv_ord,'low',time,rport_sea)/COcvSCE(cv_ord))*1.55;
-
-*       set import price fro met coal from inner mongolia
-        COintlprice('met','ss1',cv_met,'low',time,"IMMN")= COintlprice('met','ss1',cv_met,'low',time,"south")*0.75;
-
-*       set import price fro met coal from North Korea
-        COintlprice('coal','ss1',cv_ord,'low',time,"IMKP") = COintlprice('coal','ss1',cv_ord,'low',time,"south")*0.9;
-
+         COintlprice(COf,"ss1",cv,sulf,time,rco) = COimportprice(COf,cv,sulf,rco)*COpricetrend(time);
 
          loop(ssi,
          COintlprice(COf,ssi,cv,sulf,time,rco)  =

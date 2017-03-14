@@ -211,7 +211,7 @@ parameter Accounting utilities costs from the original LP's objective value
 parameter windsubsidy_res(Elpw,v,trun,r);
 windsubsidy_res(Elpw,v,trun,r)=
 (
-         +sum((ELl,ELf)$ELpELf(ELpw,ELf),ELop.l(ELpw,v,ELl,ELf,trun,r))*(ELtariffmax('Subcr',r)-ELomcst(ELpw,v,r))
+         +sum((ELl,ELf)$ELpELf(ELpw,ELf),ELop.l(ELpw,v,ELl,ELf,trun,r))*(ELtariffmax('SubcrLRG',r)-ELomcst(ELpw,v,r))
          -ELbld.l(ELpw,v,trun,r)*ELpfixedcost(ELpw,v,trun,r)$vn(v)
          -ELexistcp.l(ELpw,v,trun,r)*ELpsunkcost(ELpw,v,trun,r)
 )$(ELpfit=1)  ;

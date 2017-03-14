@@ -125,27 +125,7 @@ parameter ELpSO2std(ELp,v,trun,r), ELpNO2std(ELp,v,trun,r);
 
 *       mg per cubic meter
 parameter NOxC(r,ELp) concentration of nox in flu gas mg per normal cubic meter
-
           NO2C(r,ELp) concentration of no2 in flu gas mg per normal cubic meter
-$ontext
-                         Subcr           Superc          ultrsc
-         South           650             625             600
-
-         CoalC           600             600             600
-         Northeast       700             700             700
-         East            650             625             600
-         Central         700             700             700
-         Shandong        600             600             600
-         Henan           650             625             600
-         North           650             650             650
-         Sichuan         700             700             700
-         Southwest       700             675             650
-         Tibet           650             650             650
-         West            700             675             650
-         Xinjiang        625             600             575
-
-;
-$offtext
 ;
 * convert to tons per cubic meter
 NOxC(r,ELpcoal) = 650*1e-9;

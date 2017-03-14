@@ -1,7 +1,3 @@
-*Surcahrges sourced from Credit Suisse report 2013
-scalar   CF_surcharge railway construction fund surcharge;
-scalar   EL_surcharge railway electrification surcharge;
-
 parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
           COfexpmax(time,rco) fixed coal export quantity by port of departure
@@ -15,80 +11,35 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
           COtransbudget(tr,time) budget constraint for investment of tranportation infrastrcuture in million RMB
 
-          COtransomcst(tr,rco,rrco) O&M cost in Yuan per tonne per km
-          COtransomcst2(COf,tr,rco,rrco) O&M cost in Yuan per tonne per km
-          COtransomcst1(COf,tr) O&M cost in Yuan per tonne
-
           COtransexist(tr,rco,rrco)  existing coal transportation capacity
-*          COtransalloc(tr,rco,rrco)  allocated coal transportation capacity
-
           COtransleadtime(tr,rco,rrco) lead time for building fuel transport
-
 
           COtransyield(tr,rco,rrco) net of self-consumption and distribution losses
 
-          OTHERCOconsumpProv(COf,IHScoaluse,time,rAll) provincial coal consumption
-
           OTHERCOconsump(COf,time,rr) exogenous coal demand
 
-*          OTHERCOconsumpProv_weight(COf,time,rAll) exogenous coal demand by total weight
-
-*          OTHERCOconsump_weight(COf,time,rr) exogenous coal demand by total weight
-
-          COtranslifetime(tr) Lifetime of tranportation equipment
-
           COintlprice(COf,ssi,cv,sulf,time,rco) market price for fuels for aggreaget CV bin
-
-          coalintlprice(COf,time,rco,rrco) inlt price of specific CV
-          coalintlcv(COf,time,rco,rrco) colorific value of imported coal
 
           COfimpmax(COf,time,rco) maximum coal supply for each type of coal
 
           COfimpss(COf,ssi,cv,sulf,time) available coal in import supply step ssi
 
+          COtransomcst_var(COf,tr) Variable O&M cost per ton -km
+          COtransomcst_fixed(COf,tr) Fixed transport operation cost per ton
+
+          COtransomcst2(COf,tr,time) Variable O&M cost per ton -km
+          COtransomcst1(COf,tr,time) Fixed transport operation cost per ton
+          RailSurcharge rail tax collected for electricification and construction;
+
 ;
 
 
-
-          COtranslifetime(tr) = 100;
-
 $gdxin db\coaltrans.gdx
-$load COtransD COtransexist OTHERCOconsumpProv COtransomcst COtranscapex
-* COtransyield COtransalloc COfexpmax
+$load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge
 $gdxin
 
-*$gdxin db\coalprod.gdx
-*$load COfimpmax
-*$gdxin
-
-
-          COtransleadtime(tr,rco,rrco) = 0;
-*          COtransleadtime('rail',rco,rrco)$(COtransexist('rail',rco,rrco)=0)=3;
-*          COtransleadtime('rail',rco,rrco)$(COtransexist('rail',rco,rrco)>0)=1;
-*          COtransleadtime('port',rco,rrco)=2;
-
-parameter COconsumpEIA(COf,time) EIA coal demand forecast,
-          coalintlpriceEIA(COf,time,rco,rrco) EIA international coal price reference (for china )
-          coalintlcvEIA(COf,time,rco,rrco) calorfic value of import coal
-          WCD_Quads(time) worl coal demand in quadrillion btu;
-
-$gdxin db\coalprod.gdx
-$load coalintlpriceEIA coalintlcvEIA COconsumpEIA WCD_Quads
-$gdxin
-
-
-*        forecast coal price trend, Source: Metal Expert Consulting October 2013, KAPSARC Research
-*        assuming average steam coal price of 87 $/ton in 2013.
-*        average coking/met coal price 152 $/ton in 2013.
-         table COpricetrend(COf,time,COforecast)
-                                 min     con     max
-         coal.t14             -0.04   0.011   0.05
-         coal.t15             -0.04   0.056   0.10
-
-         (hardcoke,met).t14     -0.063   0.051   0.12
-         (hardcoke,met).t15     -0.044   0.061   0.20
-         ;
-
+         COtransomcst2(COf,tr,time) = COtransomcst_var(COf,tr);
+         COtransomcst1(COf,tr,time) = COtransomcst_fixed(COf,tr);
 
 
 * replicate distance between nodes
@@ -105,20 +56,15 @@ COtransD('truck',rco,rrco)$(COtransD('truck',rco,rrco)=0) =
 * Create connection between all river and sea ports with positive distance
 * river ports connect to accesible sea ports on river mouth.
 * In the database non-connected river and sea ports are flagged with distance -1
-
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)>0) = 1;
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)<=0) = 0;
 
 
-* allow sea ports to export
-COtransyield(port,rport_sea,rexp)= 1;
-*COtransyield(port,rport_sea,rrport)$rimp(rrport)= 1;
-
 * allow import to domestic market.
-COtransyield(port,rport,rrport_sea)$rimp(rport)= 1;
+COtransyield(port,rimp,rrport_sea)= 1;
 
-* Dont allow import and export basins to exchange coal!
-COtransyield(port,rimp,rexp)= 0;
+* no movement of cargo to import nodes
+COtransyield(tr,rco,rimp)=0;
 
 * COtransyield is set to 1 for port self connection
 * This is used in the capacity limit equation for incoming outgoing shipments
@@ -135,73 +81,27 @@ COtransyield(land,rco,rco)=0;
 * As an assumption for truck routes when rail is bottlenecked
 COtransyield('truck',rco,rrco)$(COtransyield('rail',rco,rrco)>0)=1;
 
-* prohibit trucked imports
-*COtransyield('truck',rimp,rrco)=0;
-
-
 * Allow shipment in both directions along any transportation arc
 COtransyield(land,rrco,rco)$(COtransyield(land,rco,rrco)>0) =
                  COtransyield(land,rco,rrco);
 
 
-* Introduce average 1% transporation loss for all modes
-COtransyield(tr,rco,rrco) = COtransyield(tr,rco,rrco)*1;
-
 *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-*        declare and define arc set
 
-         set arc(tr,rco,rrco), pathimp(rco,rrco), pathexp(rco,rrco);
+*        declare and define arc
 
-*        all import paths use transportation modes classified as general
-         loop(tr,
-            pathimp(rimp,rrco)$(COtransyield(tr,rimp,rrco)>0) = yes;
-            pathexp(rco,rexp)$(COtransyield(tr,rco,rexp)>0 and not rexp(rco)) = yes;
-         );
-
-            pathimp(rrco,rimp)= pathimp(rimp,rrco);
+         set arc(tr,rco,rrco) set to identify existing transport connections for all modes
+;
             arc(tr,rco,rrco)$(COtransyield(tr,rco,rrco)>0) = yes;
-            arc('port',rimp,rrco) = no;
             arc('truck',rrco,rrco) = no;
-*            arc(tr,rco,'EXP') = yes;
-*not rimp(rrco) and not rexp(rco) and
-
-
-         COtransyield(tr,rco,rimp)=0;
 
 *!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-
-
-* allow for large quantities of coal transport by truck
-COtransexist('truck',rco,rrco)$arc('truck',rco,rrco)=1e4;
-
-
-parameter RailSurcharge(time) rail tax collected for electricification and construction;
-RailSurcharge(trun) = 0.045;
-
-* tariff structure for rail freight lines
-COtransomcst2(COf,'rail',rco,rrco)$arc('rail',rco,rrco)= 0.0753;
-COtransomcst1(COf,'rail') = 13.8;
-
-COtransomcst2(COf,"truck",rco,rrco)$arc('truck',rco,rrco) = 0.55;
-
-
-* port loading fee estimate 20 Yuan per ton
- COtransomcst1(COf,'port')=20;
-
-* !!!!!!!!!!!LOAD average port shipping rates from database
-* and extract variable distance rate assuming above loading/unloading fee.
- COtransomcst2(COf,'port',rport,rrport)$(COtransD('port',rport,rrport)>0 and COtransomcst('port',rport,rrport)>0) =
-(COtransomcst('port',rport,rrport)*COtransD('port',rport,rrport)
-         -COtransomcst1(COf,'port'))/COtransD('port',rport,rrport);
-
-* Where we do not have an average we use the average sourced from Standard Chartered Report accouting for 30 RMB/ton loading fee
- COtransomcst2(COf,'port',rport,rrport)$(COtransomcst2(COf,'port',rport,rrport)=0)
-          = 0.004;
-* river variable transportation rate 0.07 gives 0.10 RMB/ton-km for 1000 km trip with above laoding fee
- COtransomcst2(COf,'port',rport_riv,rrport_riv)
-          = 0.04;
+**********Set leadtimes on new infrasturucture pojects
+          COtransleadtime('rail',rco,rrco)$(arc('rail',rco,rrco) and COtransexist('rail',rco,rrco)=0 and card(thyb)>3)=3;
+          COtransleadtime('rail',rco,rrco)$(arc('rail',rco,rrco) and card(thyb)>1) =1;
+          COtransleadtime('port',rco,rrco)$(arc('port',rco,rrco) and card(thyb)>2) =2;
+          COtransleadtime(tr,rco,rrco)$(card(thyb)<=COtransleadtime(tr,rco,rrco))=0;
 
 
 *estimate transcapex cost if not input. use an average of other rail expansion costs
@@ -217,13 +117,6 @@ COtranscapex('port',rco,rco) = 100;
 
 
 COtransbudget('rail','t15') = 500e3;
-
-
-**********Set leadtimes on new infrasturucture pojects
-          COtransleadtime('rail',rco,rrco)$(arc('rail',rco,rrco) and COtransexist('rail',rco,rrco)=0 and card(thyb)>3)=3;
-          COtransleadtime('rail',rco,rrco)$(arc('rail',rco,rrco) and card(thyb)>1)=1;
-          COtransleadtime('port',rco,rrco)$(arc('port',rco,rrco) and card(thyb)>2) =2;
-          COtransleadtime(tr,rco,rrco)$(card(thyb)<=COtransleadtime(tr,rco,rrco))=0;
 
 
 *********variable fix and upper bounds
@@ -254,6 +147,7 @@ COtransbudget('rail','t15') = 500e3;
 Equations
 * ====================== Primal Relationships =================================*
          COobjective  Equation (2-1).(1)
+         COobjective_CFS Equation (2-1).(1) with construction fund surcharge cost
 
          COtransPurchbal(trun) acumulates all purchases
          COtransCnstrctbal(trun) accumlates all construction activity
@@ -327,24 +221,32 @@ $ontext
 $offtext
          ;
 
+COobjective_CFS.. COobjvalue_CFS =e= COobjvalue
+ +( sum((COf,cv,sulf,tr,rco,rrco,t)$(
+         COfCV(COf,cv) and arc(tr,rco,rrco) and rail(tr)),
+         RailSurcharge(t)*COtransD(tr,rco,rrco)*
+         COtrans(COf,cv,sulf,tr,t,rco,rrco) )
+   -sum((tr,rco,rrco,t)$(arc(tr,rco,rrco) and not truck(tr)),
+         rail_disc(tr,t,rco,rrco)*COtransbld(tr,t,rco,rrco)*
+         (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr)) )
+   )$(COrailCFS=1)
+;
 
-COtranspurchbal(t).. sum((tr,rco,rrco)$arc(tr,rco,rrco),
+COtranspurchbal(t).. sum((tr,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr)),
          COtranspurcst(tr,t,rco,rrco)*COtransbld(tr,t,rco,rrco)*
                          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr)) )
            -COtranspurchase(t)=e=0;
 
 COtranscnstrctbal(t)..
-  +sum((tr,rco,rrco)$arc(tr,rco,rrco),
-         (       COtransconstcst(tr,t,rco,rrco)-rail_disc(tr,t,rco,rrco)$(COrailCFS=1)
-
-         )*COtransbld(tr,t,rco,rrco)*
+  +sum((tr,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr)),
+         COtransconstcst(tr,t,rco,rrco)*COtransbld(tr,t,rco,rrco)*
          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
    )
 
   -COtransconstruct(t)=e=0;
 
 
-COtransbldeq(tr,t,rco,rrco)$land(tr)..
+COtransbldeq(tr,t,rco,rrco)$(land(tr) and not truck(tr))..
    COtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco)
   -COtransbld(tr,t,rrco,rco)$arc(tr,rrco,rco) =g= 0 ;
 
@@ -354,16 +256,18 @@ COtransOpmaintbal(t)..
 *         and not rimp(rco) and not rexp(rrco)
 ******* No load/unloading fee for imported coal (price incl unloading fees)
 ******* No variablie tranport fees for import coal (price incl transport)
-          COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco)*COtrans(COf,cv,sulf,tr,t,rco,rrco)
-         +COtransomcst1(COf,tr)*COtrans(COf,cv,sulf,tr,t,rco,rrco)$port(tr)
+         (
+                   COtransomcst2(COf,tr,t)*COtransD(tr,rco,rrco)
+                  +COtransomcst1(COf,tr,t)$port(tr)
+         )*COtrans(COf,cv,sulf,tr,t,rco,rrco)
   )
   +sum((COf,tr,rco)$(land(tr)),
-         COtransomcst1(COf,tr)*COtransload(COf,tr,t,rco))
+         COtransomcst1(COf,tr,t)*COtransload(COf,tr,t,rco))
          -COtransopandmaint(t) =e=0
 ;
 
 
-COimportbal(t).. sum((COf,ssi,cv,sulf,rco)$(COfCV(COf,cv)
+COimportbal(t).. sum((COf,ssi,cv,sulf,rco)$(COfCV(COf,cv) and rimp(rco)
          and COintlprice(COf,ssi,cv,sulf,t,rco)>0 and COfimpss(COf,ssi,cv,sulf,t)>0),
          COintlprice(COf,ssi,cv,sulf,t,rco)*
          coalimports(COf,ssi,cv,sulf,t,rco))
@@ -451,13 +355,13 @@ COdemOther(COf,t,rr)..
                          =g= OTHERCOconsump(COf,t,rr)
 ;
 
-COtranscapbal(tr,t,rco,rrco)$arc(tr,rco,rrco)..
+COtranscapbal(tr,t,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr))..
                   COtransexistcp(tr,t,rco,rrco)
                  +COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco)
                  -COtransexistcp(tr,t+1,rco,rrco) =g=0
 ;
 
-COtranscaplim(tr,t,rco,rrco)$(arc(tr,rco,rrco) and land(tr))..
+COtranscaplim(tr,t,rco,rrco)$(arc(tr,rco,rrco) and land(tr) and not truck(tr))..
    COtransexistcp(tr,t,rco,rrco)
   +COtransbld(tr,t-COtransleadtime(tr,rco,rrco),rco,rrco)
   -sum((COf,cv,sulf)$COfCV(COf,cv),
@@ -536,7 +440,7 @@ Dcoaluse(COf,cv,sulf,t,rco)$COfcv(COf,cv).. 0 =g=
 ;
 
 
-DCOtransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco)..
+DCOtransexistcp(tr,t,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr))..
 
 
    0=g=
@@ -546,7 +450,7 @@ DCOtransexistcp(tr,t,rco,rrco)$arc(tr,rco,rrco)..
   +DCOtransportcaplim(tr,t,rco)$(rport(rco) and port(tr) and ord(rco)=ord(rrco))
 ;
 
-DCOtransbld(tr,t,rco,rrco)$arc(tr,rco,rrco).. 0=g=
+DCOtransbld(tr,t,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr)).. 0=g=
 
    DCOtranspurchbal(t)*COtranspurcst(tr,t,rco,rrco)*
          (COtransD(tr,rco,rrco)$land(tr) + 1$port(tr))
@@ -568,8 +472,8 @@ DCOtrans(COf,cv,sulf,tr,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 
   +(RailSurcharge(t)*COtransD(tr,rco,rrco))$(COrailCFS=1 and rail(tr)) =g=
 
-  +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,rco,rrco)*COtransD(tr,rco,rrco))
-  +DCOtransopmaintbal(t)*COtransomcst1(COf,tr)$(port(tr))
+  +DCOtransopmaintbal(t)*(COtransomcst2(COf,tr,t)*COtransD(tr,rco,rrco))
+  +DCOtransopmaintbal(t)*COtransomcst1(COf,tr,t)$(port(tr))
 
   +DCOtransloadlim(COf,tr,t,rrco)*COtransyield(tr,rco,rrco)$land(tr)
   -DCOtransloadlim(COf,tr,t,rco)$land(tr)
@@ -578,7 +482,7 @@ DCOtrans(COf,cv,sulf,tr,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
   -DCOsup(COf,cv,sulf,t,rco)
 
 
-  -DCOtranscaplim(tr,t,rco,rrco)$land(tr)
+  -DCOtranscaplim(tr,t,rco,rrco)$(land(tr) and not truck(tr))
 
   -(DCOtransportcaplim(tr,t,rco)
          +DCOtransportcaplim(tr,t,rrco)*COtransyield(tr,rco,rrco))$(
@@ -586,7 +490,7 @@ DCOtrans(COf,cv,sulf,tr,t,rco,rrco)$(COfCV(COf,cv)and arc(tr,rco,rrco))..
 ;
 
 DCOtransload(COf,tr,t,rco)$land(tr).. 0 =g=
-   DCOtransopmaintbal(t)*COtransomcst1(COf,tr)
+   DCOtransopmaintbal(t)*COtransomcst1(COf,tr,t)
   +DCOtransloadlim(COf,tr,t,rco)
 
 
