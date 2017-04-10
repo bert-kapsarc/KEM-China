@@ -822,7 +822,7 @@ ELcapbal(ELp,v,t,r).. ELexistcp(ELp,v,t,r)
    -ELexistcp(ELp,v,t+1,r)=g=0
 ;
 
-ELcaplim(ELp,v,ELl,t,r)$ELpd(Elp)..
+ELcaplim(ELp,v,ELl,t,r)..
    ELcapfac(ELp,v)*ELlchours(ELl)*(
           ELexistcp(ELp,v,t,r)
          +sum(Elpp$ELpbld(Elpp,v),
