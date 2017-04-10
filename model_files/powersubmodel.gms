@@ -503,7 +503,7 @@ parameters
          ELlcgw(rr,ELl) regional load in GW for each load segment in ELlchours
          ELlcgwsales(rr,ELl) regional load for grid sales in GW for each load segment in ELlchours
          ELlcgwonsite(rr,ELl) regional load for on site generation in GW for each load segment in ELlchours
-         ELdemand(trun,rr)  total power demand in each region (used to asses the onsite generation requirements)
+         ELdemand(time,rr)  total power demand in each region (used to asses the onsite generation requirements)
 
 /
          t12.North           467.45
@@ -521,7 +521,7 @@ parameters
          t12.Xinjiang        109.08
 /
 
-         ELexistonsite(trun,r) percentage of onsite generation capacity
+         ELexistonsite(time,r) percentage of onsite generation capacity
 /
          t12.North           0.0197
          t12.CoalC           0.0422
@@ -1093,7 +1093,6 @@ ELprofit(ELc,vv,t,r) =e=
   )
 
 )
-*+DELwindtarget(t)*ELwindtot$(ELwtarget=1 and ELbig(Elc))
 ;
 
 ELdeficitcap(t)$(ELdefcap=1)..

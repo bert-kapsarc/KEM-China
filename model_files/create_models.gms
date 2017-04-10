@@ -54,19 +54,20 @@ DELcapsub.Elcapsub,DELdeficit.ELdeficit,
 
 
 model CoalLP Equation for power submodule LP (primal equations must match MCP)/
+
 COobjective_CFS
 COobjective
 COpurchbal,COcnstrctbal,COopmaintbal,
 COcapbal,COcaplim,
 COwashcaplim,COsulflim,
-COprodfx,COprodCV,COsupplylim,
+COprodfx,COprodCV,COprodlim,COcapcuts,COcapcutsSOE,
 
 COtransPurchbal,COtransCnstrctbal,
 COtransOpmaintbal,
 COtransbldeq,
 COimportbal,
 
-COimportsuplim,COimportlim,
+COimportsuplim,COimportlim,COimportlim_nat,
 COsup,COsuplim,
 COdem,COdemOther,
 
@@ -74,15 +75,15 @@ COtranscapbal,COtransportcaplim,
 COtranscaplim,Cotransloadlim,
 /
 ;
+model CoalMCP / CoalLP, COprice_eqn /
 
-model CoalMCP
+model CoalMCP_old
 /
 *$ontext
-COprice_eqn,
 COpurchbal.DCOpurchbal,COcnstrctbal.DCOcnstrctbal,
 COopmaintbal.DCOopmaintbal,COcapbal.DCOcapbal,COcaplim.DCOcaplim,
 COwashcaplim.DCOwashcaplim,COsulflim.DCOsulflim,
-COprodfx.DCOprodfx,COprodCV.DCOprodCV,COsupplylim.DCOprodlim,
+COprodfx.DCOprodfx,COprodCV.DCOprodCV,COprodlim.DCOprodlim,
 
 DCOpurchase.COpurchase,DCOconstruct.COconstruct,DCOopandmaint.COopandmaint,
 DCOprod.COprod,DCOexistcp.COexistcp,DCObld.CObld,Dcoalprod.coalprod
@@ -136,9 +137,10 @@ $onorder
 
 * additional model options.
 
-Model CoalPowerLP /PowerLP ELrevenue_constraint CoalLP objective/ ;
+Model
+CoalPowerLP /PowerLP ELrevenue_constraint CoalLP objective/ ;
 Model CoalPowerNLP /PowerLP ELrevenue_constraint_bilinear CoalLP objective/ ;
-Model CoalPowerMCP /PowerMCP CoalMCP/ ;
+Model CoalPowerMCP /PowerMCP CoalMCP_old/ ;
 
 Model IntegratedLP /CoalPowerLP EmissionLP/ ;
 Model IntegratedNLP /CoalPowerNLP EmissionLP/ ;

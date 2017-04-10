@@ -1,14 +1,40 @@
 
+parameter COprodSuppliers
+          COprodCapTVELocal;
 
-parameter OTHERCOconsumpNat(COf,trun);
+          COprodCapTVELocal(COf,trun)=
+          sum((mm,ss,rco)$(Local(ss) or TVE(ss) ),
+                 COprodData(COf,mm,ss,trun,rco));
+;
 
-      OTHERCOconsumpNat(COf,trun) = sum(r,OTHERCOconsump(COf,trun,r));
+COprodSuppliers('TVE',trun,r) =
+sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and TVE(ss)),
+COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
+COrwtable(rw,COf,COff));
 
-*temp(COf,mm,ss,trun,rco) = COexistcp.l(COf,mm,ss,trun,rco)+CObld.l(COf,mm,ss,trun,rco) - sum(rwnoot,COprod.l(COf,mm,ss,rwnoot,trun,rco)) ;
+COprodSuppliers('Local',trun,r) =
+sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and Local(ss)),
+COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
+COrwtable(rw,COf,COff));
+
+COprodSuppliers('SOE',trun,r) =
+sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and SOE(ss)),
+COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
+COrwtable(rw,COf,COff));
+
+COprodSuppliers('All',trun,r) =
+sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and ALlss(ss)),
+COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
+COrwtable(rw,COf,COff));
+
+COprodSuppliers('TVE&Local',trun,r) =
+sum((mm,ss,rco,COf)$(rco_sup(rco,r) and (TVE(ss) or Local(ss))),
+COexistcp.l(COf,mm,ss,trun,rco));
+
 COexistrco(Cof,trun,rco) = sum((mm,ss),COexistcp.l(COf,mm,ss,trun,rco));
 COprodRaw(COf,trun,rco) = sum((mm,ss,sulf,rw),COprod.l(COf,sulf,mm,ss,rw,trun,rco));
 COprodPUraw(COf,mm,ss,trun,rco) = sum((sulf,rw),COprod.l(COf,sulf,mm,ss,rw,trun,rco));
-COprodNet(COf,rw,trun,rco) = sum((mm,ss,sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
+COprodNet(COf,ss,trun,r) = sum((mm,rw,sulf,rco)$rco_sup(rco,r),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
 COprodPUnet(COf,mm,ss,rw,trun,rco) = sum((sulf),COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco));
 CObldrco(Cof,trun,rco) = sum((mm,ss),CObld.l(COf,mm,ss,trun,rco));
 
@@ -136,7 +162,7 @@ parameter EIA(*,COF,trun);
 
 EIA('China weighted average marginal cost',COf,trun) = coal_price('All',COf,trun) ;
 EIA('Qinghuangdao',COf,trun) = coal_price('Qinghuangdao',COf,trun);
-EIA('Imports 7000 kcal/kg', COf, trun) = coal_imp_SCE(COf,trun);
-EIA('Production 7000 kcal/kg', COf, trun) = coal_prod_SCE(COf,trun);
+EIA('Imports, mt SCE', COf, trun) = coal_imp_SCE(COf,trun);
+EIA('Production, mt SCE', COf, trun) = coal_prod_SCE(COf,trun);
 *EIA('Coal demand trillion btu',COf,trun) = COconsumpEIA(COF,trun) ;
-EIA('Coal demand 7000 kcal/kg',COf,trun) = sum(rr,OTHERCOconsump(COF,trun,rr));
+EIA('Coal demand, mt SCE',COf,trun) = sum((cv,sulf,rr),OTHERCOconsumpsulf.l(COf,cv,sulf,trun,rr));

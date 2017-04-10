@@ -1,4 +1,4 @@
-         ELwindtot=sum((ELpw,v,r),ELexistcp.l(ELpw,v,"t12",r))+1e-3;
+         ELwindtot=0;;
 
 *!!!     Restrict hydro investment
          ELbld.up(Elphyd,'new',trun,r)=0;

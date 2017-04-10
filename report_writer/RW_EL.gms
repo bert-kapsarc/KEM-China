@@ -75,8 +75,6 @@ ELbldELp(ELp,trun,"China") = sum(r, ELbldELp(ELp,trun,r));
 ELtransTot(trun,r,rr) = sum((ELl,ELll,ELt),ELtrans.l(ELt,ELll,trun,r,rr)*
          ELtranscoef(ELll,ELl,r,rr));
 
-ELtransTot("TWh-loss",r,rr) = sum((ELll,ELt),ELtrans.l(ELt,ELll,"t12",r,rr)*(1-Eltransyield(ELt,r,rr)));
-
 ELtransTot(trun,r,'out') = sum(rr$(ord(rr)<>ord(r)),ELtransTot(trun,r,rr));
 
 ELtransTot(trun,'zTotal','out') = sum(r,ELtransTot(trun,r,'out'));

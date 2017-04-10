@@ -259,18 +259,6 @@ Decim=7
 PlaneRownr=-1
 SqTrail0=0
 
-[GDXDISP: COomcst Par 6]
-PlaneDim=2
-RowDim=3
-Squeeze=1
-Order=1,2,6,3,4,5
-Decim=7
-PlaneRownr=1
-PlaneFilter1=Coal
-PlaneFilter2=under
-SqTrail0=0
-Sorted=YYYYYY
-
 [GDXDISP: OTHERCOconsumpProv Par 3]
 PlaneDim=1
 RowDim=1
@@ -367,10 +355,10 @@ PlaneFilter1=port
 SqTrail0=0
 
 [GDXDISP: OTHERCOconsump Par 3]
-PlaneDim=1
+PlaneDim=0
 RowDim=1
 Squeeze=1
-Order=1,3,2
+Order=3,1,2
 Decim=7
 PlaneRownr=-1
 PlaneFilter1=met
@@ -812,7 +800,7 @@ RowDim=3
 Squeeze=1
 Order=6,1,3,4,5,2
 Decim=7
-PlaneRownr=2
+PlaneRownr=-1
 PlaneFilter1=Marginal
 PlaneFilter2=coal-st
 SqTrail0=0
@@ -840,8 +828,8 @@ RowDim=4
 Squeeze=1
 Order=6,2,3,4,5,1
 Decim=7
-PlaneRownr=-1
-PlaneFilter1=steam
+PlaneRownr=1
+PlaneFilter1=Marginal
 SqTrail0=0
 
 [GDXDISP: COconstcst Par 4]
@@ -1334,13 +1322,14 @@ PlaneFilter2=met
 SqTrail0=0
 
 [GDXDISP: COprodCV Equ 5]
-PlaneDim=0
-RowDim=5
+PlaneDim=1
+RowDim=4
 Squeeze=1
-Order=1,2,3,4,5,6
+Order=2,1,3,4,5,6
 Decim=7
-PlaneRownr=-1
+PlaneRownr=5
 SqTrail0=0
+PlaneFilter1=CV62
 
 [GDXDISP: EIA Par 3]
 PlaneDim=1
@@ -2769,13 +2758,14 @@ Decim=7
 PlaneRownr=-1
 
 [GDXDISP: COsuplim Equ 5]
-PlaneDim=0
-RowDim=5
+PlaneDim=1
+RowDim=4
 Squeeze=1
 SqTrail0=0
-Order=1,2,3,4,5,6
+Order=6,1,3,4,5,2
 Decim=7
-PlaneRownr=-1
+PlaneRownr=1
+PlaneFilter1=Marginal
 
 [GDXDISP: CotransbldD Par 1]
 PlaneDim=0
@@ -4805,8 +4795,8 @@ RowDim=4
 Squeeze=1
 Order=6,1,2,3,4,5
 Decim=7
-PlaneRownr=1
-PlaneFilter1=CoalC
+PlaneRownr=14
+PlaneFilter1=Sichuan
 Sorted=YYYYYY
 SqTrail0=0
 
@@ -5080,7 +5070,7 @@ PlaneRownr=-1
 
 [GDXDISP: COrwtable Par 3]
 PlaneDim=0
-RowDim=3
+RowDim=2
 Squeeze=1
 Order=1,2,3
 Decim=7
@@ -5112,9 +5102,6 @@ option savepoint=1;
 2=
 
 [RP:POWERSUBMODEL_SA2]
-1=
-
-[RP:WATERSUBMODEL]
 1=
 
 [GDXDISP: ELhydopsto Var 4]
@@ -8096,15 +8083,6 @@ PlaneRownr=-1
 [RP:COALTRANSSUBMODEL_OLD]
 1=
 
-[GDXDISP: coalcv Par 6]
-PlaneDim=1
-RowDim=4
-Squeeze=1
-Order=6,1,2,3,4,5
-Decim=7
-PlaneRownr=-1
-SqTrail0=0
-
 [GDXDISP: ELCOcons Equ 7]
 PlaneDim=0
 RowDim=8
@@ -8214,8 +8192,8 @@ PlaneFilter2=old
 PlaneFilter3=DeSOx
 
 [GDXDISP: COprod Var 7]
-PlaneDim=1
-RowDim=6
+PlaneDim=2
+RowDim=5
 Squeeze=1
 Order=8,1,2,3,4,6,7,5
 Decim=7
@@ -8641,9 +8619,9 @@ PlaneFilter1=South
 
 [GDXDISP: coalimports Var 6]
 PlaneDim=1
-RowDim=5
+RowDim=4
 Squeeze=1
-Order=7,2,3,4,5,6,1
+Order=7,3,4,5,6,2,1
 Decim=7
 PlaneRownr=-1
 
@@ -8882,14 +8860,6 @@ PlaneRownr=-1
 
 [RP:LDC_TRANSMISSION COEFFICIENTS]
 1=
-
-[RP:LOADCURVES]
-1=idir=db;model_files;
-2=idir=../db;../submodels; gdx=temp;
-3=idir=../db;../submodels;
-4=idir = ../db; ../submodels;
-5=idir = ../db
-6=
 
 [RP:WIND]
 1=idir=db;model_files
@@ -10043,9 +10013,6 @@ PlaneRownr=-1
 [RP:RW_PARAM]
 1=
 
-[RP:UNTITLED_2]
-1=
-
 [RP:FLATTEN_PEAK]
 1=
 
@@ -10083,14 +10050,6 @@ Order=1,2,3,4,5
 Decim=7
 PlaneRownr=-1
 
-[GDXDISP: COtrans Var 7]
-PlaneDim=1
-RowDim=7
-Squeeze=1
-Order=8,1,2,3,4,5,6,7
-Decim=7
-PlaneRownr=-1
-
 [GDXDISP: RailSurcharge Par 1]
 PlaneDim=0
 RowDim=1
@@ -10112,9 +10071,6 @@ PlaneRownr=-1
 1=
 
 [RP:ACCESS_EL]
-1=
-
-[RP:ACCESS_SETS]
 1=
 
 [RP:POWER_PARAMS]
@@ -10236,12 +10192,16 @@ PlaneRownr=2
 PlaneFilter1=Superc
 
 [GDXDISP: COprice Var 5]
-PlaneDim=1
-RowDim=3
+PlaneDim=4
+RowDim=1
 Squeeze=1
-Order=1,3,4,5,2,6
+Order=1,3,4,6,5,2
 Decim=7
 PlaneRownr=-1
+PlaneFilter1=met
+PlaneFilter2=med
+PlaneFilter3=t15
+PlaneFilter4=Level
 
 [GDXDISP: COprice_dummy Var 5]
 PlaneDim=0
@@ -10294,12 +10254,6 @@ PlaneFilter1=t14
 [RP:SCALARSANDPARAMETERS]
 1=
 
-[RP:SCENARIO_FLAGS]
-1=
-
-[RP:OBJ_VALUES]
-1=
-
 [RP:SHORT_RUN]
 1=
 
@@ -10323,9 +10277,6 @@ PlaneRownr=-1
 [RP:AGGREGATOR]
 1=
 
-[RP:UNTITLED_1]
-1=
-
 [GDXDISP: COtransD Par 3]
 PlaneDim=0
 RowDim=3
@@ -10342,16 +10293,14 @@ Order=1,2
 Decim=7
 PlaneRownr=-1
 
-[RP:DATA_MANIPULATION]
-1=
-
 [GDXDISP: COintlprice Par 6]
-PlaneDim=0
-RowDim=6
+PlaneDim=1
+RowDim=4
 Squeeze=1
-Order=1,2,3,4,6,5
+Order=1,3,4,6,5,2
 Decim=7
-PlaneRownr=-1
+PlaneRownr=1
+PlaneFilter1=met
 
 [GDXDISP: COtransomcst2 Par 2]
 PlaneDim=0
@@ -10377,23 +10326,6 @@ Order=1,2,3
 Decim=7
 PlaneRownr=-1
 
-[RP:ACCESS_COTRANS]
-1=
-
-[RP:ACCESS_CO]
-1=
-
-[RP:IMPORTS]
-1=
-
-[RP:COALSUBMODEL]
-1=
-2=idir=../submodels;../db;../integration_files;../Report_Writer gdx=coalSA
-3=idir=../submodels;../db;../integration_files;../Report_Writer
-
-[RP:CREATE_MODELS]
-1=
-
 [GDXDISP: COobjvalue_CFS Var 0]
 PlaneDim=0
 RowDim=0
@@ -10401,18 +10333,6 @@ Squeeze=1
 Order=1
 Decim=7
 PlaneRownr=-1
-
-[RP:SETSANDVARIABLES]
-1=
-
-[RP:COALTRANSSUBMODEL]
-1=idir =model_files;db;integration_files; gdx=Coal
-2=idir =model_files;db;integration_files; gdx=Power
-3=idir =model_files;db; gdx=Power
-4=
-
-[RP:SCENARIOS]
-1=
 
 [GDXDISP: COobjective_CFS Equ 0]
 PlaneDim=0
@@ -10422,27 +10342,147 @@ Order=1
 Decim=7
 PlaneRownr=-1
 
-[RP:RW_CO]
+[GDXDISP: CO Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: coal_cuts Par 0]
+PlaneDim=0
+RowDim=0
+Squeeze=1
+Order=
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COpricetrend Par 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DCOsup Var 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5,6
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: DCOsuplim Var 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5,6
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COstatistics Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COtrans Var 7]
+Sorted=YYYYYYY
+PlaneDim=2
+RowDim=6
+Squeeze=1
+Order=8,6,1,2,3,4,5,7
+Decim=7
+PlaneRownr=-1
+PlaneFilter1=Level
+PlaneFilter2=Xinjiang
+
+[GDXDISP: COprodcap Par 3]
+PlaneDim=0
+RowDim=3
+Squeeze=1
+Order=1,2,3
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COimportprice Par 4]
+PlaneDim=0
+RowDim=4
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodcuts Par 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: truck Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:UNTITLED_1]
 1=
 
-[RP:PRICE_AND_DEMAND]
-1=
+[GDXDISP: COcapacity Par 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
 
-[RP:POWERSUBMODEL]
+[GDXDISP: COprodIHSaggr Par 2]
+PlaneDim=1
+RowDim=1
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=4
+PlaneFilter1=t15
+
+[GDXDISP: COprodaggr Par 2]
+PlaneDim=1
+RowDim=1
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=4
+PlaneFilter1=t15
+
+[RP:OBJ_VALUES]
 1=
-2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
-3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
 
 [RP:DISCOUNTING]
 1=
 
-[RP:RUNKEMCHINA]
-1=idir =model_files;db;integration_files;report_writer; gdx=test2
-2=idir =model_files;db;integration_files;report_writer; gdx=test
-3=idir =model_files;db;integration_files;report_writer; test2
-4=idir =model_files;db;integration_files;report_writer; gdx=test1
-5=idir =model_files;db;integration_files;report_writer; gdx=MCP
-6=
+[GDXDISP: rco_exporter Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: rco_importer Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
 
 [RP:KEM_EMP]
 1=idir=kem; gdx=test
@@ -10450,40 +10490,299 @@ PlaneRownr=-1
 3=idir=KEM;
 4=
 
+[GDXDISP: COimportlim_nat Equ 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2,3
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: OT Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: r_industry Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodCEIC2015 Par 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodcutsSOE Par 0]
+PlaneDim=0
+RowDim=0
+Squeeze=1
+Order=
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodData Par 5]
+PlaneDim=0
+RowDim=5
+Squeeze=1
+Order=1,2,3,4,5
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodIHSaggr_met Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodlim Equ 3]
+PlaneDim=0
+RowDim=3
+Squeeze=1
+Order=1,2,3,4
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodTVE Par 3]
+PlaneDim=2
+RowDim=1
+Squeeze=1
+Order=2,1,3
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodLocal Par 3]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=2,3,1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodCapTVELocal Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: TVE Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: Local Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: SOE Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[GDXDISP: COprodSuppliers Par 4]
+PlaneDim=2
+RowDim=1
+Squeeze=1
+Order=2,3,4,1
+Decim=7
+PlaneRownr=-1
+
+[RP:UNTITLED_2]
+1=gdx=test
+2=
+
+[RP:INPUTS]
+1=
+
+[RP:ACCESS_SETS]
+1=
+
+[GDXDISP: COfimpmax_nat Par 2]
+PlaneDim=0
+RowDim=2
+Squeeze=1
+Order=1,2
+Decim=7
+PlaneRownr=-1
+
+[RP:IMPORTS]
+1=
+
+[RP:RW_CO]
+1=
+
+[GDXDISP: CoalCCBR Set 1]
+PlaneDim=0
+RowDim=1
+Squeeze=1
+Order=1
+Decim=7
+PlaneRownr=-1
+
+[RP:SCENARIOS]
+1=
+
+[RP:COALTRANSSUBMODEL]
+1=idir =model_files;db;integration_files; gdx=Coal
+2=idir =model_files;db;integration_files; gdx=Power
+3=idir =model_files;db; gdx=Power
+4=
+
+[RP:SETSANDVARIABLES]
+1=
+
+[RP:CREATE_MODELS]
+1=
+
+[RP:SCENARIO_FLAGS]
+1=
+
+[RP:ACCESS_CO]
+1=
+
+[RP:ACCESS_COTRANS]
+1=
+
+[RP:PRICE_AND_DEMAND]
+1=
+
+[RP:DATA_MANIPULATION]
+1=
+
+[GDXDISP: COomcst Par 6]
+PlaneDim=1
+RowDim=4
+Squeeze=1
+Order=6,1,2,3,4,5
+Decim=7
+PlaneRownr=20
+PlaneFilter1=Sichuan
+
+[RP:RUNKEMCHINA]
+1=idir =model_files;db;integration_files;report_writer; gdx=new_baseline
+2=idir =model_files;db;integration_files;report_writer; gdx=s2
+3=idir =model_files;db;integration_files;report_writer; gdx=s4
+4=idir =model_files;db;integration_files;report_writer; gdx=RMG3
+5=idir =model_files;db;integration_files;report_writer; gdx=RMG2
+6=idir =model_files;db;integration_files;report_writer; gdx=RMG1
+7=idir =model_files;db;integration_files;report_writer; gdx=s3
+8=idir =model_files;db;integration_files;report_writer; gdx=baseline
+9=idir =model_files;db;integration_files;report_writer; gdx=s2_shift_west
+10=idir =model_files;db;integration_files;report_writer; gdx=basline
+11=idir =model_files;db;integration_files;report_writer; gdx=s3_shift_west
+12=idir =model_files;db;integration_files;report_writer; gdx=s2_shift_east
+13=idir =model_files;db;integration_files;report_writer; gdx=new_baseline_shift_east
+14=idir =model_files;db;integration_files;report_writer; gdx=new_baseline_shift_west
+15=idir =model_files;db;integration_files;report_writer; gdx=baseline_shift_2
+16=idir =model_files;db;integration_files;report_writer; gdx=baseline_shift
+17=idir =model_files;db;integration_files;report_writer; gdx=S3
+18=idir =model_files;db;integration_files;report_writer; gdx=test3
+19=idir =model_files;db;integration_files;report_writer; gdx=test
+20=idir =model_files;db;integration_files;report_writer; gdx=test2
+
+[GDXDISP: coalcv Par 6]
+PlaneDim=1
+RowDim=3
+Squeeze=1
+Order=5,1,3,6,4,2
+Decim=7
+PlaneRownr=-1
+PlaneFilter1=Sichuan
+
+[RP:WATERSUBMODEL]
+1=
+
+[RP:COALSUBMODEL]
+1=
+
+[RP:LOADCURVES]
+1=idir=db;model_files;
+2=idir=../db;../submodels; gdx=temp;
+3=idir=../db;../submodels;
+4=idir = ../db; ../submodels;
+5=idir = ../db
+6=
+
+[RP:POWERSUBMODEL]
+1=
+2=idir=../submodels;../db;../integration_files;../Report_Writer; GDX=Power
+3=idir=../submodels;../db;../integration_files;../Report_Writer gdx=ChinaPower
+
 [MRUFILES]
-1=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\emp.info
-2=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\discounting.lst
-3=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\Untitled_1.gms
-4=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\aggregator.gms
-5=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\mcpmod.gms
-6=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test.gdx
-7=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\ScalarsandParameters.gms
-8=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\obj_values.gms
+1=D:\Dropbox (KAPSARC)\ES- KEM\KEM_power_market\model\equations.gms
+2=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\s3_shift_west.gdx
+3=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\S3.gdx
+4=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\s2_shift_west.gdx
+5=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RMG3.gdx
+6=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RMG2.gdx
+7=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RMG1.gdx
 
 [OPENWINDOW_1]
-FILE0=D:\Dropbox (KAPSARC)\ES- KEM\KEM_EMP\KEM_EMP.gms
-FILE1=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\coaltranssubmodel.lst
-FILE2=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\data_manipulation.gms
-FILE3=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\ACCESS_CO.gms
-FILE4=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\ACCESS_COtrans.gms
-FILE5=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\coalprod.gdx
-FILE6=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\discounting.gms
-FILE7=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\imports.gms
-FILE8=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\scenarios.gms
-FILE9=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\coalsubmodel.gms
-FILE10=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\coaltranssubmodel.gms
-FILE11=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\create_models.gms
-FILE12=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\powersubmodel.gms
-FILE13=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\SetsandVariables.gms
-FILE14=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\price_and_demand.gms
-FILE15=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\report_writer\RW_CO.gms
-FILE16=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RunKEMChina.gms
-FILE17=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RunKEMChina.lst
-FILE18=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test2.gdx
-FILE19=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test3.gdx
-FILE20=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RunKEMChina.gms
+FILE0=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\new_baseline.gdx
+FILE1=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\new_baseline.gdx
 MAXIM=0
-TOP=-8
-LEFT=47
-HEIGHT=850
-WIDTH=1563
+TOP=333
+LEFT=58
+HEIGHT=515
+WIDTH=1604
+
+[OPENWINDOW_2]
+FILE0=C:\Users\willbj0b\OneDrive\Coal_trans_paper\submodels\coalsubmodel.gms
+FILE1=D:\Dropbox (KAPSARC)\ES- KEM\KEM_power_market\model\equations.gms
+FILE2=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\baseline.gdx
+FILE3=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\data_manipulation.lst
+FILE4=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\ACCESS_CO.gms
+FILE5=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\ACCESS_COtrans.gms
+FILE6=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\ACCESS_sets.gms
+FILE7=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\data_manipulation.gms
+FILE8=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\db\LoadCurves.gms
+FILE9=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\imports.gms
+FILE10=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\inputs.gms
+FILE11=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\scenario_flags.gms
+FILE12=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\integration_files\scenarios.gms
+FILE13=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\KEM_EMP.lst
+FILE14=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\coalsubmodel.gms
+FILE15=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\coaltranssubmodel.gms
+FILE16=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\create_models.gms
+FILE17=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\powersubmodel.gms
+FILE18=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\model_files\SetsandVariables.gms
+FILE19=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\new_baseline.gdx
+FILE20=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\price_and_demand.gms
+FILE21=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\report_writer\RW_CO.gms
+FILE22=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RunKEMChina.gms
+FILE23=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RunKEMChina.lst
+FILE24=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\RW_CO.lst
+FILE25=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\s2.gdx
+FILE26=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\s4.gdx
+FILE27=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test.gdx
+FILE28=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test2.gdx
+FILE29=D:\Dropbox (KAPSARC)\KEM-China-dev\KEM-China\test3.gdx
+FILE30=D:\Dropbox (KAPSARC)\ES- KEM\KEM_power_market\model\equations.gms
+MAXIM=0
+TOP=43
+LEFT=92
+HEIGHT=849
+WIDTH=1696

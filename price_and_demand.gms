@@ -1,21 +1,8 @@
 *        Set OTHER consump of metallurgical and thermal coal for demand that is exogneous to the model
-         OTHERCOconsump('met',time,rr)=COstatistics('Metallurgical',time,rr);
-         OTHERCOconsump('coal',time,rr)=COstatistics('Other',time,rr);
+*         OTHERCOconsump('met',time,rr)=COstatistics('Metallurgical',rr);
+*         OTHERCOconsump('coal',time,rr)=COstatistics('Other',rr);
 
 ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,rr)=0;
-IF( not run_model("Power"),
-*        Set Coal demand values for demand sectors not included in the model
-         OTHERCOconsump('coal',trun,rr)=OTHERCOconsump('coal',trun,rr)
-
-*        When not solving power sector include predefined inputs
-         +COstatistics('Power',trun,rr)$run_with_inputs('predefined')
-
-*        When not solving power sector include savepoint as input
-         +sum((Elpcoal,v,gtyp,cv,sulf,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal('coal')),
-                  ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,rr))$run_with_inputs('savepoint')
-         ;
-
-);
 
 
 parameter COprice_fx(COf) fixed coal price per KG of SCE (7000 KCAL per kg) ;

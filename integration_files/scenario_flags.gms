@@ -7,7 +7,8 @@ set scen(scenarios) /Calib/
 
 scalars  import_cap set to 1 to enforce the import constraint /1/
          trans_budg set to 1 to enforce budget constraint for railway expansion /0/
-         coal_cap   set to 1 to put cap on mining in each province from IHS forecast /1/
+         coal_cap   set to 1 to cap mining in each province to COprodcap parameter /1/
+         coal_cuts  set to 1 to apply regional production cuts COprodcuts to regional supplies /1/
          rail_cap   set to 1 to cap mixed freight rail lines /1/
          COrailCFS  set to 1 to apply railway surcharges to railway costs /1/
          ELdereg    set to 1 to switch on deregulated power supply market /1/

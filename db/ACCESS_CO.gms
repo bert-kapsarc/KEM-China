@@ -25,20 +25,21 @@ UNION SELECT 'High',Region,High FROM CBRsulfur
 p6=COsulfur
 
 
-Q9 = SELECT coal_type,year,'IMOT',tonnes FROM coal_imports \
-UNION SELECT coal_type,year,'IMOT',tonnes FROM coal_imports \
-UNION SELECT coal_type,year,'IMOT',tonnes FROM coal_imports
-p9 = COfimpmax
+Q8 = SELECT COf,time,rco,mt FROM COfimpmax
+p8 = COfimpmax
+
+Q9 = SELECT COf,time,mt FROM COfimpmax_nat
+p9 = COfimpmax_nat
 
 
-Q13=SELECT [t],WCD_QUADS FROM period,[COAL_demand_EIA] WHERE year=[yr]
+Q13=SELECT [t],WCD_QUADS FROM TimePeriods,[COAL_demand_EIA] WHERE year=[yr]
 P13 = WCD_Quads
 
 
-Q14=  SELECT 'Production','t12',[rdem],Production FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'Other','t12',[rdem],Other FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'Metallurgical','t12',[rdem],Metallurgical FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
-UNION SELECT 'Power','t12',[rdem],Power FROM [Coal_stats_2012],nodes WHERE [Prov]=Province
+Q14=  SELECT 'Production',[rdem],Production FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Other',[rdem],Other FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Metallurgical',[rdem],Metallurgical FROM [Coal_stats_2012],nodes WHERE [Prov]=Province \
+UNION SELECT 'Power',[rdem],Power FROM [Coal_stats_2012],nodes WHERE [Prov]=Province
 P14=COstatistics
 
 Q15 SELECT COf,CV,sulf,rco,[Import Price (Yuan/mt)] FROM [Coal Import Price]
@@ -47,6 +48,14 @@ P15=COimportprice
 Q16 SELECT time,Multiplier FROM [Coal Price Trend]
 P16=COpricetrend
 
+Q17= SELECT Region,SumOf2015 FROM [Regional Production (CEIC)]
+P17= COprodCEIC2015
+
+Q18= SELECT Region,SumCapacityCuts2016August FROM [Regional Capacity Cuts]
+P18= COprodcuts
+
+Q19= SELECT Region,[SumOfCapacity (mt)] FROM [Capacity 2015]
+P19= COcapacity
 
 $offecho
 

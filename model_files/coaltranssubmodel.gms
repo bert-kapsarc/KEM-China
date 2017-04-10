@@ -16,11 +16,13 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
           COtransyield(tr,rco,rrco) net of self-consumption and distribution losses
 
-          OTHERCOconsump(COf,time,rr) exogenous coal demand
+          OTHERCOconsump(sect,COf,rr) exogenous coal demand
+          OTHERCOconsumptrend(sect,COf,time,rr)  exogenous coal demand trend
 
           COintlprice(COf,ssi,cv,sulf,time,rco) market price for fuels for aggreaget CV bin
 
-          COfimpmax(COf,time,rco) maximum coal supply for each type of coal
+          COfimpmax(COf,time,rco) maximum coal supply for each type of coal by region
+          COfimpmax_nat(COf,time) maximum coal supply for each type of coal nationally
 
           COfimpss(COf,ssi,cv,sulf,time) available coal in import supply step ssi
 
@@ -35,8 +37,9 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
 
 
 $gdxin db\coaltrans.gdx
-$load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge
+$load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge OTHERCOconsump
 $gdxin
+         OTHERCOconsumptrend(sect,COf,time,rr) = 1;
 
          COtransomcst2(COf,tr,time) = COtransomcst_var(COf,tr);
          COtransomcst1(COf,tr,time) = COtransomcst_fixed(COf,tr);
@@ -59,12 +62,6 @@ COtransD('truck',rco,rrco)$(COtransD('truck',rco,rrco)=0) =
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)>0) = 1;
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)<=0) = 0;
 
-
-* allow import to domestic market.
-COtransyield(port,rimp,rrport_sea)= 1;
-
-* no movement of cargo to import nodes
-COtransyield(tr,rco,rimp)=0;
 
 * COtransyield is set to 1 for port self connection
 * This is used in the capacity limit equation for incoming outgoing shipments
@@ -157,7 +154,8 @@ Equations
 
          COimportbal(trun) acumulates all import purchases
          COimportsuplim(COf,ssi,cv,sulf,trun)  capacity limit on coal import supply steps
-         COimportlim(Cof,trun,rco) limitation on coal imports
+         COimportlim(Cof,trun,rco) cap on coal imports by region
+         COimportlim_nat(COf,trun) cap on national imports by type
 
 
          COsup(COf,cv,sulf,trun,rco) measures fuel use
@@ -280,13 +278,18 @@ COimportsuplim(COf,ssi,cv,sulf,t)$(COfcv(COf,cv) and COfimpss(COf,ssi,cv,sulf,t)
          =g=-COfimpss(COf,ssi,cv,sulf,t);
 
 
-COimportlim(COf,t,rimp)$(import_cap=1 and COfimpmax(COf,t,rimp)>0)..
+COimportlim(COf,t,rimp)$(import_cap=1)..
   -sum((ssi,cv,sulf)$(COintlprice(COf,ssi,cv,sulf,t,rimp)>0
          and COfCV(COf,cv) and COfimpss(COf,ssi,cv,sulf,t)>0
-         and (cv_met(cv) or COcvSCE(cv)*7000<10000) ),
+         and COfimpmax(COf,t,rimp)>0 ),
          coalimports(COf,ssi,cv,sulf,t,rimp))
          =g=-COfimpmax(COf,t,rimp);
 
+COimportlim_nat(COf,t)$(import_cap=1)..
+  -sum((ssi,cv,sulf,rimp)$(COintlprice(COf,ssi,cv,sulf,t,rimp)>0
+         and COfCV(COf,cv) and COfimpss(COf,ssi,cv,sulf,t)>0),
+         coalimports(COf,ssi,cv,sulf,t,rimp))
+         =g=-COfimpmax_nat(COf,t);
 
 *COtransbudgetlim(tr,t)$(trans_budg=1 and rail(tr))..
 *  -sum((rco,rrco)$arc(tr,rco,rrco),COtranscapex(tr,rco,rrco)*
@@ -352,7 +355,17 @@ COdem(COf,cv,sulf,t,rr)$COfcv(COf,cv)..
 COdemOther(COf,t,rr)..
    sum((sulf,cv)$(COfCV(COf,cv)),
          OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*COcvSCE(cv))
-                         =g= OTHERCOconsump(COf,t,rr)
+                         =g=
+   OTHERCOconsump('OT',COf,rr)*OTHERCOconsumptrend('OT',COf,t,rr)
+
+  +( OTHERCOconsump('EL',COf,rr)*OTHERCOconsumptrend('EL',COf,t,rr)$run_with_inputs('predefined')
+    +sum((Elpcoal,v,gtyp,cv,sulf,sox,nox)$(ELpfgc(ELpcoal,cv,sulf,sox,nox) and ELfcoal('coal')),
+         ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,t,rr))$run_with_inputs('savepoint')
+    )$(not run_model('Power'))
+
+*  -200*(sum(sect,OTHERCOconsump(sect,COf,rr))/sum((sect,r_industry),OTHERCOconsump(sect,COf,r_industry)))$r_industry(rr)
+*  +200*(sum(sect,OTHERCOconsump(sect,COf,rr))/sum((sect,r)$(not r_industry(r)),OTHERCOconsump(sect,COf,r)))$(not r_industry(rr))
+*        When not solving power sector include savepoint as input
 ;
 
 COtranscapbal(tr,t,rco,rrco)$(arc(tr,rco,rrco) and not truck(tr))..
@@ -399,7 +412,7 @@ COprice_eqn(COf,cv,sulf,t,r)$COfcv(COf,cv).. COprice(COf,cv,sulf,t,r) -
    ( DCOdem(COf,cv,sulf,t,r)
      -sum(rco$(rco_r_dem(rco,r) and not r(rco)),
        DCOsuplim(COf,cv,sulf,t,rco)/num_nodes_reg(r))
-   ) =e=0;
+   ) =l=0;
 
 *Dual Relationships
 

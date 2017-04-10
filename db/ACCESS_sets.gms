@@ -33,14 +33,34 @@ s10=rimp
 Q11=select Demand from Regions
 s11=r
 
-Q12=select PU from coalsup
+Q12=select PU from CoalRegions
 s12=ss
 
 Q13=select Region from Regions  \
 UNION select GB from nodes
 s13=Rall
 
+Q14=select TVE from CoalRegions
+s14=TVE
 
+Q15=select Local from CoalRegions
+s15=Local
+
+Q16=select SOE from CoalRegions
+s16=SOE
+
+Q17=select Allss from CoalRegions
+s17=Allss
+
+Q18=select Importer from Regions
+s18=rco_importer
+
+Q19=select Exporter from Regions
+s19=rco_exporter
+
+
+Q20=select Industrial from Regions
+s20=r_industry
 
 Q24=SELECT Region, Latitude FROM Regions
 p24=latitude

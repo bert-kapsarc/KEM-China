@@ -12,14 +12,17 @@ UNION SELECT 'port',Region,'EastCBR',EastCBR FROM PortConnect \
 UNION SELECT 'port',Region,'NorthEast',NorthEast FROM PortConnect
 p1=COtransD
 
-Q3=SELECT 'rail',r,rr,capacity FROM RegionConnect \
-UNION SELECT 'rail',rr,r,capacity FROM RegionConnect \
-UNION SELECT 'port',port,port,cap_port_2011 FROM Regions
+Q3=SELECT 'rail',r,rr,[capacity (mt/year)] FROM RegionConnect \
+UNION SELECT 'rail',rr,r,[capacity (mt/year)] FROM RegionConnect \
+UNION SELECT 'port',port,port,[Capacity Port (mt/year)] FROM Regions
 p3=COtransexist
 
 Q9=SELECT 'rail',r,rr,capex FROM RegionConnect \
 UNION SELECT 'rail',rr,r,capex FROM RegionConnect
 p9=COtranscapex
+
+Q10=SELECT Sector,COf,r,[Coal (mt SCE)] FROM OTHERCOconsump
+P10=OTHERCOconsump
 
 Q11=SELECT time,r,rimp,exports FROM coal_exports
 p11=COfexpmax
@@ -32,6 +35,7 @@ p13=COtransomcst_var
 
 Q14 SELECT time,[Surcharge (RMB/ton-km)] FROM [RailSurcharge]
 P14=RailSurcharge
+
 
 $offecho
 

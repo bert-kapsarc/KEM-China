@@ -7,8 +7,8 @@
 * General and time Sets
 Sets
          time            time period for defining parameters and tables /t11*t40/
-         trun(time)      final model run time period /t12*t12/
-         thyb(trun)      myopic horizon for hybrid recursive dynamics  /t12*t12/
+         trun(time)      final model run time period /t15*t15/
+         thyb(trun)      myopic horizon for hybrid recursive dynamics  /t15*t15/
          i              summation index for discounting  /1*10000/
          wind_inc        increments of wind capacity /1*20/
          t(trun)         dynamic set for time
@@ -20,8 +20,11 @@ Sets
          lp_mcp set to declare mcp or lp model /LP,MCP/
 
          sectors        Sectors in the model including aggregate All sectors
-                        /All,CO,PC,EL,WA,CM,RF,fup/
-         Sect(sectors)
+                        /All,CO,PC,EL,WA,CM,RF,fup,OT/
+         Sect(sectors)  /CO,PC,EL,WA,CM,RF,fup,OT/
+         OT(sect) /OT/
+         EL(sect) /EL/
+         CO(sect) /CO/
 
          allmaterials all materials in KEM
                  /coal,met,
@@ -101,10 +104,6 @@ Sets
          land(tr) land based transport modes
 ;
 
-*        Subset sect includes all sectors, eexluding aggregate all.
-         sect(sectors)=yes;
-         sect('All')=no;
-
          cv_ord(cv) = (not cv_met(cv) and not CVf(cv));
 
 
@@ -121,6 +120,7 @@ sets
          Rall
          rco(rALL) all nodes used for coal network
          r(rco)  all demand regions
+         r_industry(r) Industrial demand regions (KEM China)
          grid    /North, Northeast, Central, East, West, South/
          rgrid(r,grid)
          GB(rALL) standard label for chinese provinces
@@ -134,7 +134,16 @@ sets
          rport_sea(rco)
          rport_riv(rco)
 
+         rco_exporter(rco)
+         rco_importer(rco)
+
          ss domestic coal supply sources for IHS Cola Rush report
+         SOE(ss)         State owned enterprises (KEM China)
+         Local(ss)       Local enterprises (KEM China)
+         TVE(ss)         Town village enterprises (KEM China)
+         ALlss(ss)       All coal suppliers (KEM China)
+
+
 
          coord /latitude,longitude/
 ;
@@ -145,7 +154,9 @@ sets
 
 *$ontext
 $gdxin db\setsandparameters.gdx
-$load Rall, rco,GB, r,regions, rco_r_dem, ss, rport_sea,
+$load Rall, rco,GB, r, r_industry,
+$load regions, rco_r_dem, ss, Local, TVE, SOE, Allss, rport_sea,
+$load rco_exporter, rco_importer
 $load rport_riv, rport, rimp,
 $load latitude, longitude
 $gdxin
@@ -160,6 +171,10 @@ set
          Henan(r) /Henan/
          Shandong(r) /Shandong/
          Xinjiang(r) /Xinjiang/
+         CoalCCBR(rco) /WestCBR, CoalCCBRN, CoalCCBRS, CoalC /
+         CBRRMG2(rco) /WestCBR, CoalCCBRN, CoalCCBRS, CoalC, Henan, East, EastCBR, Shandong/
+
+
          rdem_on(rco);
 
          Alias(North,N) ;
@@ -189,7 +204,10 @@ set
          alias (rport_riv,rrport_riv);
 
          alias (ss,ss2);
+         alias (mm,mm2);
          alias (sulf,sulff);
+
+         alias (time,ttime);
 
          alias (rw,rww)
          alias (COf,COff);
@@ -520,7 +538,7 @@ positive Variables
 
          DCOprodCV(COf,cv,sulf,trun,rco) dual price for coal produciton by average CV
          DCOprodfx(COf,sulf,mm,ss,trun,rco)
-         DCOprodlim(COf,mm,ss,trun,rco)
+         DCOprodlim(COf,trun,rco)
 
 
 *        Dual Variabls Coal Transporation =====================*

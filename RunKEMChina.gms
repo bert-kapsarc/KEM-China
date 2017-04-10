@@ -34,6 +34,7 @@ idir =model_files;db;integration_files;report_writer; gdx=test
 $OFFTEXT
 
 
+
 *$INCLUDE ACCESS_sets.gms
 *$INCLUDE ACCESS_CO.gms
 *$INCLUDE ACCESS_COtrans.gms
@@ -51,13 +52,11 @@ set  run_model(built_models) defines what built model will be run. Is a subset o
 *         run_model('Emissions')=yes;
 
 *        run in LP or MCP mode (select one only!)
-         run_mode('MCP')=yes;
+         run_mode('LP')=yes;
 
 set      model_input type of inputs that can be used to set cross-cuttting activities in stand alone models /predefined, savepoint/
          run_with_inputs(model_input);
          run_with_inputs('predefined')=yes;
-
-
 
 $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
@@ -71,6 +70,8 @@ $INCLUDE create_models.gms
 $INCLUDE discounting.gms
          ELdiscfact(time)  = 1;
 
+
+
 $INCLUDE imports.gms
 $INCLUDE scenarios.gms
 $include data_manipulation.gms
@@ -80,8 +81,7 @@ $INCLUDE price_and_demand.gms
 if( run_mode('mcp'),
 $INCLUDE on_grid_tariffs.gms
 );
-*$INCLUDE short_run.gms
-*COprodData(COf,mm,ss,"t12",rco)  = COprodData(COf,mm,ss,"t15",rco);
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
 *          execute_loadpoint "test2.gdx";
@@ -93,9 +93,10 @@ $INCLUDE on_grid_tariffs.gms
          t(trun) = yes;
 
          file myinfo /'%emp.info%'/;
-                  put myinfo 'dualvar DCOdem COdem';
-                  put myinfo 'dualvar DCOsuplim COsuplim';
+         put myinfo 'dualvar DCOdem COdem ';
+         put myinfo 'dualvar DCOsuplim COsuplim ';
          putclose myinfo / 'modeltype mcp'/;
+
 *          abort ss;
 
 IF( run_model('Coal') and run_model('Power') and run_model('Emissions') ,
@@ -116,21 +117,19 @@ elseif run_model('Coal') and run_model('Power'),
    elseif run_mode('MCP'),
          execute_loadpoint "IntegratedMCP_p.gdx" ;
          Solve CoalPowerMCP using MCP;
-
    );
 
 elseif run_model('Coal'),
 
 
     If(run_mode('LP'),
-*         Solve CoalLP using LP minimizing COobjvalue;
-
-         solve CoalLP using emp minimizing COobjvalue;
+         Solve CoalLP using LP minimizing COobjvalue_CFS;
+*         solve CoalLP using emp minimizing COobjvalue;
 
    elseif run_mode('MCP'),
 
-         Solve CoalMCP using MCP;
-*         solve CoalLP using EMP minimizing COobjvalue_CFS;
+*         solve CoalMCP using emp minimizing COobjvalue;
+         solve CoalLP using EMP minimizing COobjvalue_CFS;
 
    );
 
