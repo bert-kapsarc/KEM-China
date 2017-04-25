@@ -60,7 +60,8 @@ COobjective
 COpurchbal,COcnstrctbal,COopmaintbal,
 COcapbal,COcaplim,
 COwashcaplim,COsulflim,
-COprodfx,COprodCV,COprodlim,COcapcuts,COcapcutsSOE,
+COprodfx,COprodCV,COprodlim,
+COcapcuts,COcapcutsSOE,
 
 COtransPurchbal,COtransCnstrctbal,
 COtransOpmaintbal,
@@ -137,18 +138,15 @@ $onorder
 
 * additional model options.
 
-Model
-CoalPowerLP /PowerLP ELrevenue_constraint CoalLP objective/ ;
-Model CoalPowerNLP /PowerLP ELrevenue_constraint_bilinear CoalLP objective/ ;
+Model CoalPowerLP /PowerLP CoalLP objective/ ;
 Model CoalPowerMCP /PowerMCP CoalMCP_old/ ;
 
 Model IntegratedLP /CoalPowerLP EmissionLP/ ;
-Model IntegratedNLP /CoalPowerNLP EmissionLP/ ;
 Model IntegratedMCP /CoalPowerMCP EmissionMCP/ ;
 
          option savepoint=1;
          option MCP=PATH;
-         option NLP=pathnlp;
+         option NLP=IPOPT;
          option LP=cbc;
 
          PowerMCP.optfile=1;

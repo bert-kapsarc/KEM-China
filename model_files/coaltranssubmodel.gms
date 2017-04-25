@@ -1,5 +1,4 @@
-parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
-
+parameter
           COfexpmax(time,rco) fixed coal export quantity by port of departure
 
           COtransD(tr,rco,rrco) transportation distances
@@ -34,16 +33,18 @@ parameter coalsupmax(COf,mm,ss,time,rco) maximum fuel supply in each region
           RailSurcharge rail tax collected for electricification and construction;
 
 ;
-
-
 $gdxin db\coaltrans.gdx
 $load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge OTHERCOconsump
 $gdxin
+
+
          OTHERCOconsumptrend(sect,COf,time,rr) = 1;
+
 
          COtransomcst2(COf,tr,time) = COtransomcst_var(COf,tr);
          COtransomcst1(COf,tr,time) = COtransomcst_fixed(COf,tr);
-
+         COtransomcst2(coal_i,tr,time) = COtransomcst_var("coal",tr);
+         COtransomcst1(coal_i,tr,time) = COtransomcst_fixed("coal",tr);
 
 * replicate distance between nodes
 COtransD(tr,rrco,rco)$(COtransD(tr,rco,rrco)>=COtransD(tr,rrco,rco)) =
@@ -196,7 +197,7 @@ Equations
 
          Dcoaluse(COf,cv,sulf,trun,rco) dual from coal use
 
-         Dcoalimports(COf,ssi,cv,sulf,trun,rco)  dual from coalprod
+         Dcoalimports(COf,ssi,cv,sulf,trun,rco)  dual from coalimports
          Dcoalexports(COf,cv,sulf,trun,rco)  dual from coalprod
 
 
@@ -313,7 +314,8 @@ COexportlim(t,rco)..
 
 
 COsup(COf,cv,sulf,t,rco)$(COfCV(COf,cv))..
-  coalprod(COf,cv,sulf,t,rco)$COcvrco(COf,cv,sulf,t,rco)
+  sum(COff$(COmet2thermal(COff,COf) and COcvrco(COff,cv,sulf,t,rco)),
+         coalprod(COff,COf,cv,sulf,t,rco))
   +sum((ssi)$(COintlprice(COf,ssi,cv,sulf,t,rco)>0 and COfimpss(COf,ssi,cv,sulf,t)>0),
          coalimports(COf,ssi,cv,sulf,t,rco))
   +sum((tr,rrco)$arc(tr,rrco,rco),COtransyield(tr,rrco,rco)*
@@ -353,8 +355,10 @@ COdem(COf,cv,sulf,t,rr)$COfcv(COf,cv)..
 *$offtext
 
 COdemOther(COf,t,rr)..
-   sum((sulf,cv)$(COfCV(COf,cv)),
-         OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*COcvSCE(cv))
+   sum((sulf,cv)$(COfCV(COf,cv)),OTHERCOconsumpsulf(COf,cv,sulf,t,rr)*
+         (1$met(COf)+COcvSCE(cv)$coal(COf)) )
++   sum((sulf,cv)$(COfCV('coal_i',cv) and coal(COf)),
+         OTHERCOconsumpsulf('coal_i',cv,sulf,t,rr)*COcvSCE(cv))
                          =g=
    OTHERCOconsump('OT',COf,rr)*OTHERCOconsumptrend('OT',COf,t,rr)
 
@@ -426,8 +430,7 @@ Dcoalimports(COf,ssi,cv,sulf,t,rco)$(COfcv(COf,cv)
          and COfimpss(COf,ssi,cv,sulf,t)>0).. 0 =g=
    DCOimportbal(t)*COintlprice(COf,ssi,cv,sulf,t,rco)
   -DCOimportsuplim(COf,ssi,cv,sulf,t)
-  -DCOimportlim(COf,t,rco)$(import_cap=1 and rimp(rco) and
-         (cv_met(cv) or COcvSCE(cv)*7000<10000) and COfimpmax(COf,t,rco)>0)
+  -DCOimportlim(COf,t,rco)$(import_cap=1 and rimp(rco) and COfimpmax(COf,t,rco)>0)
   +DCOsup(COf,cv,sulf,t,rco)
   -sum((tr)$port(tr),
          DCOtransportcaplim(tr,t,rco))$rport(rco)

@@ -1,9 +1,9 @@
-* Capacity constraint for conventional and renewables
+* E9_5 is the Capacity constraint for conventional and renewables with segmented load curve
 * Q is the total production (ELop in KEM) for a given technology indexed by h (ELp in KEM)
 *        and a fuel indexed by f (ELf in KEM)
-* Note that in the China model you only need one operation variable block
+* Note that in KEM China you only need one operation variable block, ELop,
 *        You dont need ELsolop or ELwindop
-* For renwables subsets WT(h) and PV(h) we apply a some power distribution to
+* For renwable subsets WT(h) and PV(h) we apply a some power distribution to
 *        the total avaialble capacity in each load block (ELl) and season (ELs)
 
 Eq9_5(i,h,r,ELl,ELs)$(not gttocc(h)) ..
@@ -14,8 +14,8 @@ Eq9_5(i,h,r,ELl,ELs)$(not gttocc(h)) ..
          )
          -sum(f$fuel_set(h,f,r),Q(i,h,f,r,ELl,ELs))=g=0;
 
-*IN KEM China the new ELcaplim equation should look like *
-* Note that I removed ther ELpd(Elp) subset condition for convention plants only
+*IN KEM China the new ELcaplim equation will look like ELcaplim below
+* Note that I removed ther ELpd(Elp) subset condition for dispatchable plants
 
 ELcaplim(ELp,v,ELl,t,r)..
    ELcapfac(ELp,v)*ELlchours(ELl,ELs)*(

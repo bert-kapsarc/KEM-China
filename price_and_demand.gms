@@ -6,7 +6,7 @@ ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,rr)=0;
 
 
 parameter COprice_fx(COf) fixed coal price per KG of SCE (7000 KCAL per kg) ;
-          COprice_fx('coal') = 600;
+          COprice_fx('coal') = 700;
           COprice_fx('met') = 1000;
 *        Set Coal prices when not solving coal supply model
 

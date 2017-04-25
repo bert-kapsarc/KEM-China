@@ -2,10 +2,8 @@
 
          ELdeficitmax = 20e3;
 
-
-* !!! cost for operating capacity over ELLmchours
          ELtariffmax(Elp,r)= ELtariffmax(Elp,r)/1.17*0.8;
-*$(not ELphyd(Elp)) and not Elpw(Elp) and not ELpnuc(ELp)
+         
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = (ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx'));
 
          ELtariffmax(Elpw,r) =

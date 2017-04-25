@@ -8,12 +8,12 @@ $gdxin db\coalprod.gdx
 $load  COimportprice COpricetrend WCD_Quads COfimpmax COfimpmax_nat
 $gdxin
 
-
-         COintlprice(COf,"ss1",cv,sulf,time,rco) = COimportprice(COf,cv,sulf,rco)*COpricetrend(time);
+         COintlprice(COf,"ss0",cv,sulf,time,rco) = COimportprice(COf,cv,sulf,rco)*COpricetrend(time);
+*         COintlprice(coal,ssi,cv,sulf,time,rco) = COintlprice(coal,ssi,cv,sulf,time,rco)*1000;
 
          loop(ssi,
          COintlprice(COf,ssi,cv,sulf,time,rco)  =
-                 COintlprice(COf,"ss1",cv,sulf,time,rco)*
+                 COintlprice(COf,"ss0",cv,sulf,time,rco)*
                  2.71828**(5*log(1+(ord(ssi)-1)/200));
          );
 

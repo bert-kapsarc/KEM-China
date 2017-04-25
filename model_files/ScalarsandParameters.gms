@@ -54,7 +54,6 @@ parameter  FuelperMWH(f) quantity of fuel per MWH
 
 parameter COcvSCE(cv) average CV of coal noramlized to 7000 kcal per kg SCE
          /
-*$ontext
          CV32    3200
          CV38    3800
          CV44    4400
@@ -62,25 +61,10 @@ parameter COcvSCE(cv) average CV of coal noramlized to 7000 kcal per kg SCE
          CV56    5600
          CV62    6200
          CV68    6800
-
-*$offtext
-$ontext
-         CV30    3000
-         CV35    3500
-         CV40    4000
-         CV45    4500
-         CV50    5000
-         CV55    5500
-         CV60    6000
-         CV65    6500
-         CV70    7000
-$offtext
           /
 
           COboundCV(cv,bound) average calorific value of coal
          /
-*         CV30.lo    500
-*         CV30.up    3400
          CV32.lo    500
          CV32.up    3500
          /;
@@ -92,7 +76,6 @@ $offtext
 $offorder
          loop(CV_ord,
          COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+600;
-*         COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+1000;
          COboundCV(CV_ord+1,'lo') = COboundCV(CV_ord,'up');
          );
 

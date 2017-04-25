@@ -22,13 +22,13 @@ fconsump("EL",COf,trun,r) = fconsump("EL",COf,trun,r)/ProvAvgCV(COf,trun,r);
 
 ELgenELl(Elp,ELl,trun,r) =  (
    sum((v,ELf),ELop.l(ELp,v,ELl,ELf,trun,r))
-*ELparasitic(Elp,v)
+*(1-ELparasitic(Elp,v))
 *  +sum((v,ELf,fss,cv,sulf,sox,nox),
 *         ELoploc.l(ELp,v,ELl,ELf,fss,cv,sulf,sox,nox,trun,r)*ELlchours(ELl))$Elpd(Elp)
 *  +sum((v),ELwindop.l(ELp,v,ELl,trun,r))$Elpw(Elp)
-*ELparasitic(Elp,v)
+*(1-ELparasitic(Elp,v))
 *  +sum((v),ELhydop.l(ELp,v,ELl,trun,r))$(Elphyd(Elp))
-*ELparasitic(Elp,v)
+*(1-ELparasitic(Elp,v))
 *  -sum((v,reg,cv,sulf,SOx,NOx)$(ELpfgc(Elp,cv,sulf,SOx,NOx) and ELpcoal(Elp) and
 *                 (DeSOx(sox) or DeNOx(nox))),
 *         ELCOconsump.l(ELp,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
@@ -82,13 +82,13 @@ ELtransTot(trun,'zTotal','out') = sum(r,ELtransTot(trun,r,'out'));
 ELsalesELp(ELp,v,ELl,trun,r) =
 
    sum((ELf)$ELpELf(ELp,ELf),
-         ELop.l(ELp,v,ELl,ELf,trun,r)*ELparasitic(Elp,v))
+         ELop.l(ELp,v,ELl,ELf,trun,r)*(1-ELparasitic(Elp,v)))
   -sum((reg,cv,sulf,SOx,NOx)$(ELpfgc(Elp,cv,sulf,SOx,NOx) and
                  (DeSOx(sox) or DeNOx(nox))),
          ELCOconsump.l(ELp,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
          ELpCOparas(Elp,v,sulf,SOx,NOx,r))
-*  +(ELhydop.l(ELp,v,ELl,trun,r)*ELparasitic(Elp,v))
-*  +(ELwindop.l(ELp,v,ELl,trun,r)*ELparasitic(Elp,v))
+*  +(ELhydop.l(ELp,v,ELl,trun,r)*(1-ELparasitic(Elp,v)))
+*  +(ELwindop.l(ELp,v,ELl,trun,r)*(1-ELparasitic(Elp,v)))
 ;
 
 ELsalesELp('All','all',ELl,trun,r) = sum((ELp,v),ELsalesELp(ELp,v,ELl,trun,r));
@@ -185,7 +185,7 @@ ELtranscosts('Total',trun,"China") = sum(r,ELtranscosts('Total',trun,r));
 
 ELtariffELp(ELp,v,trun,r)$(sum((ELl,ELf),ELop.l(ELp,v,ELl,ELf,trun,r))>0)
  = ELcostsELp(ELp,v,trun,r)/
-( sum((ELl,ELf),ELop.l(ELp,v,ELl,ELf,trun,r)*ELparasitic(Elp,v))
+( sum((ELl,ELf),ELop.l(ELp,v,ELl,ELf,trun,r)*(1-ELparasitic(Elp,v)))
  -sum((reg,cv,sulf,SOx,NOx)$(ELpfgc(ELp,cv,sulf,SOx,NOx) and Elpcoal(ELp) and
                  (DeSOx(sox) or DeNOx(nox))),
          ELCOconsump.l(Elp,v,reg,cv,sulf,SOx,NOx,trun,r)*COcvSCE(cv)*
@@ -263,7 +263,7 @@ sum(trun,ELdiscfact(trun)*(
   +sum((Elpd,v,ELl,ELf,r)$(not ELptariff(ELpd,v)
                  and ELpELf(ELpd,ELf)),
          ELop.l(ELpd,v,ELl,ELf,trun,r)*
-         ELparasitic(Elpd,v)*DELsup.l(ELl,trun,r))
+         (1-ELparasitic(Elpd,v))*DELsup.l(ELl,trun,r))
 
   -sum((ELpcoal,v,ELl,reg,cv,sulf,SOx,NOx,r)$(ELpfgc(Elpcoal,cv,sulf,SOx,NOx) and
                  not ELptariff(ELpcoal,v) and (DeSOx(sox) or DeNOx(nox))),
@@ -271,10 +271,10 @@ sum(trun,ELdiscfact(trun)*(
          ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)*ELlcnorm(Ell)*DELsup.l(ELl,trun,r))
 
   +sum((ELphyd,v,ELl,r)$(not ELptariff(ELphyd,v)),ELhydop.l(ELphyd,v,ELl,trun,r)*
-         ELparasitic(Elphyd,v)*DELsup.l(ELl,trun,r))
+         (1-ELparasitic(Elphyd,v))*DELsup.l(ELl,trun,r))
 
   +sum((ELpw,v,ELl,r)$(not ELptariff(ELpw,v)),ELwindop.l(ELpw,v,ELl,trun,r)*
-                 ELparasitic(Elpw,v)*DELsup.l(ELl,trun,r))
+                 (1-ELparasitic(Elpw,v))*DELsup.l(ELl,trun,r))
 
   +sum(grid,sum(r$rgrid(r,grid),
           sum((ELpd,v)$(not ELptariff(ELpd,v)), Elexistcp.l(ELpd,v,trun,r))
@@ -287,7 +287,7 @@ sum(trun,ELdiscfact(trun)*(
 
   +sum((ELl,r),
          sum((ELpd,v,ELf)$(not ELptariff(ELpd,v)),
-                 ELupspincap.l(ELpd,v,ELl,ELf,trun,r)*ELparasitic(Elpd,v)
+                 ELupspincap.l(ELpd,v,ELl,ELf,trun,r)*(1-ELparasitic(Elpd,v))
          )*DELupspinres.l(ELl,trun,r))
 
 

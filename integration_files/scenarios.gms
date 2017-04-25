@@ -51,46 +51,5 @@ $ontext
          and (ELwindexist(r)/ELdemgro('LS1',t,r)-ord(wstep))>-1 );
 $offtext
 
-
-
-$ontext
-elseif scen('EIA'),
-
-
-
-
-COtransbld.up(tr,trun,rco,rrco) = 0;
-
-         t_start=1;
-
-         coal_cap=1;
-         rail_cap=1;
-
-*$ontext
-*Load EIA demand data
-        OTHERCOconsump(COf,time,rr)=0;
-
-        OTHERCOconsump(COf,time,rr)$(OTHERCOconsump(COf,time,rr)>0) =
-COconsumpEIA(COf,time)*OTHERCOconsump(COf,time,rr)/sum(r,OTHERCOconsump(COf,time,r));
-
-        OTHERCOconsump(COf,time,rr)$(ord(time)>25 and COconsumpEIA(COf,time)>0) =
-COconsumpEIA(COf,time)*OTHERCOconsump(COf,'t35',rr)/sum(r,OTHERCOconsump(COf,'t35',r));
-
-*convert EIA demand from trillion btu to million tons at 7000kcal/kg for steam
-*0.252164401 kcal/btu
-        OTHERCOconsump(coal,time,rr)=OTHERCOconsump(coal,time,rr)*0.252164401/7 ;
-
-
-*convert EIA met coal consumption in trillion BTU to million tons using reported
-* 2011 met coal consumption in tons from IHS coal rush.
-
-mmBTUtoTons =  sum(met,COconsumpEIA(met,'t11'))/sum((met,r), OTHERCOconsump(met,'t11',r));
-
-        OTHERCOconsump(met,time,rr)=OTHERCOconsump(met,time,rr)/mmBTUtoTons;
-
-
-
-*OTHERCOconsump(COf,time,rr)=COconsumpIHS(COf,time,rr)
-$offtext
 );
 

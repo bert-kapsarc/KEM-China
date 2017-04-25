@@ -485,12 +485,12 @@ parameter
 
 
 * !!!    Define parasitic loads
-         ELparasitic(Elp,v)     = 1;
-         ELparasitic(Elpcoal,v) = 1-0.02 ;
-         ELparasitic('SubcrSML',v) = 1-0.07 ;
-         ELparasitic(Elpog,v)   = 1-0.05 ;
-         ELparasitic(Elphyd,v)  = 1-0.01;
-         ELparasitic(Elpnuc,v)  = 1-0.05;
+         ELparasitic(Elp,v)     = 0;
+         ELparasitic(Elpcoal,v) = 0.02 ;
+         ELparasitic('SubcrSML',v) = 0.07 ;
+         ELparasitic(Elpog,v)   = 0.05 ;
+         ELparasitic(Elphyd,v)  = 0.01;
+         ELparasitic(Elpnuc,v)  = 0.05;
 
          ELpCOparas(Elpcoal,v,sulf,sox,nox,r)$(ELfuelburn(ELpcoal,v,'coal',r)>0) =
          EMfgcpower(sulf,sox,nox)/ELfuelburn(ELpcoal,v,'coal',r);
@@ -557,7 +557,7 @@ parameter
 
          Elexistcp.up(ELp,v,trun,r)=0;
 
-         Elexistcp.up(ELpd,v,trun,r)$(ord(trun)=1 and not ELpcoal(Elpd))=
+         Elexistcp.up(ELpd,v,trun,r)$(ord(trun)=1)=
                  sum((chp),ELexist(ELpd,v,chp,r));
 ;
 
@@ -891,15 +891,15 @@ ELwindcapsum(wstep,t,r).. -sum((ELpw,v),ELwindoplevel(wstep,ELpw,v,t,r))=g=-1;
 ELupspinres(ELl,t,r)..
   -ELwindspin*sum((wstep,ELpw,v),
          ELdiffGW(wstep,ELl,r)*ELdemgro(ELl,t,r)*
-         ELwindoplevel(wstep,ELpw,v,t,r)*ELparasitic(Elpw,v))
+         ELwindoplevel(wstep,ELpw,v,t,r)*(1-ELparasitic(Elpw,v)))
   +sum((ELpd,v,ELf)$(ELpELf(ELpd,ELf) and ELpspin(ELpd)),
-         ELupspincap(ELpd,v,ELl,ELf,t,r)*ELparasitic(Elpd,v))
+         ELupspincap(ELpd,v,ELl,ELf,t,r)*(1-ELparasitic(Elpd,v)))
 =g=0;
 
 * ELECTRICITY SUPPLY AND DEMAND
 ELsup(ELl,t,r)..
    sum((ELp,v,ELf)$ELpELf(ELp,ELf),
-         ELop(ELp,v,ELl,ELf,t,r)*ELparasitic(Elp,v))
+         ELop(ELp,v,ELl,ELf,t,r)*(1-ELparasitic(Elp,v)))
   -sum((ELpcoal,v,reg,cv,sulf,SOx,NOx)$(ELpfgc(Elpcoal,cv,sulf,SOx,NOx) and
                  (DeSOx(sox) or DeNOx(nox))),
          ELCOconsump(ELpcoal,v,reg,cv,sulf,SOx,NOx,t,r)*COcvSCE(cv)*
@@ -914,13 +914,20 @@ ELsup(ELl,t,r)..
 ;
 
 ELdem(ELl,t,rr)$rdem_on(rr)..
-   sum((ELt,ELll,r)$ELtransr(ELt,r,rr),
+   +sum((ELp,v,ELf)$ELpELf(ELp,ELf),
+         ELop(ELp,v,ELl,ELf,t,rr)*(ELparasitic(Elp,v)))
+   +sum((ELpcoal,v,reg,cv,sulf,SOx,NOx)$(ELpfgc(Elpcoal,cv,sulf,SOx,NOx) and
+                 (DeSOx(sox) or DeNOx(nox))),
+         ELCOconsump(ELpcoal,v,reg,cv,sulf,SOx,NOx,t,rr)*COcvSCE(cv)*
+         ELpCOparas(Elpcoal,v,sulf,SOx,NOx,rr))*ELlcnorm(ELl)
+
+   +sum((ELt,ELll,r)$ELtransr(ELt,r,rr),
          Eltransyield(ELt,r,rr)*ELtranscoef(ELll,ELl,r,rr)*
          ELtrans(ELt,ELll,t,r,rr))
 
    -sum((v),ELhydopsto(ELl,v,t,rr))
 *   -PCELconsump(ELl,t,rr)-RFELconsump(ELl,t,rr)
-         =g=ELlcgwsales(rr,ELl)*ELdemgro(ELl,t,rr)*ELlchours(ELl);
+         =g=ELlcgw(rr,ELl)*ELdemgro(ELl,t,rr)*ELlchours(ELl);
 
 
 
@@ -1026,14 +1033,14 @@ ELprofit(ELc,vv,t,r) =e=
 +sum((ELp,v)$(ELptariff(ELp,v) and ELcELp(ELc,vv,ELp,v)),
 
   +sum((ELl,ELf)$(ELpELf(ELp,ELf)),
-         +(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+         +(ELtariffmax(ELp,r)*(1-ELparasitic(Elp,v))-ELomcst(ELp,v,r))*
          ELop(ELp,v,ELl,ELf,t,r) )$(not ELpw(Elp) or (ELpw(ELp) and ELwtarget<>1))
 
 *  Generator tariffs and costs for operating flue gas control systems
   +sum((gtyp,ELfcoal,cv,sulf,sox,nox)$(ELpcoal(ELp) and ELpfgc(ELp,cv,sulf,sox,nox)),
          (
            (ELfgctariff(sox)+ELfgctariff(nox))*
-           (ELparasitic(Elp,v)-ELpCOparas(Elp,v,sulf,SOx,NOx,r)*ELfuelburn(ELp,v,ELfcoal,r))
+           ((1-ELparasitic(Elp,v))-ELpCOparas(Elp,v,sulf,SOx,NOx,r)*ELfuelburn(ELp,v,ELfcoal,r))
           -(EMfgcomcst(sox) +EMfgcomcst(nox)) )*
          ELCOconsump(ELp,v,gtyp,cv,sulf,sox,nox,t,r)*COcvSCE(cv)/
          ELfuelburn(ELp,v,ELfcoal,r)
@@ -1178,7 +1185,7 @@ DELCOconsump(ELpcoal,v,gtyp,cv,sulf,sox,nox,t,r)$ELpfgc(Elpcoal,cv,sulf,sox,nox)
 
   +sum((Elc,vv)$ELcELp(ELc,vv,ELpcoal,v),DELrevenue_constraint_bilinear(ELc,vv,t,r)*
          ( (ELfgctariff(sox)+ELfgctariff(nox))*
-           (ELparasitic(Elpcoal,v)-ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)*ELfuelburn(ELpcoal,v,'coal',r))
+           ((1-ELparasitic(Elpcoal,v))-ELpCOparas(Elpcoal,v,sulf,SOx,NOx,r)*ELfuelburn(ELpcoal,v,'coal',r))
           -(EMfgcomcst(sox)+EMfgcomcst(nox)) )*
          COcvSCE(cv)/ELfuelburn(ELpcoal,v,'coal',r))$ELptariff(ELpcoal,v)
 
@@ -1278,11 +1285,11 @@ DELop(ELp,v,ELl,ELf,t,r)$ELpELf(ELp,ELf)..
                 +0 =g=
 
   +ELomcst(Elp,v,r)*DELopmaintbal(t)
-  +DELsup(ELl,t,r)*ELparasitic(Elp,v)
+  +DELsup(ELl,t,r)*(1-ELparasitic(Elp,v))
 
   -DELcaplim(ELp,v,ELl,t,r)$(not ELpw(ELp) and not ELphyd(ELp))
 
-  +(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+  +(ELtariffmax(ELp,r)*(1-ELparasitic(Elp,v))-ELomcst(ELp,v,r))*
          sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELrevenue_constraint_bilinear(ELc,vv,t,r))$(ELpd(ELp) and ELptariff(ELp,v))
 
   +DELcapcontr(ELp,v,t,r)$(ELpd(ELp) and vo(v))
@@ -1294,12 +1301,12 @@ DELop(ELp,v,ELl,ELf,t,r)$ELpELf(ELp,ELf)..
   -sum(ELll,DELnucconstraint(ELll,t,r)*ELlcnorm(ELll))$ELpnuc(ELp)
 
 *       Duals for ELpw
-  +(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+  +(ELtariffmax(ELp,r)*(1-ELparasitic(Elp,v))-ELomcst(ELp,v,r))*
          sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELrevenue_constraint_bilinear(ELc,vv,t,r))$(ELpw(ELp) and ELptariff(ELp,v) and ELwtarget<>1)
   -DELwindutil(ELp,ELl,v,t,r)$ELpw(ELp)
 
 *       Duals for ELphyd
-    +(ELtariffmax(ELp,r)*ELparasitic(ELp,v)-ELomcst(ELp,v,r))*
+    +(ELtariffmax(ELp,r)*(1-ELparasitic(Elp,v))-ELomcst(ELp,v,r))*
          sum((Elc,vv)$ELcELp(ELc,vv,ELp,v),DELrevenue_constraint_bilinear(ELc,vv,t,r))$(ELphyd(ELp) and ELptariff(ELp,v))
 
   -DELhydutil(ELp,v,t,r)$(not ELphydsto(ELp)and ELphyd(ELp))
@@ -1329,7 +1336,7 @@ $offtext
 
   -DELcaplim(ELpd,v,ELl,t,r)*ELlchours(ELl)
 
-  +DELupspinres(ELl,t,r)*ELparasitic(Elpd,v)
+  +DELupspinres(ELl,t,r)*(1-ELparasitic(Elpd,v))
 ;
 
 *$ontext
@@ -1384,7 +1391,7 @@ DELwindoplevel(wstep,ELpw,v,t,r)..
   +sum(ELl,ELdiffGW(wstep,ELl,r)*ELdemgro(ELl,t,r)*DELwindutil(ELpw,ELl,v,t,r)*ELlchours(ELl))
   -DELwindcapsum(wstep,t,r)
   -ELwindspin*sum(ELl,DELupspinres(ELl,t,r)*
-         ELdiffGW(wstep,ELl,r)*ELdemgro(ELl,t,r)*ELparasitic(Elpw,v))
+         ELdiffGW(wstep,ELl,r)*ELdemgro(ELl,t,r)*(1-ELparasitic(Elpw,v)))
 ;
 
 DELhydopsto(ELl,v,t,r)..  0=g=

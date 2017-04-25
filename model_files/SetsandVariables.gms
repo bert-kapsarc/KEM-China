@@ -27,14 +27,14 @@ Sets
          CO(sect) /CO/
 
          allmaterials all materials in KEM
-                 /coal,met,
+                 /coal,met,coal_i
                  dummyf,u-235, natgas,
                  methane,ethane,propane,gcond,NGL,
                  crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
                  lightcrude,HFO,diesel/
 
          f(allmaterials) fuels
-                 /coal,met,
+                 /coal,met,coal_i,
                  dummyf,u-235, natgas,
                  methane,ethane,propane,gcond,NGL,
                  crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
@@ -48,12 +48,14 @@ Sets
                  lightcrude,crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy/
 
 
-         COf(f) coal fuel types /met,coal/
+         COf(f) coal fuel types /met,coal,coal_i/
 
          COfdem(COf) /met,coal/
-         coal(COf) thermal coal fuel types /coal/
+         coal(COf) thermal coal fuel types /coal, coal_i/
+         coal_i(COF) /coal_i/
+         coal_t(COf) /coal/
 
-         met(COf) metallurigcal fuel types /met/
+         met(COf) metallurgical fuel types /met/
 
          IHScoaluse / 'Electricity Generation','Industry (excluding met. coal)',
                          'Heat Supply','Residential','Other Non-Industry','Metallurgical' /
@@ -78,12 +80,12 @@ Sets
 *         cv discrete calorific values 3000 to 7000 kcal per kg /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70,CVmet,CVf/
 *         cv_steam(cv) ordered calorific values for thermal coal /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70/
 
-         cv discrete calorific values 3000 to 7000 kcal per kg /CV32,CV38,CV44,CV50,CV56,CV62,CV68,CVmet,CVf/
+         cv discrete calorific values bins kcal per kg /CV32,CV38,CV44,CV50,CV56,CV62,CV68,CVf/
          cv_steam(cv) ordered calorific values for thermal coal /CV32,CV38,CV44,CV50,CV56,CV62,CV68/
 
-         cv_met(cv) calorific values assigned to met coal /CVmet/
+         cv_met(cv) calorific values assigned to met coal /CV62/
          CVf(cv) place holder for other fuels /CVf/
-         cv_ord(cv) ordered calorific values
+         cv_ord(cv) ordered calorific values  /CV32,CV38,CV44,CV50,CV56,CV62,CV68/
 
          sulf  sulfur content in coal / ExtLow,Low,Med,High/
 
@@ -100,21 +102,22 @@ Sets
          port(tr) water based transportation /port/
          rail(tr) rail tranportation /rail/
          truck /truck/
-
          land(tr) land based transport modes
 ;
 
-         cv_ord(cv) = (not cv_met(cv) and not CVf(cv));
-
 
          COfcv(met,cv_met)=yes;
-         COfcv('coal',cv_steam)=yes;
-*         COfcv('lignite',cv_lignite)=yes;
+         COfcv(coal,cv_steam)=yes;
+         COfcv(coal_i,cv_steam)=yes;
 
          IHSother(IHScoaluse)$(not IHSpower(IHScoaluse) and not IHSmet(IHScoaluse))=yes;
 
          COfsulf(coal,sulf) = yes;
+         COfsulf(coal_i,sulf) = yes;
          COfsulf(met,sulfmet) = yes;
+
+         land(tr) = yes;
+         land(port) = no;
 
 sets
          Rall
@@ -147,8 +150,6 @@ sets
 
          coord /latitude,longitude/
 ;
-         land(tr) = yes;
-         land(port) = no;
 
          parameters latitude(rco),longitude(rco);
 
@@ -335,6 +336,7 @@ Sets
 
 
          ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
+         ELpfgc(Elpcoal,cv_met,sulf,sox,nox) = yes;
 
          ELpgttocc(ELp)=no;
          ELpgttocc('GTtoCC')=yes;
@@ -497,7 +499,7 @@ positive Variables
 
          COprod(COf,sulf,mm,ss,rw,trun,rco) coal production units with average regional sulfur and ash content
 
-         coalprod(COf,cv,sulf,trun,rco) Quantity of coal produced in a given mining region by average calorific value and sulfur content
+         coalprod(COf,COff,cv,sulf,trun,rco) Quantity of coal produced in a given mining region by average calorific value and sulfur content
          coalprod2(COf,cv,sulf,mm,ss,rw,trun,rco) fg
          coaluse(COf,cv,sulf,trun,rco) Quantity of coal used locally in demand region with internal production
          coaluse_local
@@ -533,7 +535,7 @@ positive Variables
          DCOcapbal(COf,mm,ss,trun,rco) dual on coal transport balance
          DCOcaplim(COf,mm,ss,trun,rco) dual coal transport capcity constraint
 
-         DCOsulflim(sulf,trun,rco) dual COsulflim
+         DCOsulflim(COf,mm,ss,sulf,trun,rco) dual COsulflim
          DCOwashcaplim(COf,mm,ss,trun,rco)
 
          DCOprodCV(COf,cv,sulf,trun,rco) dual price for coal produciton by average CV

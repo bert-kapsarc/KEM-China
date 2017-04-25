@@ -27,8 +27,8 @@ sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and ALlss(ss)),
 COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
 COrwtable(rw,COf,COff));
 
-COprodSuppliers('TVE&Local',trun,r) =
-sum((mm,ss,rco,COf)$(rco_sup(rco,r) and (TVE(ss) or Local(ss))),
+COprodSuppliers(COf,trun,r) =
+sum((mm,ss,rco)$(rco_sup(rco,r) and (TVE(ss) or Local(ss) or Allss(ss))),
 COexistcp.l(COf,mm,ss,trun,rco));
 
 COexistrco(Cof,trun,rco) = sum((mm,ss),COexistcp.l(COf,mm,ss,trun,rco));
@@ -68,7 +68,7 @@ COtransimp(COf,cv,trun,rrco) = COtransimp(COf,cv,trun,rrco)-COtransimp_temp(COf,
 
 
 
-Cotr(tr,trun) = sum((COf,cv,sulf,rrco,rco)$(coalprod.l(COf,cv,sulf,trun,rco)>0),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco) - COtrans.l(COf,cv,sulf,tr,trun,rrco,rco)) ;
+Cotr(tr,trun) = sum((COf,cv,sulf,rrco,rco)$(sum(Coff,coalprod.l(COf,COff,cv,sulf,trun,rco))>0),COtrans.l(COf,cv,sulf,tr,trun,rco,rrco) - COtrans.l(COf,cv,sulf,tr,trun,rrco,rco)) ;
 Cotrriver(trun) = sum((COf,cv,sulf,rport_riv,rrport_riv),COtrans.l(COf,cv,sulf,'port',trun,rport_riv,rrport_riv));
 *-COtrans.l(COf,cv,sulf,'port','t01',rrport_riv,rport_riv)
 COtrport(rport,trun)  = sum((COf,cv,sulf,rrport),COtrans.l(COf,cv,sulf,'port',trun,rport,rrport)) ;
@@ -118,20 +118,20 @@ Cotransbldpath(tr,trun,rrco,rco,path_order)$(not port(tr))= Cotransbldpath(tr,tr
 
 * reset node type if no production
 
-parameter coalprod_calib(COf,cv,sulf,trun,rco) ;
+parameter coalprod_calib(COf,COff,cv,sulf,trun,rco) ;
 
 
 *use to calaculate shift in coal coalprod
 *Execute_Load '../reduced_model/ChinaCoal.gdx', coalprod_calib=coalprod.l;
- coalprod_calib(COf,cv,sulf,trun,rco) =0;
+ coalprod_calib(COf,COff,cv,sulf,trun,rco) =0;
 
 set mag /pos,neg/;
 parameter coalprod_shift(rco,trun,mag),coalprod_shift_rel(rco,trun,mag);
 
-coalprod_shift(rco,trun,'pos')$(sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco))>0) =  sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco));
-coalprod_shift(rco,trun,'neg')$(sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco))<=0) =  sum((COf,cv,sulf),coalprod.l(COf,cv,sulf,trun,rco)-coalprod_calib(COf,cv,sulf,trun,rco));
+coalprod_shift(rco,trun,'pos')$(sum((COf,COff,cv,sulf),coalprod.l(COf,COff,cv,sulf,trun,rco)-coalprod_calib(COf,COff,cv,sulf,trun,rco))>0) =  sum((COf,COff,cv,sulf),coalprod.l(COf,COff,cv,sulf,trun,rco)-coalprod_calib(COf,COff,cv,sulf,trun,rco));
+coalprod_shift(rco,trun,'neg')$(sum((COf,COff,cv,sulf),coalprod.l(COf,COff,cv,sulf,trun,rco)-coalprod_calib(COf,COff,cv,sulf,trun,rco))<=0) =  sum((COf,COff,cv,sulf),coalprod.l(COf,COff,cv,sulf,trun,rco)-coalprod_calib(COf,COff,cv,sulf,trun,rco));
 
-coalprod_shift_rel(rco,trun,mag)$(sum((COf,cv,sulf),coalprod_calib(COf,cv,sulf,trun,rco)))= coalprod_shift(rco,trun,mag)/sum((COf,cv,sulf),coalprod_calib(COf,cv,sulf,trun,rco)) ;
+coalprod_shift_rel(rco,trun,mag)$(sum((COf,COff,cv,sulf),coalprod_calib(COf,COff,cv,sulf,trun,rco)))= coalprod_shift(rco,trun,mag)/sum((COf,COff,cv,sulf),coalprod_calib(COf,COff,cv,sulf,trun,rco)) ;
 *$offtext
 
 parameter coal_price(*,COf,trun);
@@ -154,8 +154,8 @@ coal_price('Qinghuangdao',COf,trun) = COsup.m(COf,'CV62','LOW',trun,'North');
 parameter coal_prod_SCE(COf,trun);
 parameter coal_imp_SCE(COf,trun);
 
-       coal_prod_SCE(COf,trun)     = sum((sulf,cv,rco),coalprod.l(COf,cv,sulf,trun,rco)*COcvSCE(cv));
-       coal_imp_SCE(COf,trun)     = sum((ssi,sulf,cv,rco),coalimports.l(COf,ssi,cv,sulf,trun,rco)*COcvSCE(cv));
+       coal_prod_SCE(COf,trun)     = sum((COff,sulf,cv,rco),coalprod.l(COff,COf,cv,sulf,trun,rco)*(1$met(COf)+COcvSCE(cv)$coal(COf)));
+       coal_imp_SCE(COf,trun)     = sum((ssi,sulf,cv,rco),coalimports.l(COf,ssi,cv,sulf,trun,rco)*(1$met(COf)+COcvSCE(cv)$coal(COf)));
 
 
 parameter EIA(*,COF,trun);

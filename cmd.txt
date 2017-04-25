@@ -50,7 +50,7 @@ P16=COpricetrend
 Q17= SELECT Region,SumOf2015 FROM [Regional Production (CEIC)]
 P17= COprodCEIC2015
 
-Q18= SELECT Region,SumCapacityCuts2016August FROM [Regional Capacity Cuts]
+Q18= SELECT Region,SumCapacityCuts2016 FROM [Regional Capacity Cuts]
 P18= COprodcuts
 
 Q19= SELECT Region,[SumOfCapacity (mt)] FROM [Capacity 2015]

@@ -23,7 +23,7 @@ In the current version the demands for power, and coal (excluding the power
 sector) are exogenously defined.
 
 MODEL DECLERATION
-The $INCLUDE statement create_models defines the models that can be solved
+The $INCLUDE statement create_model defines the models that can be solved
 Configure to run 2 models standalone (Coal and Power),
 plusand an additional emissions component thatcan be solved when running
 the model as integrated Coal and Power
@@ -47,8 +47,8 @@ $INCLUDE RW_param.gms
 set  run_model(built_models) defines what built model will be run. Is a subset of buil_models which represents the model instances that hav been developed. Options are Coal and or Power
      run_mode(lp_mcp) Tell the model to solve in lp or mcp mode. can only select one of these options.;
 *        select model(s) to run -  Coal, Power, Emissions
-         run_model('Coal')=yes;
-*         run_model('Power')=yes;
+*         run_model('Coal')=yes;
+         run_model('Power')=yes;
 *         run_model('Emissions')=yes;
 
 *        run in LP or MCP mode (select one only!)
@@ -68,21 +68,19 @@ $INCLUDE create_models.gms
 
 
 $INCLUDE discounting.gms
-         ELdiscfact(time)  = 1;
-
-
+ELdiscfact(time)  = 1;
 
 $INCLUDE imports.gms
 $INCLUDE scenarios.gms
-$include data_manipulation.gms
+$INCLUDE data_manipulation.gms
 $INCLUDE price_and_demand.gms
 
-
-if( run_mode('mcp'),
 $INCLUDE on_grid_tariffs.gms
-);
-$INCLUDE short_run.gms
+
+*$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
+
+ELbld.up(ELpnuc,vn,trun,r)=0;
 
 *          execute_loadpoint "test2.gdx";
 *         execute_loadpoint "test2.gdx" ELwindtarget, Elwindop ;
@@ -123,6 +121,7 @@ elseif run_model('Coal'),
 
 
     If(run_mode('LP'),
+*         execute_loadpoint "CoalLP_p.gdx" ;
          Solve CoalLP using LP minimizing COobjvalue_CFS;
 *         solve CoalLP using emp minimizing COobjvalue;
 
@@ -136,14 +135,14 @@ elseif run_model('Coal'),
 elseif run_model('Power'),
    If(run_mode('LP'),
 
-         Solve PowerLP using NLP minimizing ELobjvalue;
+         Solve PowerLP using LP minimizing ELobjvalue;
 
    elseif run_mode('MCP'),
          Solve PowerMCP using MCP;
    );
 
 );
-
+*COprod.l(COf,sulf,mm,ss,rw,t,rco)$(COprod.l(COf,sulf,mm,ss,rw,t,rco)<1e-6 and COrw(COf,mm,ss,sulf,rw,rco))=1e-6;
 $INCLUDE obj_values.gms
 
 $INCLUDE RW_EL.gms
