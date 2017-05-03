@@ -1,10 +1,6 @@
 
 ********************************************************************************
 
-*        set s defines the scenario we want to run
-*         options DI1 to DI8, CE1 to CE2, base and calib
-set scen(scenarios) /Calib/
-
 scalars  import_cap set to 1 to enforce the import constraint /1/
          trans_budg set to 1 to enforce budget constraint for railway expansion /0/
          coal_cap   set to 1 to cap mining in each province to COprodcap parameter /1/

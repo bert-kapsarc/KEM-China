@@ -61,7 +61,7 @@ COpurchbal,COcnstrctbal,COopmaintbal,
 COcapbal,COcaplim,
 COwashcaplim,COsulflim,
 COprodfx,COprodCV,COprodlim,
-COcapcuts,COcapcutsSOE,
+*COcapcuts,
 
 COtransPurchbal,COtransCnstrctbal,
 COtransOpmaintbal,

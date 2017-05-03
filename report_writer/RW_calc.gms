@@ -2,10 +2,10 @@
 *$INCLUDE RW_param.gms
 $ontext
 Eldemand(Ell,trun,rall) = 0;
-Elconsump(sector,trun,rall) = 0;
-fconsump(sector,fup,trun,rall) = 0;
-RFfconsump(sector,RFcf,trun,rall) =0;
-ELsuptot(sector,trun,rall)=0;
+Elconsump(sectors,trun,rall) = 0;
+fconsump(sectors,fup,trun,rall) = 0;
+RFfconsump(sectors,RFcf,trun,rall) =0;
+ELsuptot(sectors,trun,rall)=0;
 $offtext
 
 *$INCLUDE RW_WAcalc.gms
@@ -25,10 +25,10 @@ $INCLUDE CO_createXLS.gms
 $ontext
 ********************************************************************************
 *        sum over sectors, regions, fuel types to get aggregate quantities
-         expenses("ALL",trun) = sum(sector,expenses(sector,trun));
+         expenses("ALL",trun) = sum(sect,expenses(sect,trun));
 
 
-         ELsuptot("ALL",trun,rall) = sum(sector,ELsuptot(sector,trun,rall));
+         ELsuptot("ALL",trun,rall) = sum(sect,ELsuptot(sect,trun,rall));
 
 
          Eldemand(Ell,trun,r) = Eldemand(Ell,trun,r)
@@ -38,28 +38,28 @@ $ontext
          ELconsump("PC",trun,r) = sum(Ell,PCELconsump.l(ELl,trun,r));
          ELconsump("RF",trun,r) = sum(Ell,RFELconsump.l(ELl,trun,r));
 
-         ELconsump(sector,trun,rN) = sum(r,ELconsump(sector,trun,r));
-         ELconsump("ALL",trun,rall) = sum(sector,ELconsump(sector,trun,rall));
+         ELconsump(sectors,trun,rN) = sum(r,ELconsump(sectors,trun,r));
+         ELconsump("ALL",trun,rall) = sum(sect,ELconsump(sect,trun,rall));
 
          fconsump("PC",fup,trun,r) = PCfconsump.l(fup,trun,r)*fPCconv(fup)$PCm(fup) ;
          fconsump("RF",fup,trun,r) = RFcrconsump.l(fup,trun,r)*fRFconv(fup)$RFf(fup);
          fconsump("other",fup,trun,r) = OTHERfconsump(fup,trun,r);
-         fconsump(sector,fup,trun,rN) = sum(r,fconsump(sector,fup,trun,r));
-         fconsump("ALL",fup,trun,rall) = sum(sector,fconsump(sector,fup,trun,rall));
+         fconsump(sectors,fup,trun,rN) = sum(r,fconsump(sectors,fup,trun,r));
+         fconsump("ALL",fup,trun,rall) = sum(sect,fconsump(sect,fup,trun,rall));
 
-         fconsumpMMBTU(sector,trun,rall) = sum(fup,fconsump(sector,fup,trun,rall)*Fuelencon1(fup));
-         fconsumpMMBTU(sector,trun,rN) = sum(r,fconsumpMMBTU(sector,trun,r));
+         fconsumpMMBTU(sectors,trun,rall) = sum(fup,fconsump(sectors,fup,trun,rall)*Fuelencon1(fup));
+         fconsumpMMBTU(sectors,trun,rN) = sum(r,fconsumpMMBTU(sectors,trun,r));
 
          RFfconsump("PC",RFcf,trun,r) = PCfconsump.l(RFcf,trun,r)$PCm(RFcf) ;
          RFfconsump("RF",RFcf,trun,r) = RFcrconsump.l(RFcf,trun,r)$RFf(RFcf);
 
-         RFfconsump(sector,RFcf,trun,rN) = sum(r,RFfconsump(sector,RFcf,trun,r));
+         RFfconsump(sectors,RFcf,trun,rN) = sum(r,RFfconsump(sectors,RFcf,trun,r));
 
-         RFfconsump("ALL",RFcf,trun,rall) = sum(sector,RFfconsump(sector,RFcf,trun,rall));
-         RFfconsumpMMBTU(sector,trun,r) = sum(RFcf,RFfconsump(sector,RFcf,trun,r)*Fuelencon1(RFcf));
+         RFfconsump("ALL",RFcf,trun,rall) = sum(sect,RFfconsump(sect,RFcf,trun,rall));
+         RFfconsumpMMBTU(sectors,trun,r) = sum(RFcf,RFfconsump(sectors,RFcf,trun,r)*Fuelencon1(RFcf));
 
-         ELcap("ALL",trun,rall) = sum(sector,ELcap(sector,trun,rall));
-         ELbldtot("ALL",trun,rall) = sum(sector,ELbldtot(sector,trun,rall));
+         ELcap("ALL",trun,rall) = sum(sectors,ELcap(sectors,trun,rall));
+         ELbldtot("ALL",trun,rall) = sum(sect,ELbldtot(sect,trun,rall));
 
 
 ********************************************************************************

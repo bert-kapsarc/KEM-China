@@ -5,127 +5,19 @@
 * the KAPSARC Energy Model (KEM).
 ********************************************************************************
 * General and time Sets
-Sets
-         time            time period for defining parameters and tables /t11*t40/
-         trun(time)      final model run time period /t15*t15/
-         thyb(trun)      myopic horizon for hybrid recursive dynamics  /t15*t15/
-         i              summation index for discounting  /1*10000/
-         wind_inc        increments of wind capacity /1*20/
-         t(trun)         dynamic set for time
-
-         scenarios pre-defined model scenarios /calib,EIA/
-
-         built_models pre-configured models by sector /Power, Coal, Emissions/
-
-         lp_mcp set to declare mcp or lp model /LP,MCP/
-
+Sets     time            time period for defining parameters and tables
          sectors        Sectors in the model including aggregate All sectors
-                        /All,CO,PC,EL,WA,CM,RF,fup,OT/
-         Sect(sectors)  /CO,PC,EL,WA,CM,RF,fup,OT/
-         OT(sect) /OT/
-         EL(sect) /EL/
-         CO(sect) /CO/
 
          allmaterials all materials in KEM
-                 /coal,met,coal_i
-                 dummyf,u-235, natgas,
-                 methane,ethane,propane,gcond,NGL,
-                 crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
-                 lightcrude,HFO,diesel/
-
          f(allmaterials) fuels
-                 /coal,met,coal_i,
-                 dummyf,u-235, natgas,
-                 methane,ethane,propane,gcond,NGL,
-                 crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy,
-                 lightcrude,HFO,diesel/
-
-
          fup(f) upstream fuels
-                 /coal,met,
-                 dummyf,u-235, natgas,
-                 methane,ethane,propane,gcond,NGL,
-                 lightcrude,crude,Arabsuper,Arabextra,Arablight,Arabmed,Arabheavy/
+         COf(f) coal fuel types
+         ELf(f) electricity fuel types
 
-
-         COf(f) coal fuel types /met,coal,coal_i/
-
-         COfdem(COf) /met,coal/
-         coal(COf) thermal coal fuel types /coal, coal_i/
-         coal_i(COF) /coal_i/
-         coal_t(COf) /coal/
-
-         met(COf) metallurgical fuel types /met/
-
-         IHScoaluse / 'Electricity Generation','Industry (excluding met. coal)',
-                         'Heat Supply','Residential','Other Non-Industry','Metallurgical' /
-         IHSpower(IHScoaluse) /'Electricity Generation'/
-         IHSmet(IHScoaluse) /'Metallurgical'/
-
-         IHSother(IHScoaluse)
-
-         COstats /'Production','Other','Metallurgical','Power'/
-
-         mm mining method /open,under/
-         ssi steps for import supply curve /ss0*ss20/
-         fss(ssi) /ss0*ss1/
-         fss0(fss) /ss0/
-         Exp level and resistance to expansion reached /low,med,high,peak,depl/
-         rw coal washing set /raw,washed,other/
-         rwother(rw) other washed coal products /other/
-         rwnoot(rw) raw washed exculding other /raw,washed/
-         rwashed(rw) only washed /washed/
-         raw(rw) /raw/
-
-*         cv discrete calorific values 3000 to 7000 kcal per kg /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70,CVmet,CVf/
-*         cv_steam(cv) ordered calorific values for thermal coal /CV30,CV35,CV40,CV45,CV50,CV55,CV60,CV65,CV70/
-
-         cv discrete calorific values bins kcal per kg /CV32,CV38,CV44,CV50,CV56,CV62,CV68,CVf/
-         cv_steam(cv) ordered calorific values for thermal coal /CV32,CV38,CV44,CV50,CV56,CV62,CV68/
-
-         cv_met(cv) calorific values assigned to met coal /CV62/
-         CVf(cv) place holder for other fuels /CVf/
-         cv_ord(cv) ordered calorific values  /CV32,CV38,CV44,CV50,CV56,CV62,CV68/
-
-         sulf  sulfur content in coal / ExtLow,Low,Med,High/
-
-         sulfmet(sulf) sulfur content for metallurgical coals / ExtLow,low/
-         ELsulf(sulf) /extlow,low,Med,High/
-         bound /lo,up/
-
-         COfcv(f,cv) calorific values assigned to coal types
-         COfsulf(COf,sulf) calorific values assigned to coal types
-
-         ash percentage ash content in 5 categories 5 15 25 35 and 50 /noash/
-         ELash(ash) /noash/
-         tr transportation modes /rail,port,truck/
-         port(tr) water based transportation /port/
-         rail(tr) rail tranportation /rail/
-         truck /truck/
-         land(tr) land based transport modes
-;
-
-
-         COfcv(met,cv_met)=yes;
-         COfcv(coal,cv_steam)=yes;
-         COfcv(coal_i,cv_steam)=yes;
-
-         IHSother(IHScoaluse)$(not IHSpower(IHScoaluse) and not IHSmet(IHScoaluse))=yes;
-
-         COfsulf(coal,sulf) = yes;
-         COfsulf(coal_i,sulf) = yes;
-         COfsulf(met,sulfmet) = yes;
-
-         land(tr) = yes;
-         land(port) = no;
-
-sets
          Rall
          rco(rALL) all nodes used for coal network
          r(rco)  all demand regions
          r_industry(r) Industrial demand regions (KEM China)
-         grid    /North, Northeast, Central, East, West, South/
-         rgrid(r,grid)
          GB(rALL) standard label for chinese provinces
          regions(rco,GB) table used to aggregate provincial demand data into regional demand data
          rco_r_dem(rco,r) supply or transit nodes that can be used for coal consumption in remand region r
@@ -137,31 +29,118 @@ sets
          rport_sea(rco)
          rport_riv(rco)
 
+         sulf  sulfur content in coal
+
          rco_exporter(rco)
          rco_importer(rco)
 
-         ss domestic coal supply sources for IHS Cola Rush report
+         cv discrete calorific values bins kcal per kg
+         cv_met(cv) calorific values assigned to met coal in kcal per kg
+         mm coal mining method
+         rw coal processsing
+
+
+
+         ss              domestic coal supply sources for IHS Cola Rush report
          SOE(ss)         State owned enterprises (KEM China)
          Local(ss)       Local enterprises (KEM China)
          TVE(ss)         Town village enterprises (KEM China)
          ALlss(ss)       All coal suppliers (KEM China)
-
-
-
-         coord /latitude,longitude/
+         SOEex(sS)
 ;
 
          parameters latitude(rco),longitude(rco);
 
-*$ontext
+
 $gdxin db\setsandparameters.gdx
+$load time
 $load Rall, rco,GB, r, r_industry,
-$load regions, rco_r_dem, ss, Local, TVE, SOE, Allss, rport_sea,
+$load regions, rco_r_dem
 $load rco_exporter, rco_importer
-$load rport_riv, rport, rimp,
-$load latitude, longitude
+$load rport_riv, rport, rimp, rport_sea,
+$load latitude, longitude, sectors
 $gdxin
 
+$gdxin db\material_sets.gdx
+$load allmaterials, f, fup, COf, ELf,
+$load ss, Local, TVE, SOE, Allss,
+$load cv, cv_met,  mm, rw, sulf
+$gdxin
+
+sets    ELs /summ/;
+
+alias (r,rr), (rr,rrr), (rco,rrco), (rport,rrport), (rimp,rrimp);
+alias (rport_sea,rrport_sea), (rport_riv,rrport_riv), (ELs,ELss)  ;
+alias (COf,COff);
+
+sets
+         trun(time)      final model run time period /t15*t15/
+         thyb(trun)      myopic horizon for hybrid recursive dynamics  /t15*t15/
+         i              summation index for discounting  /1*10000/
+         wind_inc        increments of wind capacity /1*20/
+         t(trun)         dynamic set for time
+         built_models pre-configured models by sector /Power, Coal, Emissions/
+
+         lp_mcp set to declare mcp or lp model /LP,MCP/
+
+
+         Sect(sectors)  /CO,PC,EL,WA,CM,RF,fup,OT/
+         OT(sect) Other sectors /OT/
+         EL(sect) Electricity Sectors /EL/
+         CO(sect) Coal Sector /CO/
+
+         coal(COf) thermal coal fuel types /coal, coal_i/
+         coal_i(COF) /coal_i/
+         coal_t(COf) /coal/
+
+         met(COf) metallurgical fuel types /met/
+
+         rwother(rw) other washed coal products /other/
+         rwnoot(rw) raw washed exculding other /raw,washed/
+         rwashed(rw) only washed /washed/
+         raw(rw) /raw/
+
+         ssi steps for import supply curve /ss0*ss20/
+         fss(ssi) /ss0*ss1/
+         fss0(fss) /ss0/
+         Exp level and resistance to expansion reached /low,med,high,peak,depl/
+
+         bound /lo,up/
+         COfcv(f,cv) calorific values assigned to coal types
+         COfsulf(COf,sulf) calorific values assigned to coal types
+
+         tr transportation modes /rail,port,truck/
+         port(tr) water based transportation /port/
+         rail(tr) rail tranportation /rail/
+         truck /truck/
+         land(tr) land based transport modes
+;
+
+alias (ss,ss2), (mm,mm2), (sulf,sulff), (rw,rww), (COf,COff), (coal,coall);
+
+
+         COfcv(met,cv_met)=yes;
+         COfcv(coal,cv)=yes;
+         COfcv(coal_i,cv)=yes;
+
+         COfsulf(coal,sulf) = yes;
+         COfsulf(coal_i,sulf) = yes;
+         COfsulf(met,sulf) = yes;
+
+         land(tr) = yes;
+         land(port) = no;
+
+sets
+         coord /latitude,longitude/
+;
+
+         SOEex('Shandong') = yes;
+         SOEex('Shandong') = yes;
+         SOEex('Shandong Hard Coking') = yes;
+         SOEex('Shandong Met') = yes;
+         SOEex('Shandong Met') = yes;
+         SOEex('Anhui Huaibei') = yes;
+         SOEex('Anhui Huainan') = yes;
 set
          North(r) /North,CoalC,Shandong/
          Northeast(r) /Northeast/
@@ -172,11 +151,13 @@ set
          Henan(r) /Henan/
          Shandong(r) /Shandong/
          Xinjiang(r) /Xinjiang/
+
          CoalCCBR(rco) /WestCBR, CoalCCBRN, CoalCCBRS, CoalC /
          CBRRMG2(rco) /WestCBR, CoalCCBRN, CoalCCBRS, CoalC, Henan, East, EastCBR, Shandong/
 
 
-         rdem_on(rco);
+         rdem_on(rco)
+         ;
 
          Alias(North,N) ;
          Alias(Northeast,NE) ;
@@ -185,81 +166,72 @@ set
          Alias(Central,C) ;
          Alias(West,W) ;
 
-         rgrid(North,'North') = yes;
-         rgrid(Northeast,'Northeast') = yes;
-         rgrid(East,'East') = yes;
-         rgrid(Central,'Central') = yes;
-         rgrid(West,'West') = yes;
-         rgrid(South,'South') = yes;
-
          loop(r,
                  rcodem(rco)$rco_r_dem(rco,r) = yes;
          );
-
-         alias (r,rr);
-         alias (rr,rrr);
-         alias (rco,rrco);
-         alias (rport,rrport);
-         alias (rimp,rrimp);
-         alias (rport_sea,rrport_sea);
-         alias (rport_riv,rrport_riv);
-
-         alias (ss,ss2);
-         alias (mm,mm2);
-         alias (sulf,sulff);
-
-         alias (time,ttime);
-
-         alias (rw,rww)
-         alias (COf,COff);
-         alias (coal,coall)
-
-         set    ELs /summ/
-
-         alias (ELs,ELss)
 
 *Sets and variables specific to the submodels:
 
 *Power Submodel Sets
 ********************************************************************************
 Sets
-         ELl load segment 1 = peak and 5 = base /LS1*LS5/
+         ELl load segments
+         ELp power plant types
+         ELpon(ELp) power plants switched on
+         ELt Transmission technologies
+         grid Transmission Grid
+         rgrid(r,grid) Regions belongs to each grid
+;
 
-         ELc power plant companies /     ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
-                                         Hydrolg,Hydrosto,HydroROR,
-                                         Windon, Windoff,SubcrSML,SubcrLRG,
-                                         Superc,Ultrsc
-                                         ELbig
-                                   /
-         ELp(ELc) power plant types /    ST,GT,CC,GTtoCC,CCcon,Nuclear,PV,
-                                         Hydrolg,Hydrosto,HydroROR,
-                                         Windon, Windoff,SubcrSML,SubcrLRG,
-                                         Superc,Ultrsc/
+Parameter
+         ELlchours(ELl) time (hours) in each load segment 1 = peak 5 = base
+         ELsdays(ELs)
+         /
+         summ  365
+*         wint  90
+*         spfa  155
+         /
+         ELsnorm(ELs)
+         ELlcnorm(ELl) normalized load hours curve;
+;
 
+alias(ELl,ELll);
+
+$gdxin db\electricity_sets.gdx
+$load ELl, ELp, ELpon,ELt, ELlchours,  grid, rgrid
+$gdxin
+
+*        Rescale to calculate TWH rather than GWH in the caplim equations
+*        to rescale transmission costs closer to capacity capital costs
+         ELlchours(ELl) = 1e-3*ELlchours(ELl);
+         Elsnorm(ELs) =  ELsdays(ELs)/sum(ELss,ELsdays(ELss));
+         ELlcnorm(ELl) = ELlchours(ELl)/sum(ELll,ELlchours(ELll));
+
+
+Sets
+
+*  Power plant companies are aggregate at the regional level by technology
+         ELc power plant companies /     Nuclear,ELbig,Wind/
          ELbig(ELc) Full regional market concentration /ELbig/
          ELnuc(ELc) Nuclear power companies /Nuclear/
-         ELwind(Elc) /windon/
+         ELwind(Elc) Wind power plant companies /Wind/
 
          ELpd(ELp) dispatchable technologies /Nuclear,SubcrSML,SubcrLRG,Superc,Ultrsc,CC,GT,ST,GTtoCC,CCcon/
          ELps(ELp) solar technologies /PV/
          ELpog(ELp) oil and gas fueled technologies /ST,GT,CC,CCcon/
-         ELpCC(ELp) single cycle GT /CC,CCcon/
+         ELpCC(ELp) combined cycle units /CC,CCcon/
+         ELpsingle(Elp) sigle cycle and standalone steam plants (not coal) /GT,ST/
          ELpCCcon(ELp) /CCcon/
          ELpcoal(ELp) coal technologies /SubcrSML,SubcrLRG,Superc,Ultrsc/
          ELpsubcr(ELp) subcritical coal plant /SubcrSML,SubcrLRG/
          ELpsuperc(ELp) subcritical coal plant /Superc/
          ELpnuc(ELp) nuclear /Nuclear/
          ELpspin(ELp) upsin plants used as renewable backup /GT,SubcrSML,SubcrLRG,Superc,Ultrsc/
-         ELpsingle(Elp) sigle cycle and standalone steam plants (not coal) /GT,ST/
          ELphyd(ELp) hydro technologies /Hydrolg,Hydrosto, HydroROR/
          ELphydsto(ELp) pumped storage hydro /Hydrosto/
-         ELpw(ELp) wind technologies /Windon/
-         ELpwon(ELpw) wind technologies /Windon/
-*         ELpwoff(ELpw) wind technologies /Windoff/
+         ELpw(ELp) wind technologies /Windon, windoff/
+         ELpwoff(ELpw) wind technologies /Windoff/
          chp set to identify CHP or dual purpose plants with heat recvoery /chp, no_chp/
-
-         ELt High Voltage AC and UHV DC transmission technologies  /HVAC,UHVDC/
-         HVAV(ELt) /HVAC/
 
 *GTtoCC is an intermediate process that represents any retrofitting of existing
 *GT plants into CC plants.
@@ -274,21 +246,16 @@ Sets
          ELpcom(ELp)
          ELpbld(ELp,v) Union set to define bld variable for converting old vintage gt to CCconv
 
-         ELf(f) /lightcrude,HFO,diesel,methane,u-235,coal,dummyf/
-*        ,biomass,petcoke,msw,LPG,geo/
          ELfref(ELf) refined fuels /HFO,diesel/
          ELfliquid(ELf) liquid fueld /HFO,diesel,lightcrude/
          ELfcrude(ELf) crude fuels /lightcrude/
          ELfup(ELf) upstream fuels /methane,u-235/
          ELfdummy(f) dummy fuel /dummyf/
-
          ELfog(ELf) /lightcrude,methane,HFO,diesel/
-*
          ELrfgas(ELf) /HFO,diesel,methane/
          ELfmethane(ELf) /methane/
          ELfcoal(f) /coal/
          ELfnuclear(ELf) /u-235/
-
 
          fDiesel(ELf) Diesel only
          fspin(f) Upspin fuels required to backup solar /diesel, methane,coal/
@@ -317,84 +284,37 @@ Sets
          alias (ELl,ELll);
          alias(ELl,ELlll);
 
-         sets
+sets
          ELpELf(Elp,f) fuel use for different generators
          ELpfss(Elp,f,fss) fuel use for different generators
          ELpfgc(Elp,cv,sulf,fgc,fgc) fuel use for different generators
          ELfCV(f,cv,sulf) Set for calorific value and sulfur contents by fuel type (coal fuels)
 ;
 
-
-         ELpELf(ELpog,ELfog) = yes;
-         ELpELf(ELpnuc,Elfnuclear) = yes;
-         ELpELf(Elphyd,'dummyf') = yes;
-         ELpELf(Elpw,'dummyf') = yes;
-         ELpELf(ELpcoal,ELfcoal) = yes;
+         ELpELf(ELp,ELfog)$(ELpon(ELp) and ELpog(ELp)) = yes;
+         ELpELf(ELp,Elfnuclear)$(ELpon(ELp) and ELpnuc(ELp)) = yes;
+         ELpELf(ELp,'dummyf')$(ELpon(ELp) and Elphyd(ELp)) = yes;
+         ELpELf(ELp,'dummyf')$(ELpon(ELp) and Elpw(ELp)) = yes;
+         ELpELf(ELp,ELfcoal)$(ELpon(ELp) and ELpcoal(ELp)) = yes;
 
          ELpfss(ELpd,ELf,'ss0')$ELpELf(ELpd,ELf) = yes;
-         ELpfss(ELpog,ELfog,fss) = yes;
+         ELpfss(ELp,ELfog,fss)$(ELpon(ELp) and ELpog(ELp)) = yes;
 
 
-         ELpfgc(Elpcoal,cv_ord,sulf,sox,nox) = yes;
-         ELpfgc(Elpcoal,cv_met,sulf,sox,nox) = yes;
+         ELpfgc(ELp,cv,sulf,sox,nox)$(ELpon(ELp) and Elpcoal(ELp)) = yes;
 
          ELpgttocc(ELp)=no;
          ELpgttocc('GTtoCC')=yes;
          ELpcom(ELpd)= not ELpgttocc(ELpd);
          ELpcom('CCcon')=no;
 
-         ELpbld(ELp,v)$( (not ELpgttocc(ELp) and vn(v)) or
+         ELpbld(ELp,v)$( ELpon(ELp) and (not ELpgttocc(ELp) and vn(v)) or
                          (vo(v) and ELpgttocc(ELp)))  = yes ;
          ELpbld('CCcon',v)=no;
          ELpbld('PV',v)=no;
 
-         ELfCV(ELfcoal,cv_ord,sulf) = yes;
-         ELfCV(ELfnuclear,CVf,'ExtLow') = yes;
-         ELfCV(ELfog,CVf,'ExtLow') = yes;
+         ELfCV(ELfcoal,cv,sulf) = yes;
 
-*         fDiesel(ELf)=no;
-*         fDiesel('Diesel')=yes;
-
-
-
-
-
-         Parameter
-         ELlchours(ELl) time (hours) in each load segment 1 = peak 5 = base
-         /
-         LS1  117
-         LS2  1127
-         LS3  3820
-         LS4  3024
-         LS5  696
-         /
-
-
-         ELsdays(ELs)
-         /
-         summ  365
-*         wint  90
-*         spfa  155
-         /
-
-
-         ELsnorm(ELs)
-;
-
-*        Rescale to calculate TWH rather than GWH in the caplim equations
-*        to rescale transmission costs closer to capacity capital costs
-         ELlchours(ELl) = 1e-3*ELlchours(ELl);
-
-         Elsnorm(ELs) =  ELsdays(ELs)/sum(ELss,ELsdays(ELss));
-
-Parameter ELlcnorm(ELl) normalized load hours curve;
-
-
-alias(ELl,ELll);
-         ELlcnorm(ELl) = ELlchours(ELl)/sum(ELll,ELlchours(ELll));
-*        Use for all submodels supplying or consuming power equally accross all load segements
-
-*         abort ELlcw,ELlchours,ELlmchours;
 
 
 * On grid tarrif scenairos
@@ -445,8 +365,8 @@ ELrtariff(r)  Limit tariff policy to select regions
 
 *        no on-grid electricity tarrifs
          ELptariff(ELpd,v) = no;
-         ELctariff(ELc,v) = no;
-         ELcELp(ELp,v,ELp,v)= no;
+         ELctariff(ELc,vv) = no;
+         ELcELp(ELc,v,ELp,v)= no;
 
 *        intialize subsidy grid sets for non susbsidized runs
          ELpdsub(Elpd) = no;
@@ -525,6 +445,7 @@ positive Variables
 
          OTHERCOconsumpsulf(f,cv,sulf,trun,rr) endogenous other coal demand by sulfur content
 
+         COsubconsump(trun,rr) coal substitution consumption
 
          coalusepenalty(trun)
 
@@ -590,7 +511,7 @@ Variables
          DELcnstrctbal(trun)             free dual of cnstrctbal
          DELopmaintbal(trun)             free dual of opmaintbal
 
-         DELnucconstraint(ELl,trun,r)
+         DELnucconstraint(ELp,v,ELf,ELl,trun,r)
 
          DEMfgbal(ELp,v,trun,r)
 

@@ -1,8 +1,7 @@
-parameter   COstatistics(COstats,rAll)
-            COprodCEIC2015(r)
+parameter COprodCEIC2015(r)
 ;
 $gdxin db\coalprod.gdx
-$load  COstatistics COprodCEIC2015
+$load  COprodCEIC2015
 $gdxin
 $ontext
 *        All IHS coal prod forecasts over 5 yr periods have been interpolated
@@ -32,18 +31,6 @@ $ontext
 *        to that of the cost of secondary washed steam coal, adjusting for CV
 
 $offtext
-
-
-*        SPLIT INNER MONGOLIA AND EASTERN INNER MONGOLIA supply and demand statistics
-*$ontext
-COstatistics(COstats,'NME')=COstatistics(COstats,'NM')*0.3;
-COstatistics(COstats,'NM')=COstatistics(COstats,'NM')
-                        -COstatistics(COstats,'NME');
-
-COstatistics(COstats,r) = sum((GB)$regions(r,GB),
-                        COstatistics(COstats,GB));
-COstatistics(COstats,"China") = sum(r,COstatistics(COstats,r)) ;
-*$offtext
 
 parameter COprodIHSaggr aggregate IHS production data
          COprodIHSaggr_met  aggregate met data;
@@ -75,7 +62,6 @@ $offtext
          OTHERCOconsump(sect,COf,rr) = OTHERCOconsump(sect,COf,rr)*0.953;
 
          COcapacity('West') =  660;
-*         COcapacity('CoalC') =  1412;
 
 COprodaggr(time,r) = sum((COf,mm,ss,rco)$(rco_sup(rco,r) and (not coal_i(COf) or SOE(ss))),COprodData(COf,mm,ss,time,rco));
 
@@ -85,10 +71,10 @@ COprodcap(COf,trun,r)$(COprodaggr(trun,r)>0 )=1e3*
          COcapacity(r)/COprodaggr(trun,r);
 
 COomcst(coal_i,mm,ss,rw,time,rco)$(COmine(coal_i,mm,ss,rco) and COprodyield(coal_i,mm,ss,rw,time,rco) > 0)
-         = COomcst("coal",mm,ss,rw,time,rco)*(1.2$(TVE(ss))+1.2$(Local(ss) or Allss(ss))+1.2$(SOE(ss)));
-COomcst(coal_i,mm,ss,rw,time,rco)$(coalcv(coal_i,mm,ss,rw,time,rco)>0 and
-         COomcst(coal_i,mm,ss,rw,time,rco)/coalcv(coal_i,mm,ss,rw,time,rco)>0.13)
-         = uniform(0.1,0.13)*coalcv(coal_i,mm,ss,rw,time,rco);
+         = COomcst("coal",mm,ss,rw,time,rco)*1.2;
+*COomcst(coal_i,mm,ss,rw,time,rco)$(coalcv(coal_i,mm,ss,rw,time,rco)>0 and
+*         COomcst(coal_i,mm,ss,rw,time,rco)/coalcv(coal_i,mm,ss,rw,time,rco)>0.13)
+*         = uniform(0.1,0.13)*coalcv(coal_i,mm,ss,rw,time,rco);
 * COtransexistcp.fx(tr,trun,rco,rrco)=COtransexistcp.l(tr,trun,rco,rrco)*0.8;
 
 *        Fix existing capacity using production profile rescales to the
@@ -100,6 +86,28 @@ loop(r,
                  *COcapacity(r)/COprodaggr(trun,r)
 );
 
+parameter SOEcapratio ratio of capacity for the SOE mines
+          RegionalCapratio;
+SOEcapratio(COf,mm,ss,trun,rco)$(not coal_i(COf) and SOE(ss) and sum((COff,mm2,SOE,rrco)$(not coal_i(COff)),COexistcp.l(COff,mm2,SOE,trun,rrco))>0)
+= COexistcp.l(COf,mm,ss,trun,rco)/sum((COff,mm2,SOE,rrco)$(not coal_i(COff)),COexistcp.l(COff,mm2,SOE,trun,rrco));
+
+RegionalCapratio(COf,mm,ss,trun,rco,r)$((not SOE(ss) or SOEex(ss)) and not coal_i(COf) and rco_sup(rco,r) and
+         sum((COff,mm2,ss2,rrco)$((not SOE(ss2) or SOEex(ss2)) and not coal_i(COff) and rco_sup(rrco,r)), COexistcp.l(COff,mm2,ss2,trun,rrco))>0)
+= COexistcp.l(COf,mm,ss,trun,rco)/sum((COff,mm2,ss2,rrco)$((not SOE(ss2) or SOEex(ss2)) and not coal_i(COff) and rco_sup(rrco,r)),COexistcp.l(COff,mm2,ss2,trun,rrco));
+
+
+* Remove COprodcutsSOE propotionally across all SOE's
+         COexistcp.fx(COf,mm,ss,trun,rco)$SOE(ss)=
+         COexistcp.l(COf,mm,ss,trun,rco) -
+         COprodcutsSOE*SOEcapratio(COf,mm,ss,trun,rco)
+;
+loop(r,
+         COexistcp.fx(COf,mm,ss,trun,rco)$((not SOE(ss) or SOEex(ss)) and not coal_i(COf) and rco_sup(rco,r))=
+         COexistcp.l(COf,mm,ss,trun,rco) -
+         COprodcuts(r)*RegionalCapratio(COf,mm,ss,trun,rco,r)
+)
+         ;
+
 COexistcp.fx(COf,mm,ss,trun,rco)$(COmine(COf,mm,ss,rco) and coal_cuts = 1
                  and ord(trun)=1)=
                  COexistcp.l(COf,mm,ss,trun,rco)*(1-(
@@ -107,16 +115,17 @@ COexistcp.fx(COf,mm,ss,trun,rco)$(COmine(COf,mm,ss,rco) and coal_cuts = 1
 *                         -(0.16$TVE(ss))
 *                         -(0.0$Allss(ss))
 *                         -(0.08$Local(ss))
-*                         -0.16$rco_importer(rco)
-*                          -0.16$SOE(ss)
+                         -0.16$rco_importer(rco)
+*                         -0.16$SOE(ss)
                  )    )
 *$(not coal_i(COf))
 *$(not coal_i(COf) and not (TVE(ss) or Local(ss)))
+
 *                 +(66*COexistcp.l(COf,mm,ss,trun,rco)/
-*                 sum((mm2,ss2,rrco)$(CoalCCBR(rrco) and SOE(ss2)),COexistcp.l(COf,mm2,ss2,trun,rrco)))$(CoalCCBR(rco) and Coal(COf) and not SOE(ss))
+*                 sum((COff,mm2,ss2,rrco)$(CoalCCBR(rrco) and SOE(ss2) and coal(COff)),COexistcp.l(COf,mm2,ss2,trun,rrco)))$(CoalCCBR(rco) and SOE(ss)  and coal(COf))
 
 *                +(99*COexistcp.l(COf,mm,ss,trun,rco)/
-*                 sum((mm2,ss2,rrco)$(CBRRMG2(rrco) and not TVE(ss2)),COexistcp.l(COf,mm2,ss2,trun,rrco)))$(CBRRMG2(rco) and not TVE(ss))
+*                 sum((COff,mm2,ss2,rrco)$(CBRRMG2(rrco) and SOE(ss2) and coal(COff)),COexistcp.l(COff,mm2,ss2,trun,rrco)))$(CBRRMG2(rco) and SOE(ss) and coal(COf))
 
 *                 +(165*COexistcp.l(COf,mm,ss,trun,rco)/
 *                 sum((mm2,ss2,rrco)$(not TVE(ss2)),COexistcp.l(COf,mm2,ss2,trun,rrco)))$(not TVE(ss) and Coal(COf))
@@ -136,3 +145,10 @@ $gdxin
           ELhydexist('hydrolg',r)
          +ELhydroCEIC(r)
          -sum(ELphyd,ELhydexist(ELphyd,r));
+
+ELlcgwsales(r,ELl) = ELlcgw(r,ELl)*4178/
+         sum((rr,ELll),ELlcgw(rr,ELll)*ELlchours(ELll));
+
+ELlcgwonsite(r,ELl)$(sum(ELll,ELlcgw(r,ELll))>0) =
+         (ELlcgw(r,ELl)-ELlcgwsales(r,ELl)/0.91  );
+

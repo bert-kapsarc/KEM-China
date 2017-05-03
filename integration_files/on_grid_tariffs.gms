@@ -3,7 +3,7 @@
          ELdeficitmax = 20e3;
 
          ELtariffmax(Elp,r)= ELtariffmax(Elp,r)/1.17*0.8;
-         
+
          ELtariffmax(Elpd,r)$(ELpcoal(Elpd)) = (ELtariffmax(Elpd,r)-ELfgctariff('DeSOx')-ELfgctariff('DeNOx'));
 
          ELtariffmax(Elpw,r) =
@@ -26,9 +26,6 @@
          ELptariff(ELpd,v)$(not ELpgttocc(ELpd)) = yes;
 *         ELptariff(ELpw,v) = yes;
          ELptariff(ELphyd,v) = yes;
-
-*         ELctariff(ELc,v) = no;
-*         ELcELp(ELp,v,ELp,v)= no;
 
 
 * !!!!   ELcELp subset defines plants operated by regional power companies

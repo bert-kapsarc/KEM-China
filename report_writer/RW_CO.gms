@@ -1,11 +1,20 @@
 
 parameter COprodSuppliers
+          COcapSuppliers
           COprodCapTVELocal;
 
           COprodCapTVELocal(COf,trun)=
           sum((mm,ss,rco)$(Local(ss) or TVE(ss) ),
                  COprodData(COf,mm,ss,trun,rco));
 ;
+COcapSuppliers('TVE',COf,trun) =
+sum((mm,ss,rco)$TVE(ss),COprodData(COf,mm,ss,trun,rco));
+COcapSuppliers('All',COf,trun) =
+sum((mm,ss,rco)$Allss(ss),COprodData(COf,mm,ss,trun,rco));
+COcapSuppliers('Local',COf,trun) =
+sum((mm,ss,rco)$Local(ss),COprodData(COf,mm,ss,trun,rco));
+COcapSuppliers('SOE',COf,trun) =
+sum((mm,ss,rco)$SOE(ss),COprodData(COf,mm,ss,trun,rco));
 
 COprodSuppliers('TVE',trun,r) =
 sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and TVE(ss)),
@@ -27,9 +36,9 @@ sum((mm,rw,ss,sulf,rco,COf,COff)$(rco_sup(rco,r) and ALlss(ss)),
 COprod.l(COf,sulf,mm,ss,rw,trun,rco)*COprodyield(COf,mm,ss,rw,trun,rco)*
 COrwtable(rw,COf,COff));
 
-COprodSuppliers(COf,trun,r) =
-sum((mm,ss,rco)$(rco_sup(rco,r) and (TVE(ss) or Local(ss) or Allss(ss))),
-COexistcp.l(COf,mm,ss,trun,rco));
+*COprodSuppliers(COf,trun,r) =
+*sum((mm,ss,rco)$(rco_sup(rco,r) and (TVE(ss) or Local(ss) or Allss(ss))),
+*COexistcp.l(COf,mm,ss,trun,rco));
 
 COexistrco(Cof,trun,rco) = sum((mm,ss),COexistcp.l(COf,mm,ss,trun,rco));
 COprodRaw(COf,trun,rco) = sum((mm,ss,sulf,rw),COprod.l(COf,sulf,mm,ss,rw,trun,rco));

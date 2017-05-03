@@ -28,7 +28,7 @@
 
 *        Discounting fgc system (25 years)
          EMdiscoef(trun) = discounting(25,ELdiscountrate,i,trun,thyb);
-         EMfgccapexD(fgc,trun) = EMfgccapex(fgc,trun)*EMdiscoef(trun);
+         EMfgccapexD(fgc,trun) = EMfgccapex(fgc)*EMdiscoef(trun);
 
 $ontext
 if(COrailCFS=1,

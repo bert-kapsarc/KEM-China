@@ -1,3 +1,4 @@
+
 * Scalars and parameters shared between submodel files
 
 $INCLUDE scenario_flags.gms
@@ -6,6 +7,11 @@ scalar mmBTUtoTons ;
 
 parameter t_ind time index used in when using recursive dynamics
 
+parameter discount_rate(sectors);
+
+$gdxin db\financial.gdx
+$load discount_rate
+$gdxin
 
 Parameter RMBUSD(time) RMB to USD exchange rate
 /
@@ -20,79 +26,52 @@ t15      0.160659
 RMBUSD(trun)$(ord(trun)>5) = RMBUSD('t15');
 
 
-
-*========= Conversion factors to get rnergy content of fuels in units of MWH
-*Amount of fuel burned per output of energy.
-*Coal and methane values from EIA heat rate figures (http://www.eia.gov/electricity/annual/html/epa_08_01.html)
-*Nuclear fuel burn from KEM - Saudi power submodel
-*Methane is in units of MMBTU/MWh
-*diesel,HFO, uranium, and coal are in units of metric tons/MWh
-
-*1 megawatt hour = 860420.65 kilocalories
-* 7000 kcal/kg
-* coal fuel rate is
-*860420.65 kcal/MWH / 7000 kcal/kg  * 1000 kg/ton =>  0.122917 ton/MWH 7000 KCal/kg coal
-*251995.7611111 kcal/mmbtu
-
 parameter  FuelperMWH(f) quantity of fuel per MWH
+           COcvSCE(cv) average CV of coal bins noramlized to 7000 kcal per kg
+           COboundCV(cv,bound) upper and lower bounds on coal CV bins
+           NOxC(r,ELp) concentration nox in flu gas ton per normal cubic meter
+           NO2C(r,ELp) concentration no2 in flu gas ton per normal cubic meter
+           EMfgcomcst(fgc) operation and maintenance cost of fgd per MWH
+           EMfgcfixedOMcst(fgc) operation and maintenance cost of fgd per KW
+                 / DeSOx  0 /
+           EMfgccapex(fgc) Capital cost of flue gas control per KW
+           EMfgccapexD(fgc,trun) Annualized capital cost of flue gas control
+           EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
 
-*       Energy density for HFO: 43MJ/kg, 3600MJ/42MJ/kg = 85.71kg/MWh = 0.08571 ton/kg
-*       Energy density for diesel: 44.8MJ/kg, 3600MJ/44.8MJ/kg = 80.36kg/MWh = 0.08036 ton/kg
-*       Energy density of boe; 0.588 boe/mwh
-*       ENergy density of coal 860 420.65 calories/kwh / 7000000000 cal/ton = 0.1228 ton/MWh
-*       Energy Density of uranium for electric power pupposes = 0.045346
-*        http://www.whatisnuclear.com/physics/energy_density_of_nuclear.html
-*       1MWh = 3600 MJ, 3600MJ/MWh/79390000MJ/kg = 0.000045346kg/MWh = 0.045346 kg/MWh
-
-/
-         diesel     0.08036
-         HFO        0.08571
-         lightcrude 0.588
-         coal       0.1228
-         u-235      0.045346
-/;
-
-parameter COcvSCE(cv) average CV of coal noramlized to 7000 kcal per kg SCE
+          / noDeSOx 1
+            DeSOx 0.2
+            noDeNOx 1
+            DeNOx 0.2
          /
-         CV32    3200
-         CV38    3800
-         CV44    4400
-         CV50    5000
-         CV56    5600
-         CV62    6200
-         CV68    6800
-          /
 
-          COboundCV(cv,bound) average calorific value of coal
-         /
-         CV32.lo    500
-         CV32.up    3500
-         /;
+$gdxin db\material_sets.gdx
+$load FuelperMWH COcvSCE EMfgcomcst EMfgccapex
+$gdxin
 
-         COcvSCE(cv) = COcvSCE(cv)/7000;
-         COcvSCE(cv_met) = 1;
-         COcvSCE('CVf') = 1;
+$gdxin db\power.gdx
+$load NOxC NO2C
+$gdxin
+;
 
+*        Initialize undefined emission concentrations
+alias (ELpcoal, ELpcoal2);
+NOxC(r,ELpcoal)$(NOxC(r,ELpcoal)=0)=smax((rr,ELpcoal2),NOxC(rr,ELpcoal2));
+NO2C(r,ELpcoal)$(NO2C(r,ELpcoal)=0)=smax((rr,ELpcoal2),NO2C(rr,ELpcoal2));
 $offorder
-         loop(CV_ord,
-         COboundCV(CV_ord+1,'up') = COboundCV(CV_ord,'up')+600;
-         COboundCV(CV_ord+1,'lo') = COboundCV(CV_ord,'up');
-         );
+         COboundCV(cv,"lo")$(ord(cv)=1) = 0;
+         COboundCV(cv,"up")$(ord(cv)=1) = (COcvSCE(cv)+COcvSCE(cv+1))/2;
+loop(cv$(ord(cv)>1),
+         COboundCV(cv,'lo') = COboundCV(cv-1,'up');
+         COboundCV(cv,'up') = (COcvSCE(cv)+COcvSCE(cv+1))/2;
 
-         COboundCV(CV_ord,'up')$(ord(CV_ord)=card(CV_ord))= 10000;
+);
+         COboundCV(cv,'up')$(ord(cv)=card(cv))= 1e6;
 $onorder
 
+         COcvSCE(cv) = COcvSCE(cv)/7000;
 
 *======== Paramters used to calcualte sulfur and nox emissions
 
-parameter COsulfDW(sulf) sulfur content by dry weigh tfor each sulfur-content category
-*        ExtLow = 0.25%,Low=1%,Med=2%,High=5%
-         /
-         ExtLow  0.0025
-         Low     0.01
-         Med     0.02
-         High    0.05
-         /;
 
 parameter ELpSO2std(ELp,v,trun,r), ELpNO2std(ELp,v,trun,r);
 
@@ -105,39 +84,6 @@ parameter ELpSO2std(ELp,v,trun,r), ELpNO2std(ELp,v,trun,r);
 
          ELpSO2std(ELpcoal,v,trun,r)=ELpSO2std(ELpcoal,v,trun,r)/1e9;
          ELpNO2std(ELpcoal,v,trun,r)=ELpNO2std(ELpcoal,v,trun,r)/1e9;
-
-*       mg per cubic meter
-parameter NOxC(r,ELp) concentration of nox in flu gas mg per normal cubic meter
-          NO2C(r,ELp) concentration of no2 in flu gas mg per normal cubic meter
-;
-* convert to tons per cubic meter
-NOxC(r,ELpcoal) = 650*1e-9;
-*NOxC(r,'SubcrSML') = 600*1e-9;
-
-
-NOxC('North',Elpd) = NOxC('North',ELpd)*0.8;
-NOxC('East',Elpd) = NOxC('East',ELpd)*0.8 ;
-NOxC('Shandong',Elpd) = NOxC('Shandong',ELpd)*0.8;
-NOxC('South',Elpd) = NOxC('South',ELpd)*0.8;
-NOxC('Xinjiang',Elpd) = NOxC('Xinjiang',ELpd);
-
-
-NOxC('CoalC',Elpd) = NOxC('CoalC',ELpd)*0.9;
-NOxC('Northeast',Elpd) = NOxC('Northeast',ELpd)*0.95;
-NOxC('Central',Elpd) = NOxC('Central',ELpd)*1.3;
-NOxC('Southwest',Elpd) = NOxC('Southwest',ELpd)*1.15;
-NOxC('Henan',Elpd) = NOxC('Henan',ELpd)*1.1;
-
-NOxC('West',Elpd) = NOxC('West',ELpd)*1.1 ;
-
-NOxC('Sichuan',Elpd) = NOxC('Sichuan',ELpd)*1.5;
-
-
-NO2C(r,ELp) = 850*1e-9;
-
-
-
-
 
 parameter alpha0(ELp,f) excess air ratio in combustion chamber
           a1(f) Vr first coefficient
@@ -188,52 +134,5 @@ scalar   delta_alpha excess air ration corrected parameter /0.6/  ;
           a1(ELf)*COcvSCE(cv)+c1(ELf)
          +1.0161*(alpha0(ELpd,ELf)+delta_alpha-1)*(a2(ELf)*COcvSCE(cv)+c2(Elf));
 
-
-
-parameter EMfgcomcst(fgc) operation and maintenance cost for fgd system RMB per MWH
-         / DeSOx  10
-           DeNOx  6 /
-
-          EMfgcfixedOMcst(fgc) operation and maintenance cost for fgd system RMB per KW
-         / DeSOx  0 /
-
-
-          EMfgcpower(sulf,fgc,fgc) percentage reduciton of thermal efficiency when operating fgc
-
-          EMfgccapex(fgc,trun) RMB per KW
-          EMfgccapexD(fgc,trun) Annualized capital cost of flue gas control systems
-;
-
-
-          EMfgcomcst(fgc)=EMfgcomcst(fgc)*1.1;
-*        DeSOx YU ZF (2006) Development and Application of Clean Coal Technology in Mainland China. In: Zhang ZX, Bor Y (Eds), Energy Econcomics and Policy in mainland China and taiwan. China Environmental Scienece Press, Beijing, pp. 67-88.
-*        DeNOx estimated from, ZhongXiang Zhang (2014) Nota Di Lavoro, Energy Prices, Subsides and Resources Tax reform in China.
-          EMfgccapex(DeSOx,trun)=200 ;
-          EMfgccapex(DeNOx,trun)=350  ;
-
-          EMfgccapex(fgc,trun)=EMfgccapex(fgc,trun)*1.1;
-
-parameter EMfgc(fgc) Percentage emissions of nox and sox from fgc systems
-          / noDeSOx 1
-            DeSOx 0.2
-            noDeNOx 1
-            DeNOx 0.2
-         /
-
-;
-
-         EMfgcomcst(fgc) = EMfgcomcst(fgc);
-
-* !!!    electricity consumption of fgc system defined as % of total
-         EMfgcpower('extlow',DeSOx,noDeNOx) = 0.010;
-         EMfgcpower('low',DeSOx,noDeNOx) = 0.012;
-         EMfgcpower('med',DeSOx,noDeNOx) = 0.015;
-         EMfgcpower('high',DeSOx,nox) = 0.02;
-
-         EMfgcpower(sulf,noDeSOx,DeNOx) = 0.022;
-
-         EMfgcpower(sulf,DeSOx,DeNOx) =
-                 EMfgcpower(sulf,DeSOx,'noDeNOx')+
-                 EMfgcpower(sulf,'noDeSOx',DeNOx);
 
 parameter ELfit(ELp,trun,r);

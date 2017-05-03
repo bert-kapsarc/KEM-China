@@ -1,3 +1,4 @@
+$onecho > cmd.txt
 I=db\SetsParameters.accdb
 X=db\material_sets.gdx
 
@@ -58,3 +59,6 @@ P18=EMfgcomcst
 Q19=select [KEM Abbreviation],[Capital Cost] from [Emission Control Technologies]
 P19=EMfgccapex
 
+$offecho
+
+$call =mdb2gms @cmd.txt

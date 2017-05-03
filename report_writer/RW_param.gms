@@ -1,10 +1,8 @@
 *$INCLUDE expost_param.gms
-
-         Sets    sector differnet sectors /EL,WA,PC,RF,CM,f,other,ALL/
+sets
 *                 rN(rall)      /nation/
                  path_order/1,2/
                  path_name;
-         ;
 
          scalar MMBTUtoTOE MMTOE per trillion BTU /2.52e-2/
 

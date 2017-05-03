@@ -12,9 +12,9 @@ fconsump("EL",ELf,trun,"China") = sum(r,fconsump("EL",ELf,trun,r)) ;
 fconsump("EL",'coal_sce',trun,"China") = sum(r,fconsump("EL",'coal_sce',trun,r));
 
 parameter ProvAvgCV(COf,trun,rco);
-ProvAvgCV(COf,trun,rco)=sum((ash,sulf,cv,ELs),
+ProvAvgCV(COf,trun,rco)=sum((sulf,cv,ELs),
          coaluse.l(COf,cv,sulf,trun,rco)*COcvSCE(cv))/
-         sum((ash,sulf,cv,ELs),coaluse.l(COf,cv,sulf,trun,rco));
+         sum((sulf,cv,ELs),coaluse.l(COf,cv,sulf,trun,rco));
 
 fconsump("EL",COf,trun,r) = fconsump("EL",COf,trun,r)/ProvAvgCV(COf,trun,r);
 
@@ -44,7 +44,8 @@ ELemc(Elpcoal,ELl,trun,r) =
 
 
 ELgenELl("Trade",ELl,trun,rr) = sum((ELt,ELll,r)$(ord(r)<>ord(rr)),Eltransyield(ELt,r,rr)*
-  ELtranscoef(ELll,ELl,r,rr)*ELtrans.l(ELt,ELll,trun,r,rr))
+*  ELtranscoef(ELll,ELl,r,rr)*
+  ELtrans.l(ELt,ELll,trun,r,rr))
   -sum((ELt,r)$(ord(r)<>ord(rr)),ELtrans.l(ELt,ELl,trun,rr,r));
 
 ELgenELl(ELp,ELl,trun,"China") = sum(r, ELgenELl(ELp,ELl,trun,r));
@@ -71,9 +72,8 @@ ELbldELp(ELp,trun,"China") = sum(r, ELbldELp(ELp,trun,r));
 
 **ELgenELp("Regional supply of electricity from each plant in TWh","","") = 1;
 
-*Transmission Capacity
-ELtransTot(trun,r,rr) = sum((ELl,ELll,ELt),ELtrans.l(ELt,ELll,trun,r,rr)*
-         ELtranscoef(ELll,ELl,r,rr));
+ELtransTot(trun,r,rr) = sum((ELl,ELll,ELt),ELtrans.l(ELt,ELll,trun,r,rr));
+*         ELtranscoef(ELll,ELl,r,rr));
 
 ELtransTot(trun,r,'out') = sum(rr$(ord(rr)<>ord(r)),ELtransTot(trun,r,rr));
 
@@ -197,7 +197,7 @@ ELtariffELp(ELp,v,trun,r)$(sum((ELl,ELf),ELop.l(ELp,v,ELl,ELf,trun,r))>0)
 *$offtext
 
 
-ELdeficitELp(Elp,v,trun,r) = ELdeficit.l(Elp,v,trun,r);
+ELdeficitELp(Elc,v,trun,r) = ELdeficit.l(Elc,v,trun,r);
 ELdeficitELp('All',v,trun,r) = sum(Elp,ELdeficitELp(Elp,v,trun,r));
 ELdeficitELp(Elp,v,trun,'China') = sum(r,ELdeficitELp(Elp,v,trun,r));
 ELdeficitELp('All',v,trun,'China') = sum((Elp,r),ELdeficitELp(Elp,v,trun,r));

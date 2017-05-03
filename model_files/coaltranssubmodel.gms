@@ -1,40 +1,33 @@
 parameter
-          COfexpmax(time,rco) fixed coal export quantity by port of departure
+COfexpmax(time,rco) fixed coal export quantity by port of departure
+COtransD(tr,rco,rrco) transportation distances
+COtranscapex(tr,rco,rrco) purchase cost of transmission capacity Yuan per tonne km
+COtranspurcst(tr,time,rco,rrco) purchase cost of transportation capacity RMB per tone-km (rail) per tone (port)
+COtransconstcst(tr,time,rco,rrco) construction cost of transportation capacity RMB per tone-km (rail) per tone (port)
+COtransbudget(tr,time) budget constraint for investment of tranportation infrastrcuture in million RMB
+COtransexist(tr,rco,rrco)  existing coal transportation capacity
+COtransleadtime(tr,rco,rrco) lead time for building fuel transport
+COtransyield(tr,rco,rrco) net of self-consumption and distribution losses
+OTHERCOconsump(sect,COf,rr) exogenous coal demand
+OTHERCOconsumptrend(sect,COf,time,rr)  exogenous coal demand trend
+COintlprice(COf,ssi,cv,sulf,time,rco) market price for fuels for aggreaget CV bin
 
-          COtransD(tr,rco,rrco) transportation distances
+COfimpmax(COf,time,rco) maximum coal supply for each type of coal by region
+COfimpmax_nat(COf,time) maximum coal supply for each type of coal nationally
+COfimpss(COf,ssi,cv,sulf,time) available coal in import supply step ssi
 
-          COtranscapex(tr,rco,rrco) purchase cost of transmission capacity Yuan per tonne km
+COtransomcst_var(COf,tr) Variable O&M cost per ton -km
+COtransomcst_fixed(COf,tr) Fixed transport operation cost per ton
 
-          COtranspurcst(tr,time,rco,rrco) purchase cost of transportation capacity RMB per tone-km (rail) per tone (port)
-          COtransconstcst(tr,time,rco,rrco) construction cost of transportation capacity RMB per tone-km (rail) per tone (port)
+COtransomcst2(COf,tr,time) Variable O&M cost per ton -km
+COtransomcst1(COf,tr,time) Fixed transport operation cost per ton
+RailSurcharge rail tax collected for electricification and construction
 
-          COtransbudget(tr,time) budget constraint for investment of tranportation infrastrcuture in million RMB
-
-          COtransexist(tr,rco,rrco)  existing coal transportation capacity
-          COtransleadtime(tr,rco,rrco) lead time for building fuel transport
-
-          COtransyield(tr,rco,rrco) net of self-consumption and distribution losses
-
-          OTHERCOconsump(sect,COf,rr) exogenous coal demand
-          OTHERCOconsumptrend(sect,COf,time,rr)  exogenous coal demand trend
-
-          COintlprice(COf,ssi,cv,sulf,time,rco) market price for fuels for aggreaget CV bin
-
-          COfimpmax(COf,time,rco) maximum coal supply for each type of coal by region
-          COfimpmax_nat(COf,time) maximum coal supply for each type of coal nationally
-
-          COfimpss(COf,ssi,cv,sulf,time) available coal in import supply step ssi
-
-          COtransomcst_var(COf,tr) Variable O&M cost per ton -km
-          COtransomcst_fixed(COf,tr) Fixed transport operation cost per ton
-
-          COtransomcst2(COf,tr,time) Variable O&M cost per ton -km
-          COtransomcst1(COf,tr,time) Fixed transport operation cost per ton
-          RailSurcharge rail tax collected for electricification and construction;
+COsubprice(time,rr) price of substituting coal consumption
 
 ;
 $gdxin db\coaltrans.gdx
-$load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge OTHERCOconsump
+$load COtransD COtransexist COtranscapex COtransomcst_var COtransomcst_fixed RailSurcharge OTHERCOconsump COfexpmax
 $gdxin
 
 
@@ -59,7 +52,6 @@ COtransD('truck',rco,rrco)$(COtransD('truck',rco,rrco)=0) =
 
 * Create connection between all river and sea ports with positive distance
 * river ports connect to accesible sea ports on river mouth.
-* In the database non-connected river and sea ports are flagged with distance -1
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)>0) = 1;
 COtransyield(port,rport,rrport)$(COtransD(port,rport,rrport)<=0) = 0;
 
@@ -109,10 +101,8 @@ COtranscapex('rail',rco,rrco)$(COtranscapex('rail',rco,rrco)=0 and arc('rail',rc
 * devide capital costs by two
 COtranscapex(tr,rco,rrco) = COtranscapex(tr,rco,rrco)/2;
 
-* Approximate 100 Yuan per tonne for all port expansion costs. Compiled from data collected by Xiaofan
+* Approximate 100 Yuan per tonne for all port expansion costs.
 COtranscapex('port',rco,rco) = 100;
-
-
 
 COtransbudget('rail','t15') = 500e3;
 
@@ -136,8 +126,6 @@ COtransbudget('rail','t15') = 500e3;
 
          num_nodes_reg(r) = card(rtemp);
          );
-
-         num_nodes_reg('northeast') = 3;
 
          parameter rail_disc discount on rail investments from rail tax CFS;
 
@@ -212,6 +200,7 @@ COobjective.. COobjvalue =e=
     sum(t,(COpurchase(t)+COConstruct(t)+COOpandmaint(t))*COdiscfact(t))
    +sum(t,(COtranspurchase(t)+COtransConstruct(t)
          +COtransOpandmaint(t)+COimports(t))*COdiscfact(t))
+   +sum((t,rr),COsubconsump(t,rr)*COsubprice(t,rr));
 $ontext
 *        intersectoral revenues
    -sum((ELpcoal,v,gtyp,COf,cv,sulf,sox,nox,ELf,t,r)$(ELfCV(COf,cv,sulf) and ELpfgc(Elpcoal,cv,sulf,sox,nox)),
@@ -359,6 +348,8 @@ COdemOther(COf,t,rr)..
          (1$met(COf)+COcvSCE(cv)$coal(COf)) )
 +   sum((sulf,cv)$(COfCV('coal_i',cv) and coal(COf)),
          OTHERCOconsumpsulf('coal_i',cv,sulf,t,rr)*COcvSCE(cv))
+
++COsubconsump(t,rr)$coal(COf)
                          =g=
    OTHERCOconsump('OT',COf,rr)*OTHERCOconsumptrend('OT',COf,t,rr)
 

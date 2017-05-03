@@ -24,7 +24,7 @@ parameter        reportELsupElp    electricity supply by plant type and region
 
 *$onechov > %gams.scrdir%reportobj.scr
 reportobj("","title","Value of objective equaiton") = 1 ;
-reportobj(trun," USD",sector) = expenses(sector,trun);
+reportobj(trun," USD",sectors) = expenses(sectors,trun);
 
 *$offecho
 
@@ -46,16 +46,16 @@ reportELcapELp(rall,"Total","GW",trun) = SUM(ELp,ELcapELp(ELp,trun,rall)) + sum(
 *$offecho
 
 *$onechov >%gams.scrdir%reportELsup.scr
-*reportELsup("chart title","1","Electricity supply (power sector)","")= 1 ;
-*reportELsup("chart title","2","Electricity supply (cogen sector)","")= 1 ;
-reportELsup(sector,rall,"TWh",trun) = ELsuptot(sector,trun,rall);
+*reportELsup("chart title","1","Electricity supply (power sectors)","")= 1 ;
+*reportELsup("chart title","2","Electricity supply (cogen sectors)","")= 1 ;
+reportELsup(sectors,rall,"TWh",trun) = ELsuptot(sectors,trun,rall);
 
 *$offecho
 
 
 *$onechov >%gams.scrdir%reportELcap.scr
-*reportELcap("","title","Capacity (power sector) ","Capacity (cogen sector) ") = 1 ;
-reportELcap(sector,rall,"GW",trun) = ELcap(sector,trun,rall);
+*reportELcap("","title","Capacity (power sectors) ","Capacity (cogen sector) ") = 1 ;
+reportELcap(sectors,rall,"GW",trun) = ELcap(sectors,trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportELbld.scr
@@ -91,31 +91,31 @@ reportWAbld(rall,WAp,"MMm3/day",trun) = WAbldWAp(WAp,trun,rall);
 *$onechov >%gams.scrdir%reportfuel.scr
 *reportfuel("00","title","Fuel Consumption (power sector)","Fuel Consumption (cogen and water sector)") = 1 ;
 *reportfuel(sector,rN," MMTOE",trun) = MMBTUtoTOE*sum(r,fconsumpMMBTU(sector,trun,r));
-reportfuel(sector,rall,"MMTOE",trun) = MMBTUtoTOE*fconsumpMMBTU(sector,trun,rall);
+reportfuel(sectors,rall,"MMTOE",trun) = MMBTUtoTOE*fconsumpMMBTU(sectors,trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportfuel_crude.scr
 *reportfuelcru("00","title","Crude Consumption (power sector)","Crude Consumption (cogen and water sector)") = 1 ;
 *reportfuelcru(sector,rN,"MMBBL",trun) = fconsumptype(sector,"crude",trun);
-reportfuelcru(sector,rall," MMBBL",trun) = fconsump(sector,"crude",trun,rall);
+reportfuelcru(sectors,rall," MMBBL",trun) = fconsump(sectors,"crude",trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportfuel_diesel.scr
 *reportfueldie("00","title","Diesel Consumption (power sector)","Diesel Consumption (cogen and water sector)") = 1 ;
 *reportfueldie(sector,rN,"MM Tonne",trun) = RFfconsumptype(sector,"diesel",trun);
-reportfueldie(sector,rall,"MMTonne",trun) = RFfconsump(sector,"diesel",trun,rall);
+reportfueldie(sectors,rall,"MMTonne",trun) = RFfconsump(sectors,"diesel",trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportfuel_HFO.scr
 *reportfuelHFO("00","title","HFO Consumption (power sector)","HFO Consumption (cogen and water sector)") = 1 ;
-reportfuelHFO(sector,rall,"MMTonne",trun) = RFfconsump(sector,"HFO",trun,rall);
+reportfuelHFO(sectors,rall,"MMTonne",trun) = RFfconsump(sectors,"HFO",trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportfuel_methane.scr
 *reportfuelCH4("00","title",      "Methane Consumption (power sector)",
 *                                 "Methane Consumption (cogen and water sector)") = 1 ;
-*reportfuelCH4(sector,rN,"Trillion BTU",trun) = fconsumptype(sector,"methane",trun);
-reportfuelCH4(sector,rall,"Trillion BTU",trun) = fconsump(sector,"methane",trun,rall);
+*reportfuelCH4(sectors,rN,"Trillion BTU",trun) = fconsumptype(sectors,"methane",trun);
+reportfuelCH4(sectors,rall,"Trillion BTU",trun) = fconsump(sectors,"methane",trun,rall);
 *$offecho
 
 *$onechov >%gams.scrdir%reportELdem.scr

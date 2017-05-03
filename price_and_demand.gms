@@ -1,7 +1,3 @@
-*        Set OTHER consump of metallurgical and thermal coal for demand that is exogneous to the model
-*         OTHERCOconsump('met',time,rr)=COstatistics('Metallurgical',rr);
-*         OTHERCOconsump('coal',time,rr)=COstatistics('Other',rr);
-
 ELCOconsump.l(Elpcoal,v,gtyp,cv,sulf,sox,nox,trun,rr)=0;
 
 

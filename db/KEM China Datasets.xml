@@ -1,0 +1,424 @@
+<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+ <DocumentProperties xmlns="urn:schemas-microsoft-com:office:office">
+  <Author>Al Sharif, Haya</Author>
+  <LastAuthor>Bertrand Josiah Williams-Rioux</LastAuthor>
+  <Created>2017-04-17T10:48:52Z</Created>
+  <LastSaved>2017-04-17T11:35:10Z</LastSaved>
+  <Version>15.00</Version>
+ </DocumentProperties>
+ <OfficeDocumentSettings xmlns="urn:schemas-microsoft-com:office:office">
+  <AllowPNG/>
+ </OfficeDocumentSettings>
+ <ExcelWorkbook xmlns="urn:schemas-microsoft-com:office:excel">
+  <WindowHeight>11475</WindowHeight>
+  <WindowWidth>28800</WindowWidth>
+  <WindowTopX>0</WindowTopX>
+  <WindowTopY>0</WindowTopY>
+  <ProtectStructure>False</ProtectStructure>
+  <ProtectWindows>False</ProtectWindows>
+ </ExcelWorkbook>
+ <Styles>
+  <Style ss:ID="Default" ss:Name="Normal">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s57">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Arial" x:Family="Swiss" ss:Size="12" ss:Bold="1"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s58">
+   <Alignment ss:Vertical="Bottom"/>
+   <Borders/>
+   <Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+  <Style ss:ID="s59">
+   <Alignment ss:Vertical="Bottom" ss:WrapText="1"/>
+  </Style>
+  <Style ss:ID="s73">
+   <Borders>
+    <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#9BC2E6"/>
+    <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#9BC2E6"/>
+    <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1"
+     ss:Color="#9BC2E6"/>
+   </Borders>
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"/>
+  </Style>
+  <Style ss:ID="s79">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#FF0000"
+    ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s83">
+   <Font ss:FontName="Calibri" x:Family="Swiss" ss:Size="11" ss:Color="#000000"
+    ss:Bold="1"/>
+  </Style>
+  <Style ss:ID="s87">
+   <Alignment ss:Vertical="Bottom" ss:WrapText="1"/>
+   <Borders/>
+   <Font ss:FontName="Arial" ss:Size="12" ss:Bold="1"/>
+   <Interior/>
+   <NumberFormat/>
+   <Protection/>
+  </Style>
+ </Styles>
+ <Worksheet ss:Name="Sheet">
+  <Table ss:ExpandedColumnCount="9" ss:ExpandedRowCount="60" x:FullColumns="1"
+   x:FullRows="1" ss:DefaultRowHeight="15">
+   <Column ss:StyleID="s83" ss:AutoFitWidth="0" ss:Width="69.75"/>
+   <Column ss:AutoFitWidth="0" ss:Width="232.5" ss:Span="1"/>
+   <Column ss:Index="4" ss:StyleID="s59" ss:AutoFitWidth="0" ss:Width="538.5"/>
+   <Column ss:AutoFitWidth="0" ss:Width="351"/>
+   <Column ss:AutoFitWidth="0" ss:Width="249"/>
+   <Row ss:AutoFitHeight="0" ss:Height="15.75" ss:StyleID="s57">
+    <Cell><Data ss:Type="String">Dropped Table</Data></Cell>
+    <Cell><Data ss:Type="String">Dataset name 2</Data></Cell>
+    <Cell><Data ss:Type="String">Table new name</Data></Cell>
+    <Cell ss:StyleID="s87"><Data ss:Type="String">Value Defiition </Data></Cell>
+    <Cell ss:StyleID="s58"><Data ss:Type="String">Attribute dependencies</Data></Cell>
+    <Cell ss:StyleID="s58"><Data ss:Type="String">Sources</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Coal Import Price - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Import Price </Data></Cell>
+    <Cell><Data ss:Type="String">Import price of coal in RMB (yuan)/mt, mt - million tons</Data></Cell>
+    <Cell><Data ss:Type="String">Cof is coal type (coal, met); CV is calorific value labels represent kcal/kg (CV56 = 5600 Kcal/kg, CV62 = 6200 Kcal/kg)</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Coal Price Trend - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Price Trend</Data></Cell>
+    <Cell><Data ss:Type="String">Coal price projections with respect to starting year</Data></Cell>
+    <Cell><Data ss:Type="String">Time is year of simulation</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"><Data ss:Type="String">X</Data></Cell>
+    <Cell><Data ss:Type="String">Coal_demand_EIA - KEM China</Data></Cell>
+    <Cell ss:Index="5"><Data ss:Type="String">year, </Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">coal_exports - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Exports</Data></Cell>
+    <Cell><Data ss:Type="String">Coal exports in mt - million tons (no energy content reported)</Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">r is KEM region rimp is , reference </Font><I><Font
+        html:Color="#000000">nodes </Font></I><Font html:Color="#000000">table; time is model year, reference </Font><I><Font
+        html:Color="#000000">TimePeriods</Font></I><Font html:Color="#000000">.</Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">Sxcoal.com (fenwei)</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"><Data ss:Type="String">X</Data></Cell>
+    <Cell><Data ss:Type="String">coal_import_price - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"><Data ss:Type="String">X</Data></Cell>
+    <Cell><Data ss:Type="String">coal_imports - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"><Data ss:Type="String">X</Data></Cell>
+    <Cell><Data ss:Type="String">Coal_stats_2012 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">coal_sulfur - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Sulfur Contnet</Data></Cell>
+    <Cell><Data ss:Type="String">Percentage of coal produced with sulfur content High (0.05%), med (0.02%), low (0.01%) and ExtLow (0.0025%)</Data></Cell>
+    <Cell ss:Index="6"><Data ss:Type="String">CEGD Data tables Chapter1.v8 Table 1B.3, Li et al., 1998</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">coalcv - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Calorific Value</Data></Cell>
+    <Cell><Data ss:Type="String">Calorific Value (Kcal/kg)</Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">PU - production unit; COf - coal types recognized by the model; mm - miniming method; rw - processing (raw, wasthed other); rco - production region. Should be validated by/reference the </Font><I><Font
+        html:Color="#000000">Coal Regions</Font></I><Font html:Color="#000000"> table </Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">CoalRegions - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Producers</Data></Cell>
+    <Cell><Data ss:Type="String">set listing - defines the sets used in coal in the parameter tables for coal producers</Data></Cell>
+    <Cell><Data ss:Type="String">PU - production unit; CoalType - coal types recognized by the model;  miniming method; Provincial coverage. Supplier - supplier categorization  (Local,SOE …), Region - production region, Basin (depricated), </Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COomcst - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Production Cost</Data></Cell>
+    <Cell><Data ss:Type="String">Cost of different production unit in RMB/mt (million tons)</Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">PU - production unit; COf - coal types; mm - miniming method; rw - processing (raw, wasthed other); rco - production region. Should be validated by/reference the </Font><I><Font
+        html:Color="#000000">Coal Regions</Font></I><Font html:Color="#000000"> table </Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COprodIHS - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Production</Data></Cell>
+    <Cell><Data ss:Type="String">Total coal produciton per unit in mt (million tons)</Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">PU - production unit; COf - coal types; mm - miniming method; rco - production region. Should be validated by/reference the </Font><I><Font
+        html:Color="#000000">Coal Regions</Font></I><Font html:Color="#000000"> table </Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COprodyield - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Production Yield</Data></Cell>
+    <Cell><Data ss:Type="String">Coal production yield in %</Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">PU - production unit; COf - coal types; mm - miniming method; rw - processing (raw, wasthed other); rco - production region. Should be validated by/reference the </Font><I><Font
+        html:Color="#000000">Coal Regions</Font></I><Font html:Color="#000000"> table </Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COtransomcst_fixed - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Tranport Fixed Cost</Data></Cell>
+    <Cell><Data ss:Type="String">Fixed tranport (loading unloading cost) in RMB/ton</Data></Cell>
+    <Cell><Data ss:Type="String">Cof - coal type; tr - transport mode (truck, port, rail)</Data></Cell>
+    <Cell><Data ss:Type="String">For Rail - Credit Suisse Report; Credit Suisse, Fuel for Thought: Thermal Coal in China, January, 5 2012. Accessed at https://doc.research-and-analytics.csfb.com/docView?language=ENG&amp;format=PDF&amp;document_id=804732750&amp;source_id=em&amp;serialid=9wkcfm2FuC2srt0RVxp5gxeQMixMgQliQ9zDInulwLUg%3D</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COtransomcst_var - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Transport Variable Cost</Data></Cell>
+    <Cell><Data ss:Type="String">Variable transport cost in RMB/ton-km</Data></Cell>
+    <Cell><Data ss:Type="String">Cof - coal type; tr - transport mode (truck, port, rail)</Data></Cell>
+    <Cell><Data ss:Type="String">For Rail - Credit Suisse Report; Credit Suisse, Fuel for Thought: Thermal Coal in China, January, 5 2012. Accessed at https://doc.research-and-analytics.csfb.com/docView?language=ENG&amp;format=PDF&amp;document_id=804732750&amp;source_id=em&amp;serialid=9wkcfm2FuC2srt0RVxp5gxeQMixMgQliQ9zDInulwLUg%3D</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">COwashratio - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Coal Washing Ratio</Data></Cell>
+    <Cell><Data ss:Type="String">Ratio of washed to unwashed coal in % </Data></Cell>
+    <Cell><ss:Data ss:Type="String" xmlns="http://www.w3.org/TR/REC-html40"><Font
+       html:Color="#000000">PU - production unit; COf - coal types; mm - miniming method; rw - processing (raw, wasthed other); rco - production region. Should be validated by/reference the </Font><I><Font
+        html:Color="#000000">Coal Regions</Font></I><Font html:Color="#000000"> table </Font></ss:Data></Cell>
+    <Cell><Data ss:Type="String">IHS coal rush study</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">ELhydrohours - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Hydro Operating Hours</Data></Cell>
+    <Cell><Data ss:Type="String">Operating hours of hydro capacity in each region</Data></Cell>
+    <Cell><Data ss:Type="String">Region;</Data></Cell>
+    <Cell><Data ss:Type="String">Calculated using 10 years of production and capacity data from IHS      </Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">ELtransgrid - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Transmission Grid</Data></Cell>
+    <Cell><Data ss:Type="String">Transmission Grid Capacity AC and DC in GW, and distrances between regions in Km</Data></Cell>
+    <Cell><Data ss:Type="String">r - start region, rr - end region</Data></Cell>
+    <Cell><Data ss:Type="String">Multiple sources (see Efficient Industrial Energy Use: The First Step in Transitioning Saudi Arabia’s Energy Mix KS-1519-DP013A)</Data></Cell>
+    <Cell ss:Index="9" ss:StyleID="s73"/>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">FuelAllocation - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Fuel Allocation</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"><Data ss:Type="String">X</Data></Cell>
+    <Cell><Data ss:Type="String">FuelAllocation2012 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">FuelAllocationTrend - KEM China</Data></Cell>
+    <Cell><Data ss:Type="String">Fuel Allocation Trend</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">hydrocf - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS Electric Plant Capacity Details - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS Electric Plant Fuel Consumption - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS Electric Plant General - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS Electric Plant Operating - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS2KEM_ELp - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHS2KEM_r - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">IHSDemandSCE - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">LoadCurves - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">MetCoalConsumption - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2011 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2015 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2020 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2025 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2030 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Nationalraw&amp;washedcoalcosts2035 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">nodes - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">OnGridTariffs - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">PLATTS WEEP ABBREV - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">PortConnect - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">rail_lines - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">RailRates - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">RailSurcharge - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">RawcoalvolumesbyPU - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">RegionConnect - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">RegionCrossTable - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Regions - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">ship_rates - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">SXcoalCoalImportInformation - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">SXcoalImportPrice - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Table1 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">time periods - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2011 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2015 - KEM china</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2020 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2025 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2030 - KEM China</Data></Cell>
+   </Row>
+   <Row ss:AutoFitHeight="0">
+    <Cell ss:StyleID="s79"/>
+    <Cell><Data ss:Type="String">Volumealongprocessingchain2035 - KEM China</Data></Cell>
+   </Row>
+  </Table>
+  <WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+   <Unsynced/>
+   <Print>
+    <ValidPrinterInfo/>
+    <HorizontalResolution>600</HorizontalResolution>
+    <VerticalResolution>600</VerticalResolution>
+   </Print>
+   <Selected/>
+   <Panes>
+    <Pane>
+     <Number>3</Number>
+     <ActiveRow>21</ActiveRow>
+     <ActiveCol>2</ActiveCol>
+    </Pane>
+   </Panes>
+   <ProtectObjects>False</ProtectObjects>
+   <ProtectScenarios>False</ProtectScenarios>
+  </WorksheetOptions>
+ </Worksheet>
+</Workbook>

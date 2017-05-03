@@ -20,7 +20,6 @@
          ELpsunkcost(ELp,v,trun,r)$ELpw(Elp)=
          ELfixedOMcst(ELp)+(ELpurcst(ELp,trun,r)+ELconstcst(ELp,trun,r));
 
-if( scen('calib'),
 
 *!!!     Turn on demand in all regions
          rdem_on(r) = yes;
@@ -50,6 +49,4 @@ $ontext
          (ELwindexist(r)/ELdemgro('LS1',t,r)-ord(wstep))<0
          and (ELwindexist(r)/ELdemgro('LS1',t,r)-ord(wstep))>-1 );
 $offtext
-
-);
 

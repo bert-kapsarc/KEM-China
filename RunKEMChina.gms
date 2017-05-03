@@ -30,12 +30,15 @@ the model as integrated Coal and Power
 
 
 options to use when running this filel
-idir =model_files;db;integration_files;report_writer; gdx=test
+idir =model_files;db;integration_files;report_writer; gdx=t
+est
 $OFFTEXT
 
 
-
+*$INCLUDE ACCESS_material_sets.gms
 *$INCLUDE ACCESS_sets.gms
+*$INCLUDE ACCESS_EL_sets.gms
+*$INCLUDE ACCESS_financial.gms
 *$INCLUDE ACCESS_CO.gms
 *$INCLUDE ACCESS_COtrans.gms
 *$INCLUDE ACCESS_EL.gms
@@ -47,8 +50,8 @@ $INCLUDE RW_param.gms
 set  run_model(built_models) defines what built model will be run. Is a subset of buil_models which represents the model instances that hav been developed. Options are Coal and or Power
      run_mode(lp_mcp) Tell the model to solve in lp or mcp mode. can only select one of these options.;
 *        select model(s) to run -  Coal, Power, Emissions
-*         run_model('Coal')=yes;
-         run_model('Power')=yes;
+         run_model('Coal')=yes;
+*         run_model('Power')=yes;
 *         run_model('Emissions')=yes;
 
 *        run in LP or MCP mode (select one only!)
@@ -60,10 +63,8 @@ set      model_input type of inputs that can be used to set cross-cuttting activ
 
 $INCLUDE coalsubmodel.gms
 $INCLUDE coaltranssubmodel.gms
-
 $INCLUDE powersubmodel.gms
 $INCLUDE emissionsubmodel.gms
-
 $INCLUDE create_models.gms
 
 
@@ -77,10 +78,12 @@ $INCLUDE price_and_demand.gms
 
 $INCLUDE on_grid_tariffs.gms
 
-*$INCLUDE short_run.gms
+$INCLUDE short_run.gms
 *$INCLUDE new_stock.gms
 
-ELbld.up(ELpnuc,vn,trun,r)=0;
+         execute_loadpoint "baseline.gdx" COtrans ;
+
+*         COtrans.lo(COf,cv,sulf,tr,trun,rco,rrco) =  COtrans.l(COf,cv,sulf,tr,trun,rco,rrco);
 
 *          execute_loadpoint "test2.gdx";
 *         execute_loadpoint "test2.gdx" ELwindtarget, Elwindop ;
@@ -142,7 +145,7 @@ elseif run_model('Power'),
    );
 
 );
-*COprod.l(COf,sulf,mm,ss,rw,t,rco)$(COprod.l(COf,sulf,mm,ss,rw,t,rco)<1e-6 and COrw(COf,mm,ss,sulf,rw,rco))=1e-6;
+COprod.l(COf,sulf,mm,ss,rw,t,rco)$(COprod.l(COf,sulf,mm,ss,rw,t,rco)<1e-6 and COrw(COf,mm,ss,sulf,rw,rco))=1e-6;
 $INCLUDE obj_values.gms
 
 $INCLUDE RW_EL.gms
